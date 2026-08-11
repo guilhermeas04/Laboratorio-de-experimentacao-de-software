@@ -1,0 +1,17 @@
+# Query especifica para a issue #11.
+# Coleta apenas os campos necessarios para RQ01 e RQ02.
+
+query RQ01RQ02Repositories($first: Int!) {
+  search(query: "stars:>1 sort:stars-desc", type: REPOSITORY, first: $first) {
+    repositoryCount
+    nodes {
+      ... on Repository {
+        nameWithOwner
+        createdAt
+        pullRequests(states: MERGED) {
+          totalCount
+        }
+      }
+    }
+  }
+}

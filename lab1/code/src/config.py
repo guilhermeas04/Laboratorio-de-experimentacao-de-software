@@ -2,6 +2,12 @@
 
 from dataclasses import dataclass
 import os
+from pathlib import Path
+
+from dotenv import load_dotenv
+
+
+ENV_PATH = Path(__file__).resolve().parents[1] / ".env"
 
 
 @dataclass(frozen=True)
@@ -13,6 +19,8 @@ class Settings:
 
 def load_settings() -> Settings:
     """Carrega configuracoes a partir de variaveis de ambiente."""
+    load_dotenv(ENV_PATH)
+
     return Settings(
         github_token=os.getenv("GITHUB_TOKEN", ""),
         github_graphql_url=os.getenv(
