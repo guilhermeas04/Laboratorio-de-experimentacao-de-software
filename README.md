@@ -1,0 +1,2 @@
+# Laboratorio-de-experimentacao-de-software
+Repositorio para guardar as atividades da disciplina de Laboratorio de experimentacao de software
