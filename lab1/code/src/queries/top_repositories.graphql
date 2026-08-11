@@ -1,0 +1,32 @@
+# Query base para a Lab01S01.
+# Deve retornar os 100 repositorios com mais estrelas e os campos necessarios
+# para RQ01 a RQ07.
+
+query TopRepositories($first: Int!) {
+  search(query: "stars:>1 sort:stars-desc", type: REPOSITORY, first: $first) {
+    repositoryCount
+    nodes {
+      ... on Repository {
+        nameWithOwner
+        createdAt
+        updatedAt
+        primaryLanguage {
+          name
+        }
+        pullRequests(states: MERGED) {
+          totalCount
+        }
+        releases {
+          totalCount
+        }
+        issues {
+          totalCount
+        }
+        closedIssues: issues(states: CLOSED) {
+          totalCount
+        }
+        stargazerCount
+      }
+    }
+  }
+}
