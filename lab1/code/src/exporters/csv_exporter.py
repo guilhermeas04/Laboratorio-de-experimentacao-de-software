@@ -6,6 +6,13 @@ from pathlib import Path
 
 FIELDNAMES = [
     "name_with_owner",
+    "stargazer_count",
+    "created_at",
+    "repository_age_days",
+    "merged_pull_requests",
+    "updated_at",
+    "days_since_last_update",
+    "releases_count",
     "primary_language",
     "total_issues",
     "closed_issues",
