@@ -6,14 +6,14 @@ from collectors.repositories import collect_top_repositories
 from config import load_settings
 from exporters.csv_exporter import export_repositories_csv
 from github_client import GitHubGraphQLClient
-from validators.rq01_rq02 import validate_sample
+from validators.rq03_rq04 import validate_sample
 
 
-OUTPUT_PATH = Path(__file__).resolve().parents[2] / "data" / "processed" / "rq01_rq02.csv"
+OUTPUT_PATH = Path(__file__).resolve().parents[2] / "data" / "processed" / "rq03_rq04.csv"
 
 
 def main():
-    """Executa a coleta e validacao das metricas de RQ01 e RQ02."""
+    """Executa a coleta e validacao das metricas de RQ03 e RQ04."""
     settings = load_settings()
     client = GitHubGraphQLClient(settings.github_token, settings.github_graphql_url)
 
