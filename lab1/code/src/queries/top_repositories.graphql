@@ -1,6 +1,5 @@
-# Query base para a Lab01S01.
-# Deve retornar os 100 repositorios com mais estrelas e os campos necessarios
-# para RQ01 a RQ07.
+# Query unica da issue #14.
+# Integra os campos necessarios para RQ01 a RQ07.
 
 query TopRepositories($first: Int!) {
   search(query: "stars:>1 sort:stars-desc", type: REPOSITORY, first: $first) {

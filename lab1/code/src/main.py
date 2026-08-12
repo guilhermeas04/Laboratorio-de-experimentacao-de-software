@@ -6,14 +6,16 @@ from collectors.repositories import collect_top_repositories
 from config import load_settings
 from exporters.csv_exporter import export_repositories_csv
 from github_client import GitHubGraphQLClient
-from validators.rq05_rq06 import validate_sample
+from validators.integrated import validate_sample
 
 
-OUTPUT_PATH = Path(__file__).resolve().parents[2] / "data" / "processed" / "rq05_rq06.csv"
+OUTPUT_PATH = (
+    Path(__file__).resolve().parents[2] / "data" / "processed" / "top_repositories.csv"
+)
 
 
 def main():
-    """Executa a coleta e validacao das metricas de RQ05 e RQ06."""
+    """Executa a coleta unica e a validacao das metricas de RQ01 a RQ07."""
     settings = load_settings()
     client = GitHubGraphQLClient(settings.github_token, settings.github_graphql_url)
 
