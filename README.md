@@ -26,4 +26,4 @@ acompanhar as atividades dos laboratórios durante o semestre.
 
 ## Laboratórios
 
-- [LAB1 — Características de repositórios populares e setup do Kanban](LAB1/README.md)
+- [LAB1 — Características de repositórios populares](https://github.com/guilhermeas04/Laboratorio-de-experimentacao-de-software/tree/main/lab1)
