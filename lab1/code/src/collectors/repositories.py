@@ -4,7 +4,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 
-QUERY_PATH = Path(__file__).resolve().parents[1] / "queries" / "rq01_rq02_repositories.graphql"
+QUERY_PATH = Path(__file__).resolve().parents[1] / "queries" / "rq03_rq04_repositories.graphql"
 
 
 def collect_top_repositories(client, limit: int = 100) -> list[dict]:
@@ -18,14 +18,14 @@ def collect_top_repositories(client, limit: int = 100) -> list[dict]:
 
 def normalize_repository(raw_repository: dict) -> dict:
     """Normaliza os campos retornados pela API para o formato do CSV."""
-    created_at = raw_repository["createdAt"]
-    created_date = datetime.fromisoformat(created_at.replace("Z", "+00:00"))
+    updated_at = raw_repository["updatedAt"]
+    updated_date = datetime.fromisoformat(updated_at.replace("Z", "+00:00"))
     now = datetime.now(UTC)
-    repository_age_days = (now - created_date).days
+    days_since_last_update = (now - updated_date).days
 
     return {
         "name_with_owner": raw_repository["nameWithOwner"],
-        "created_at": created_at,
-        "repository_age_days": repository_age_days,
-        "merged_pull_requests": raw_repository["pullRequests"]["totalCount"],
+        "updated_at": updated_at,
+        "days_since_last_update": days_since_last_update,
+        "releases_count": raw_repository["releases"]["totalCount"],
     }

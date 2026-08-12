@@ -6,9 +6,9 @@ from pathlib import Path
 
 FIELDNAMES = [
     "name_with_owner",
-    "created_at",
-    "repository_age_days",
-    "merged_pull_requests",
+    "updated_at",
+    "days_since_last_update",
+    "releases_count",
 ]
 
 
