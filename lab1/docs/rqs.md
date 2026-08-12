@@ -30,7 +30,8 @@ Sistemas populares sao escritos nas linguagens mais populares?
 
 Metrica: linguagem primaria de cada repositorio.
 
-Fonte para linguagens mais populares: `<preencher>`.
+Fonte para linguagens mais populares: GitHub Octoverse 2024
+(https://github.blog/news-insights/octoverse/octoverse-2024/).
 
 ## RQ06
 

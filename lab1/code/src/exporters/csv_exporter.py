@@ -6,10 +6,19 @@ from pathlib import Path
 
 FIELDNAMES = [
     "name_with_owner",
-    "updated_at",
-    "days_since_last_update",
-    "releases_count",
+    "primary_language",
+    "total_issues",
+    "closed_issues",
+    "closed_issues_ratio",
 ]
+
+
+def _serialize_row(repository: dict) -> dict:
+    """Converte valores None para string vazia no CSV."""
+    row = dict(repository)
+    if row.get("closed_issues_ratio") is None:
+        row["closed_issues_ratio"] = ""
+    return row
 
 
 def export_repositories_csv(repositories: list[dict], output_path: str) -> None:
@@ -20,4 +29,4 @@ def export_repositories_csv(repositories: list[dict], output_path: str) -> None:
     with path.open("w", encoding="utf-8", newline="") as csv_file:
         writer = csv.DictWriter(csv_file, fieldnames=FIELDNAMES)
         writer.writeheader()
-        writer.writerows(repositories)
+        writer.writerows(_serialize_row(repository) for repository in repositories)
