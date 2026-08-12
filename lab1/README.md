@@ -1,221 +1,145 @@
-# Lab 01 - Repositorios populares + Setup do Kanban
+# LAB1 — Repositórios populares e setup do Kanban
 
-Este diretorio concentra os artefatos do Lab01. O objetivo deste README e padronizar como o grupo deve criar codigo, dados, validacoes e respostas das RQs para que todas as entregas sigam o mesmo formato.
+O Laboratório 01 estuda características de projetos open source populares por
+meio da API GraphQL do GitHub. A coleta inicial da sprint Lab01S01 considera os
+100 repositórios com mais estrelas e reúne os dados necessários para responder
+às questões de pesquisa do laboratório.
 
-## Estrutura do laboratorio
 
-- `01 - LABORATORIO 01 - Repositorios populares + Setup do Kanban.md`: enunciado original do laboratorio.
-- `code/`: scripts de coleta, consulta GraphQL, validacao, analise e exportacao.
-- `data/`: arquivos de dados gerados pelos scripts.
-- `docs/`: documentacao do processo, GitHub Projects, Kanban, WIP e RQs.
-- `reports/`: respostas das RQs e relatorio final.
+## Questões de pesquisa e métricas
 
-## Estrutura do codigo
+| RQ | Questão investigada | Campo ou métrica coletada |
+|---|---|---|
+| RQ01 | Sistemas populares são maduros/antigos? | Idade calculada a partir de `createdAt` |
+| RQ02 | Sistemas populares recebem muita contribuição externa? | `pullRequests(states: MERGED).totalCount` |
+| RQ03 | Sistemas populares lançam releases com frequência? | `releases.totalCount` |
+| RQ04 | Sistemas populares são atualizados com frequência? | Dias desde `updatedAt` |
+| RQ05 | São escritos nas linguagens mais populares? | `primaryLanguage.name` |
+| RQ06 | Possuem alto percentual de issues fechadas? | Issues fechadas divididas pelo total de issues |
+| RQ07 | A linguagem influencia contribuição, releases e atualização? | Métricas das RQ02, RQ03 e RQ04 agrupadas por linguagem |
 
-Todo codigo da coleta e analise deve ficar em `lab1/code/src/`.
+Para a RQ05, a referência escolhida para linguagens populares é o
+[GitHub Octoverse 2024](https://github.blog/news-insights/octoverse/octoverse-2024/).
 
-- `main.py`: ponto de entrada da coleta principal da sprint atual.
-- `config.py`: leitura de variaveis de ambiente.
-- `github_client.py`: cliente HTTP para executar queries GraphQL no GitHub.
-- `queries/`: queries GraphQL usadas nas issues.
-- `collectors/`: scripts que coletam e normalizam dados da API.
-- `validators/`: validacoes rapidas por conjunto de RQs.
-- `analyzers/`: scripts que calculam metricas e geram respostas em Markdown.
-- `exporters/`: exportacao de CSVs e snapshots.
+## Lab01S01
 
-## Estrutura dos dados
+A primeira sprint foi dividida entre os integrantes da seguinte forma:
 
-- `data/raw/`: respostas brutas da API, quando necessario.
-- `data/processed/`: CSVs tratados e prontos para analise.
-- `data/snapshots/`: snapshots do GitHub Projects ao final de cada sprint.
+| Responsável | Atividade | Issue |
+|---|---|---|
+| Guilherme de Almeida Santos | Configuração do repositório e GitHub Projects | [#10](https://github.com/guilhermeas04/Laboratorio-de-experimentacao-de-software/issues/10) |
+| Guilherme de Almeida Santos | RQ01 e RQ02 | [#11](https://github.com/guilhermeas04/Laboratorio-de-experimentacao-de-software/issues/11) |
+| Pedro Rodrigues Duarte | RQ03 e RQ04 | [#12](https://github.com/guilhermeas04/Laboratorio-de-experimentacao-de-software/issues/12) |
+| Amanda Bicalho Silva | RQ05 e RQ06 | [#13](https://github.com/guilhermeas04/Laboratorio-de-experimentacao-de-software/issues/13) |
+| Pedro Rodrigues Duarte | Integração da consulta GraphQL | [#14](https://github.com/guilhermeas04/Laboratorio-de-experimentacao-de-software/issues/14) |
+| Amanda Bicalho Silva | Automatização da coleta | [#15](https://github.com/guilhermeas04/Laboratorio-de-experimentacao-de-software/issues/15) |
 
-Arquivos gerados em `data/` nao entram automaticamente no Git, exceto quando forem parte explicita da entrega. Os `.gitkeep` devem permanecer para manter as pastas versionadas.
+A consulta integrada coleta 100 repositórios automaticamente em lotes de 10,
+evitando falhas de gateway da API. Antes da exportação, o programa valida uma
+amostra de 10 repositórios para conferir os campos e métricas das RQ01 a RQ06.
 
-## Configuracao local
+## GitHub Projects e Kanban
 
-Crie um arquivo local em `lab1/code/.env` usando `lab1/code/.env.example` como modelo.
+- Project: [Kanban](https://github.com/users/guilhermeas04/projects/3)
+- Repositório vinculado: [Laboratorio-de-experimentacao-de-software](https://github.com/guilhermeas04/Laboratorio-de-experimentacao-de-software)
+- Cartões: Issues reais do repositório, sempre atribuídas a um responsável
+- Fluxo: `Backlog → To do → Doing → Review → Done`
+
+### Política de WIP
+
+A coluna **Doing** possui limite de **3 Issues simultâneas**.
+
+O limite corresponde a uma atividade em andamento por integrante. Essa política
+permite que os três membros trabalhem individualmente nas partes distribuídas da
+sprint, evitando que uma mesma pessoa acumule várias tarefas abertas. Ao atingir
+o limite, uma Issue deve avançar para `Review` ou `Done` antes que outra seja
+movida para `Doing`.
+
+As Issues devem refletir o andamento real do trabalho, possuir Assignee e estar
+vinculadas ao Project. Cada commit deve mencionar a Issue correspondente, por
+exemplo:
+
+```text
+#15 corrige coleta automatica e executa validacoes
+```
+
+## Estrutura
+
+```text
+LAB1/
+├── code/
+│   ├── .env.example
+│   └── src/
+│       ├── analyzers/    # cálculo e interpretação das métricas
+│       ├── collectors/   # coleta e normalização dos dados
+│       ├── exporters/    # exportação de CSV e snapshots
+│       ├── queries/      # consultas GraphQL
+│       ├── validators/   # validação de amostras
+│       ├── config.py
+│       ├── github_client.py
+│       └── main.py
+├── data/                 # dados brutos, processados e snapshots
+├── docs/                 # documentação complementar
+└── reports/              # resultados e relatório final
+```
+
+## Configuração
+
+Crie o arquivo `LAB1/code/.env` com base em `LAB1/code/.env.example`:
 
 ```env
-GITHUB_TOKEN=seu_token_aqui
+GITHUB_TOKEN=seu_token_do_github
 GITHUB_GRAPHQL_URL=https://api.github.com/graphql
 GITHUB_TOP_REPOSITORIES_LIMIT=100
 ```
 
-Nunca commitar `.env` com token real.
+O token precisa permitir consultas à API do GitHub. O arquivo `.env` é local,
+está protegido pelo `.gitignore` e não deve ser commitado.
 
-## Padrao por issue
-
-Cada issue deve entregar, quando aplicavel:
-
-- uma query GraphQL especifica em `code/src/queries/`;
-- uma funcao de coleta ou normalizacao em `code/src/collectors/`;
-- uma validacao rapida em `code/src/validators/`;
-- um script de analise em `code/src/analyzers/`;
-- um CSV em `data/processed/`, se a entrega exigir dados;
-- uma resposta em Markdown em `reports/`;
-- commit referenciando o numero da issue.
-
-Exemplo de commit:
-
-```text
-#11 implementa extracao das metricas RQ01 e RQ02
-```
-
-## Padrao para queries GraphQL
-
-Cada query deve ter um nome claro e ficar em `code/src/queries/`.
-
-Nome sugerido:
-
-```text
-rqXX_rqYY_repositories.graphql
-```
-
-Exemplos:
-
-- `rq01_rq02_repositories.graphql`
-- `rq03_rq04_repositories.graphql`
-- `rq05_rq06_repositories.graphql`
-
-As queries devem buscar apenas os campos necessarios para a issue. Isso reduz erro de API e deixa a validacao mais simples.
-
-## Padrao para CSVs
-
-Cada CSV tratado deve ficar em `data/processed/`.
-
-Nome sugerido:
-
-```text
-rqXX_rqYY.csv
-```
-
-Exemplos:
-
-- `rq01_rq02.csv`
-- `rq03_rq04.csv`
-- `rq05_rq06.csv`
-
-Use nomes de colunas em `snake_case`, sem acentos e sem espacos.
-
-Exemplo:
-
-```csv
-name_with_owner,created_at,repository_age_days,merged_pull_requests
-```
-
-## Padrao para validacao
-
-Cada integrante deve validar uma amostra de 5 a 10 repositorios da sua parte.
-
-A validacao deve conferir:
-
-- se os campos obrigatorios vieram preenchidos;
-- se valores numericos sao inteiros;
-- se contagens nao sao negativas;
-- se datas conseguem ser processadas;
-- se casos com valor `0` sao tratados corretamente quando forem validos.
-
-O script de validacao deve ficar em `code/src/validators/`.
-
-Nome sugerido:
-
-```text
-rqXX_rqYY.py
-```
-
-## Padrao para scripts de analise
-
-Os scripts que calculam metricas finais devem ficar em `code/src/analyzers/`.
-
-Nome sugerido:
-
-```text
-rqXX_rqYY_metrics.py
-```
-
-O script deve:
-
-- ler o CSV de `data/processed/`;
-- calcular as metricas pedidas no enunciado;
-- imprimir um resumo no terminal;
-- gerar um Markdown em `reports/`.
-
-Exemplo de execucao:
+Instale as dependências:
 
 ```powershell
-python .\lab1\code\src\analyzers\rq01_rq02_metrics.py
+python -m pip install -r .\LAB1\code\requirements.txt
 ```
 
-## Padrao para responder as RQs
+## Execução
 
-Cada resposta em Markdown deve ficar em `reports/`.
-
-Nome sugerido:
-
-```text
-rqXX-rqYY.md
-```
-
-Cada RQ deve seguir esta estrutura:
-
-```markdown
-## RQXX - Pergunta
-
-Resposta direta: Sim/Nao/Parcialmente.
-
-Metrica usada: descrever a metrica do enunciado.
-
-Resultados principais:
-
-- Total de repositorios analisados: X
-- Mediana: X
-- Media: X
-- Minimo: X
-- Maximo: X
-
-Discussao: interpretar os numeros em poucas frases, comparando com a hipotese quando existir.
-
-Conclusao: frase final respondendo a pergunta.
-```
-
-Quando fizer sentido, incluir uma tabela pequena com os 5 repositorios mais relevantes para aquela RQ.
-
-## RQs do Lab01
-
-- RQ01: idade do repositorio a partir de `createdAt`.
-- RQ02: total de pull requests aceitas, `pullRequests(states: MERGED).totalCount`.
-- RQ03: total de releases.
-- RQ04: tempo ate a ultima atualizacao.
-- RQ05: linguagem primaria e comparacao com fonte externa escolhida.
-- RQ06: razao entre issues fechadas e total de issues.
-- RQ07: RQ02, RQ03 e RQ04 agrupadas por linguagem.
-
-## Lab01S01
-
-Escopo esperado:
-
-- consulta GraphQL para os 100 repositorios mais populares;
-- requisicao automatica via script proprio;
-- coleta dos dados necessarios para as metricas;
-- validacao rapida em amostra de 5 a 10 repositorios;
-- GitHub Projects criado e em uso;
-- colunas e limite de WIP documentados em `docs/kanban.md`.
-
-## Checklist antes de commitar
-
-- O script roda sem erro.
-- A validacao da amostra foi executada.
-- O CSV tem cabecalho claro.
-- O Markdown da resposta foi gerado ou atualizado.
-- O `.env` nao foi adicionado ao Git.
-- O commit referencia a issue.
-
-Comandos uteis:
+Na raiz do repositório, execute:
 
 ```powershell
-git status --short
-python .\lab1\code\src\main.py
-python .\lab1\code\src\analyzers\rq01_rq02_metrics.py
-git add caminho/dos/arquivos
-git commit -m "#NUMERO descricao objetiva"
+python .\LAB1\code\src\main.py
 ```
+
+O programa:
+
+1. carrega as configurações do `.env`;
+2. consulta os 100 repositórios mais populares;
+3. calcula as métricas derivadas;
+4. valida 10 registros para as RQ01 a RQ06;
+5. gera `LAB1/data/processed/top_repositories.csv`.
+
+A execução pode levar aproximadamente de 30 a 90 segundos, pois são realizadas
+dez requisições GraphQL para reduzir a carga de cada resposta e evitar erros
+`502 Bad Gateway`.
+
+## Dados gerados
+
+O CSV contém as seguintes colunas:
+
+- `name_with_owner` e `stargazer_count`;
+- `created_at` e `repository_age_days`;
+- `merged_pull_requests`;
+- `updated_at` e `days_since_last_update`;
+- `releases_count`;
+- `primary_language`;
+- `total_issues`, `closed_issues` e `closed_issues_ratio`.
+
+Os arquivos gerados em `data/processed`, os snapshots e o `.env` não são
+versionados automaticamente.
+
+## Relatórios das questões de pesquisa
+
+- [RQ01 e RQ02](reports/rq01-rq02.md)
+- [RQ03 e RQ04](reports/rq03-rq04.md)
+- [RQ05 e RQ06](reports/rq05-rq06.md)
+- [RQ07](reports/rq07.md)

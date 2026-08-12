@@ -22,4 +22,4 @@ Descricao do GitHub Projects, colunas, limite de WIP, print do board e links.
 
 ## Referencias
 
-- Fonte para linguagens mais populares: `<preencher>`
+- Fonte para linguagens mais populares: [GitHub Octoverse 2024](https://github.blog/news-insights/octoverse/octoverse-2024/)

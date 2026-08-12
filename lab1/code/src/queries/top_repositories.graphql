@@ -1,9 +1,18 @@
 # Query unica da issue #14.
 # Integra os campos necessarios para RQ01 a RQ07.
 
-query TopRepositories($first: Int!) {
-  search(query: "stars:>1 sort:stars-desc", type: REPOSITORY, first: $first) {
+query TopRepositories($first: Int!, $after: String) {
+  search(
+    query: "stars:>1 sort:stars-desc"
+    type: REPOSITORY
+    first: $first
+    after: $after
+  ) {
     repositoryCount
+    pageInfo {
+      endCursor
+      hasNextPage
+    }
     nodes {
       ... on Repository {
         nameWithOwner

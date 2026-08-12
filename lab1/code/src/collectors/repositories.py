@@ -5,15 +5,28 @@ from pathlib import Path
 
 
 QUERY_PATH = Path(__file__).resolve().parents[1] / "queries" / "top_repositories.graphql"
+PAGE_SIZE = 10
 
 
 def collect_top_repositories(client, limit: int = 100) -> list[dict]:
     """Coleta os repositorios mais populares do GitHub."""
     query = QUERY_PATH.read_text(encoding="utf-8")
-    data = client.execute(query, {"first": limit})
-    nodes = data["search"]["nodes"]
+    nodes = []
+    cursor = None
 
-    return [normalize_repository(node) for node in nodes if node]
+    while len(nodes) < limit:
+        page_size = min(PAGE_SIZE, limit - len(nodes))
+        data = client.execute(query, {"first": page_size, "after": cursor})
+        search = data["search"]
+        nodes.extend(node for node in search["nodes"] if node)
+
+        page_info = search["pageInfo"]
+        if not page_info["hasNextPage"] or not page_info["endCursor"]:
+            break
+
+        cursor = page_info["endCursor"]
+
+    return [normalize_repository(node) for node in nodes]
 
 
 def normalize_repository(raw_repository: dict) -> dict:
