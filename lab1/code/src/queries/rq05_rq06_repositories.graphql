@@ -1,0 +1,22 @@
+# Query especifica para a issue #13.
+# Coleta apenas os campos necessarios para RQ05 e RQ06.
+
+query RQ05RQ06Repositories($first: Int!) {
+  search(query: "stars:>1 sort:stars-desc", type: REPOSITORY, first: $first) {
+    repositoryCount
+    nodes {
+      ... on Repository {
+        nameWithOwner
+        primaryLanguage {
+          name
+        }
+        issues {
+          totalCount
+        }
+        closedIssues: issues(states: CLOSED) {
+          totalCount
+        }
+      }
+    }
+  }
+}
