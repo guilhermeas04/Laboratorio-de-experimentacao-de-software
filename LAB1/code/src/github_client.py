@@ -28,7 +28,9 @@ class GitHubGraphQLClient:
 
         last_error: Exception | None = None
 
-        for attempt in range(5):
+        for attempt in range(10):
+            wait_seconds = min(60, 2 ** attempt)
+
             try:
                 response = requests.post(
                     self.endpoint,
@@ -38,16 +40,16 @@ class GitHubGraphQLClient:
                         "Accept": "application/vnd.github+json",
                         "User-Agent": "lab01-fpstats",
                     },
-                    timeout=60,
+                    timeout=90,
                 )
             except requests.RequestException as exc:
                 last_error = exc
-                time.sleep(2**attempt)
+                time.sleep(wait_seconds)
                 continue
 
             if response.status_code in RETRYABLE_STATUS_CODES:
                 last_error = RuntimeError(f"HTTP {response.status_code}")
-                time.sleep(2**attempt)
+                time.sleep(wait_seconds)
                 continue
 
             response.raise_for_status()
@@ -56,14 +58,22 @@ class GitHubGraphQLClient:
                 payload = response.json()
             except ValueError as exc:
                 last_error = exc
-                time.sleep(2**attempt)
+                time.sleep(wait_seconds)
                 continue
 
             if "errors" in payload:
                 messages = "; ".join(
                     error.get("message", "") for error in payload["errors"]
                 )
-                raise RuntimeError(f"Erro GraphQL: {messages}")
+                last_error = RuntimeError(f"Erro GraphQL: {messages}")
+                lowered = messages.lower()
+                if any(
+                    token in lowered
+                    for token in ("timeout", "timed out", "something went wrong", "502")
+                ):
+                    time.sleep(wait_seconds)
+                    continue
+                raise last_error
 
             return payload["data"]
 

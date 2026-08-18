@@ -6,7 +6,7 @@ import time
 
 
 QUERY_PATH = Path(__file__).resolve().parents[1] / "queries" / "top_repositories.graphql"
-PAGE_SIZE = 25
+PAGE_SIZE = 10
 
 
 def collect_top_repositories(client, limit: int = 1000) -> list[dict]:
@@ -39,7 +39,10 @@ def collect_top_repositories(client, limit: int = 1000) -> list[dict]:
             break
 
         cursor = page_info["endCursor"]
-        time.sleep(0.3)
+        print(f"Coletados {len(repositories)}/{limit} repositorios.")
+        time.sleep(0.8)
+
+    print(f"Coletados {len(repositories)}/{limit} repositorios.")
 
     if len(repositories) != limit:
         raise RuntimeError(
