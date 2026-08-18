@@ -18,6 +18,7 @@ query TopRepositories($first: Int!, $after: String) {
         nameWithOwner
         createdAt
         updatedAt
+        pushedAt
         primaryLanguage {
           name
         }

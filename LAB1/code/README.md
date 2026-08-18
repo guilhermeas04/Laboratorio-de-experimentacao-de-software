@@ -42,3 +42,9 @@ Ao final, o script valida:
 - cabecalho com todos os campos das RQ01 a RQ07;
 - ausencia de duplicatas;
 - preenchimento basico dos campos obrigatorios.
+
+Validacao das RQ03 e RQ04 nos 1000 registros:
+
+```bash
+python src/analyzers/rq03_rq04_metrics.py
+```
