@@ -61,6 +61,13 @@ def normalize_repository(raw_repository: dict) -> dict:
     updated_date = datetime.fromisoformat(updated_at.replace("Z", "+00:00"))
     days_since_last_update = (now - updated_date).days
 
+    pushed_at = raw_repository.get("pushedAt")
+    if pushed_at:
+        pushed_date = datetime.fromisoformat(pushed_at.replace("Z", "+00:00"))
+        days_since_last_push = (now - pushed_date).days
+    else:
+        days_since_last_push = None
+
     primary_language = raw_repository.get("primaryLanguage")
     language_name = primary_language["name"] if primary_language else ""
 
@@ -80,6 +87,8 @@ def normalize_repository(raw_repository: dict) -> dict:
         "merged_pull_requests": raw_repository["pullRequests"]["totalCount"],
         "updated_at": updated_at,
         "days_since_last_update": days_since_last_update,
+        "pushed_at": pushed_at or "",
+        "days_since_last_push": days_since_last_push,
         "releases_count": raw_repository["releases"]["totalCount"],
         "primary_language": language_name,
         "total_issues": total_issues,

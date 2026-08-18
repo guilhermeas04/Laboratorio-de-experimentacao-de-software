@@ -12,6 +12,8 @@ FIELDNAMES = [
     "merged_pull_requests",
     "updated_at",
     "days_since_last_update",
+    "pushed_at",
+    "days_since_last_push",
     "releases_count",
     "primary_language",
     "total_issues",
@@ -25,6 +27,10 @@ def _serialize_row(repository: dict) -> dict:
     row = dict(repository)
     if row.get("closed_issues_ratio") is None:
         row["closed_issues_ratio"] = ""
+    if row.get("days_since_last_push") is None:
+        row["days_since_last_push"] = ""
+    if row.get("pushed_at") is None:
+        row["pushed_at"] = ""
     return row
 
 
