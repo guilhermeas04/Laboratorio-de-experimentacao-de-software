@@ -2,31 +2,54 @@
 
 from datetime import UTC, datetime
 from pathlib import Path
+import time
 
 
 QUERY_PATH = Path(__file__).resolve().parents[1] / "queries" / "top_repositories.graphql"
 PAGE_SIZE = 10
 
 
-def collect_top_repositories(client, limit: int = 100) -> list[dict]:
-    """Coleta os repositorios mais populares do GitHub."""
+def collect_top_repositories(client, limit: int = 1000) -> list[dict]:
+    """Coleta repositorios populares com paginacao e sem duplicatas."""
     query = QUERY_PATH.read_text(encoding="utf-8")
-    nodes = []
+    repositories: list[dict] = []
+    seen: set[str] = set()
     cursor = None
 
-    while len(nodes) < limit:
-        page_size = min(PAGE_SIZE, limit - len(nodes))
-        data = client.execute(query, {"first": page_size, "after": cursor})
+    while len(repositories) < limit:
+        data = client.execute(query, {"first": PAGE_SIZE, "after": cursor})
         search = data["search"]
-        nodes.extend(node for node in search["nodes"] if node)
+        page_nodes = [node for node in search["nodes"] if node]
+
+        if not page_nodes:
+            break
+
+        for node in page_nodes:
+            name = node["nameWithOwner"]
+            if name in seen:
+                continue
+
+            seen.add(name)
+            repositories.append(normalize_repository(node))
+            if len(repositories) >= limit:
+                break
 
         page_info = search["pageInfo"]
         if not page_info["hasNextPage"] or not page_info["endCursor"]:
             break
 
         cursor = page_info["endCursor"]
+        print(f"Coletados {len(repositories)}/{limit} repositorios.")
+        time.sleep(0.8)
 
-    return [normalize_repository(node) for node in nodes]
+    print(f"Coletados {len(repositories)}/{limit} repositorios.")
+
+    if len(repositories) != limit:
+        raise RuntimeError(
+            f"Esperados {limit} repositorios unicos, obtidos {len(repositories)}."
+        )
+
+    return repositories
 
 
 def normalize_repository(raw_repository: dict) -> dict:

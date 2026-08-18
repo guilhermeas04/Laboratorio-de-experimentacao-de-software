@@ -1,5 +1,5 @@
-# Query unica da issue #14.
-# Integra os campos necessarios para RQ01 a RQ07.
+# Query unica com paginacao (issue #20).
+# Campos necessarios para RQ01 a RQ07.
 
 query TopRepositories($first: Int!, $after: String) {
   search(
