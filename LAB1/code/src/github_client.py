@@ -26,28 +26,47 @@ class GitHubGraphQLClient:
 
         response = None
 
-        for attempt in range(3):
-            response = requests.post(
-                self.endpoint,
-                json={"query": query, "variables": variables or {}},
-                headers={
-                    "Authorization": f"Bearer {self.token}",
-                    "Accept": "application/vnd.github+json",
-                    "User-Agent": "lab01-fpstats",
-                },
-                timeout=30,
-            )
+        last_error: Exception | None = None
 
-            if response.status_code not in RETRYABLE_STATUS_CODES:
-                break
+        for attempt in range(5):
+            try:
+                response = requests.post(
+                    self.endpoint,
+                    json={"query": query, "variables": variables or {}},
+                    headers={
+                        "Authorization": f"Bearer {self.token}",
+                        "Accept": "application/vnd.github+json",
+                        "User-Agent": "lab01-fpstats",
+                    },
+                    timeout=60,
+                )
+            except requests.RequestException as exc:
+                last_error = exc
+                time.sleep(2**attempt)
+                continue
 
-            time.sleep(2**attempt)
+            if response.status_code in RETRYABLE_STATUS_CODES:
+                last_error = RuntimeError(f"HTTP {response.status_code}")
+                time.sleep(2**attempt)
+                continue
 
-        response.raise_for_status()
-        payload = response.json()
+            response.raise_for_status()
 
-        if "errors" in payload:
-            messages = "; ".join(error.get("message", "") for error in payload["errors"])
-            raise RuntimeError(f"Erro GraphQL: {messages}")
+            try:
+                payload = response.json()
+            except ValueError as exc:
+                last_error = exc
+                time.sleep(2**attempt)
+                continue
 
-        return payload["data"]
+            if "errors" in payload:
+                messages = "; ".join(
+                    error.get("message", "") for error in payload["errors"]
+                )
+                raise RuntimeError(f"Erro GraphQL: {messages}")
+
+            return payload["data"]
+
+        raise RuntimeError(
+            f"Falha ao consultar GraphQL apos varias tentativas: {last_error}"
+        )

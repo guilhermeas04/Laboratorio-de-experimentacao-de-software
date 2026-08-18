@@ -27,5 +27,5 @@ def load_settings() -> Settings:
             "GITHUB_GRAPHQL_URL",
             "https://api.github.com/graphql",
         ),
-        top_repositories_limit=int(os.getenv("GITHUB_TOP_REPOSITORIES_LIMIT", "100")),
+        top_repositories_limit=int(os.getenv("GITHUB_TOP_REPOSITORIES_LIMIT", "1000")),
     )
