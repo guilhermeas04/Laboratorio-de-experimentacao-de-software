@@ -193,7 +193,87 @@ Conclusão preliminar: a diferença entre média e mediana e a quantidade de out
 """
 
 
+def build_validation_report(analysis: dict) -> str:
+    """Monta o artefato de validacao dos 1.000 registros de RQ01/RQ02."""
+    distribution_rows = "\n".join(
+        "| {label} | {minimum} | {q1} | {median} | {average} | {q3} | {maximum} | {outliers} |".format(
+            label=METRIC_LABELS[metric],
+            minimum=_number(summary["min"]),
+            q1=_number(summary["q1"]),
+            median=_number(summary["median"]),
+            average=_number(summary["mean"]),
+            q3=_number(summary["q3"]),
+            maximum=_number(summary["max"]),
+            outliers=len(analysis["outliers"][metric]),
+        )
+        for metric, summary in analysis["summaries"].items()
+    )
+
+    return f"""# Validação das RQ01 e RQ02 — Lab01S02
+
+Base validada: **{analysis['analyzed']} repositórios**.
+
+## Objetivo
+
+Verificar a consistência dos campos usados para calcular a idade dos repositórios (RQ01) e o total de Pull Requests aceitas (RQ02), considerando todos os 1.000 registros da coleta paginada.
+
+## Integridade da base
+
+- Registros esperados: 1.000
+- Registros analisados: {analysis['analyzed']}
+- Repositórios únicos: {analysis['unique_repositories']}
+- Repositórios duplicados: {analysis['duplicate_count']}
+- `name_with_owner` ausente: {analysis['missing']['name_with_owner']}
+- `created_at` ausente: {analysis['missing']['created_at']}
+- `repository_age_days` ausente: {analysis['missing']['repository_age_days']}
+- `merged_pull_requests` ausente: {analysis['missing']['merged_pull_requests']}
+- Datas inválidas: 0
+- Idades negativas ou com tipo inválido: 0
+- Contagens de PRs negativas ou com tipo inválido: 0
+
+Os validadores interrompem a execução caso encontrem quantidade incorreta de registros, duplicidade, campo obrigatório ausente, data inválida, tipo incorreto ou valor negativo.
+
+## Distribuições
+
+| Métrica | Mínimo | Q1 | Mediana | Média | Q3 | Máximo | Outliers IQR |
+|---|---:|---:|---:|---:|---:|---:|---:|
+{distribution_rows}
+
+## Critério de outlier
+
+Foram considerados possíveis outliers os valores abaixo de `Q1 - 1,5 × IQR` ou acima de `Q3 + 1,5 × IQR`. Eles foram mantidos na base por representarem projetos reais e relevantes, não erros de coleta.
+
+### Possíveis outliers de idade
+
+Total: **{len(analysis['outliers']['repository_age_days'])}**.
+
+{_outlier_list(analysis['outliers']['repository_age_days'])}
+
+### Possíveis outliers de Pull Requests aceitas
+
+Total: **{len(analysis['outliers']['merged_pull_requests'])}**.
+
+{_outlier_list(analysis['outliers']['merged_pull_requests'])}
+
+## Recortes adicionais de RQ02
+
+- Repositórios com 0 PRs aceitas: {analysis['zero_merged_prs']}
+- Repositórios com pelo menos 100 PRs aceitas: {analysis['at_least_100_prs']}
+- Repositórios com pelo menos 1.000 PRs aceitas: {analysis['at_least_1000_prs']}
+
+## Resultado
+
+Os **{analysis['analyzed']} repositórios** passaram pelas verificações estruturais de RQ01 e RQ02. Não foram encontrados registros duplicados, campos obrigatórios ausentes ou valores inválidos. Os outliers identificados foram documentados e preservados para as análises, pois refletem a assimetria esperada em métricas de repositórios populares.
+"""
+
+
 def write_report(analysis: dict, output_path: Path) -> None:
     """Substitui o relatorio de RQ01/RQ02 pela versao dos 1.000 registros."""
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(build_report(analysis), encoding="utf-8")
+
+
+def write_validation_report(analysis: dict, output_path: Path) -> None:
+    """Grava o relatorio separado de validacao de RQ01/RQ02."""
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(build_validation_report(analysis), encoding="utf-8")
