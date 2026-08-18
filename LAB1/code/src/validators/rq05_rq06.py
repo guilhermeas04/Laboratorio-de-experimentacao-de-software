@@ -31,6 +31,7 @@ def validate_dataset(
 
     languages: dict[str, int] = {}
     popular_language_count = 0
+    missing_language_count = 0
     ratios: list[float] = []
 
     for index, repository in enumerate(repositories, start=1):
@@ -39,6 +40,8 @@ def validate_dataset(
         if not isinstance(primary_language, str):
             raise ValueError(f"{name}: linguagem primaria invalida: {primary_language}.")
         language = primary_language.strip()
+        if not language:
+            missing_language_count += 1
         languages[language] = languages.get(language, 0) + 1
         if language in POPULAR_LANGUAGES:
             popular_language_count += 1
@@ -66,6 +69,7 @@ def validate_dataset(
     return {
         "analyzed": len(repositories),
         "languages": languages,
+        "missing_language_count": missing_language_count,
         "popular_language_count": popular_language_count,
         "ratios": ratios,
         "popular_languages_source": POPULAR_LANGUAGES_SOURCE,

@@ -58,16 +58,16 @@ def normalize_repository(raw_repository: dict) -> dict:
 
     created_at = raw_repository["createdAt"]
     created_date = datetime.fromisoformat(created_at.replace("Z", "+00:00"))
-    repository_age_days = (now - created_date).days
+    repository_age_days = max(0, (now - created_date).days)
 
     updated_at = raw_repository["updatedAt"]
     updated_date = datetime.fromisoformat(updated_at.replace("Z", "+00:00"))
-    days_since_last_update = (now - updated_date).days
+    days_since_last_update = max(0, (now - updated_date).days)
 
     pushed_at = raw_repository.get("pushedAt")
     if pushed_at:
         pushed_date = datetime.fromisoformat(pushed_at.replace("Z", "+00:00"))
-        days_since_last_push = (now - pushed_date).days
+        days_since_last_push = max(0, (now - pushed_date).days)
     else:
         days_since_last_push = None
 
