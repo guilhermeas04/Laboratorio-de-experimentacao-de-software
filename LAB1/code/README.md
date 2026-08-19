@@ -48,3 +48,14 @@ Validacao das RQ03 e RQ04 nos 1000 registros:
 ```bash
 python src/analyzers/rq03_rq04_metrics.py
 ```
+
+Snapshot do GitHub Projects:
+
+```bash
+set GITHUB_PROJECT_OWNER=guilhermeas04
+set GITHUB_PROJECT_NUMBER=3
+python src/exporters/project_snapshot.py
+```
+
+O snapshot e salvo com timestamp em `LAB1/data/snapshots/` e registra os itens,
+issues, responsaveis e status atual do Project.

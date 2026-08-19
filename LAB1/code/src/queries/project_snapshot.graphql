@@ -1,0 +1,57 @@
+query ProjectSnapshot($owner: String!, $number: Int!, $after: String) {
+  user(login: $owner) {
+    projectV2(number: $number) {
+      title
+      items(first: 100, after: $after) {
+        pageInfo {
+          endCursor
+          hasNextPage
+        }
+        nodes {
+          id
+          fieldValues(first: 20) {
+            nodes {
+              ... on ProjectV2ItemFieldSingleSelectValue {
+                name
+                field {
+                  ... on ProjectV2SingleSelectField {
+                    name
+                  }
+                }
+              }
+            }
+          }
+          content {
+            __typename
+            ... on Issue {
+              number
+              title
+              url
+              repository {
+                nameWithOwner
+              }
+              assignees(first: 20) {
+                nodes {
+                  login
+                }
+              }
+            }
+            ... on PullRequest {
+              number
+              title
+              url
+              repository {
+                nameWithOwner
+              }
+              assignees(first: 20) {
+                nodes {
+                  login
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
