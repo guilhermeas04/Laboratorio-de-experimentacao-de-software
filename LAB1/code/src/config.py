@@ -15,6 +15,8 @@ class Settings:
     github_token: str
     github_graphql_url: str
     top_repositories_limit: int
+    github_project_owner: str
+    github_project_number: int
 
 
 def load_settings() -> Settings:
@@ -28,4 +30,6 @@ def load_settings() -> Settings:
             "https://api.github.com/graphql",
         ),
         top_repositories_limit=int(os.getenv("GITHUB_TOP_REPOSITORIES_LIMIT", "1000")),
+        github_project_owner=os.getenv("GITHUB_PROJECT_OWNER", "guilhermeas04"),
+        github_project_number=int(os.getenv("GITHUB_PROJECT_NUMBER", "3")),
     )
