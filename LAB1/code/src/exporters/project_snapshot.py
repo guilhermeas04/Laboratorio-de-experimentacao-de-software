@@ -115,7 +115,7 @@ if __name__ == "__main__":
         Path(__file__).resolve().parents[3]
         / "data"
         / "snapshots"
-        / f"project-{datetime.now(UTC):%Y%m%dT%H%M%SZ}.csv"
+        / f"lab01s02-project-{datetime.now(UTC):%Y%m%dT%H%M%SZ}.csv"
     )
     count = export_project_snapshot(str(default_output))
     print(f"Snapshot exportado: {default_output} ({count} itens).")

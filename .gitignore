@@ -29,7 +29,9 @@ LAB1/data/processed/*
 LAB1/data/snapshots/*
 !LAB1/data/raw/.gitkeep
 !LAB1/data/processed/.gitkeep
+!LAB1/data/processed/*.csv
 !LAB1/data/snapshots/.gitkeep
+!LAB1/data/snapshots/*.csv
 
 # Logs
 *.log
