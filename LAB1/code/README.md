@@ -6,6 +6,7 @@
 - `src/collectors/`: scripts responsaveis por chamar a API do GitHub.
 - `src/validators/`: validacoes rapidas por RQ.
 - `src/exporters/`: exportacao de resultados e snapshots.
+- `src/visualization/`: carregador do CSV, estilo comum e geracao de figuras.
 - `tests/`: testes automatizados ou amostras de validacao.
 
 ## Variaveis de ambiente
@@ -47,6 +48,24 @@ Validacao das RQ03 e RQ04 nos 1000 registros:
 
 ```bash
 python src/analyzers/rq03_rq04_metrics.py
+```
+
+## Execucao (Lab01S03) - pipeline de visualizacao
+
+O pacote `src/visualization/` carrega `LAB1/data/processed/top_repositories.csv`,
+valida quantidade/tipos/colunas e aplica um estilo comum (Matplotlib/Seaborn com
+backend `Agg`, sem interface grafica).
+
+Figuras ficam em `LAB1/reports/figures/` com a convencao `rqXX_<slug>.png`
+(ex.: `rq03_releases.png`).
+
+Grafico de teste do pipeline:
+
+```bash
+cd LAB1/code
+source .venv/bin/activate   # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+python src/visualization/smoke_test.py
 ```
 
 Snapshot do GitHub Projects:

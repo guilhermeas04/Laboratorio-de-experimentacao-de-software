@@ -14,3 +14,7 @@ Arquivos principais previstos para a Lab01S01:
 - `validators/rq05_rq06.py`: validacao da parte RQ05 + RQ06.
 - `exporters/csv_exporter.py`: exportacao de dados tabulares.
 - `exporters/project_snapshot.py`: estrutura para snapshots do GitHub Projects.
+- `visualization/loader.py`: carregador unico do CSV consolidado.
+- `visualization/style.py`: estilo comum Matplotlib/Seaborn (backend Agg).
+- `visualization/figures.py`: pasta e convencao de nomes das figuras.
+- `visualization/smoke_test.py`: grafico de teste do pipeline.
