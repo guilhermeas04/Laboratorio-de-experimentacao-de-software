@@ -5,7 +5,7 @@ def group_by_language(repositories: list[dict]) -> dict[str, list[dict]]:
     """Agrupa as metricas de RQ02, RQ03 e RQ04 por linguagem."""
     groups: dict[str, list[dict]] = {}
     for repository in repositories:
-        language = repository["primary_language"].strip()
+        language = (repository["primary_language"] or "").strip()
         groups.setdefault(language, []).append(
             {
                 "name_with_owner": repository["name_with_owner"],
@@ -31,7 +31,9 @@ def validate_dataset(
     required = ("merged_pull_requests", "releases_count", "days_since_last_update")
     for index, repository in enumerate(repositories, start=1):
         name = repository.get("name_with_owner") or f"linha {index}"
-        if not isinstance(repository.get("primary_language"), str):
+        if repository.get("primary_language") is not None and not isinstance(
+            repository.get("primary_language"), str
+        ):
             raise ValueError(f"{name}: linguagem primaria ausente ou invalida.")
         for field in required:
             value = repository.get(field)

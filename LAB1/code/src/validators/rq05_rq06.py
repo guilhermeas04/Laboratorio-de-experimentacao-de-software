@@ -37,9 +37,9 @@ def validate_dataset(
     for index, repository in enumerate(repositories, start=1):
         name = repository.get("name_with_owner") or f"linha {index}"
         primary_language = repository.get("primary_language")
-        if not isinstance(primary_language, str):
+        if primary_language is not None and not isinstance(primary_language, str):
             raise ValueError(f"{name}: linguagem primaria invalida: {primary_language}.")
-        language = primary_language.strip()
+        language = primary_language.strip() if primary_language else ""
         if not language:
             missing_language_count += 1
         languages[language] = languages.get(language, 0) + 1
