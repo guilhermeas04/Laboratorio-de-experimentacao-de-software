@@ -68,6 +68,15 @@ pip install -r requirements.txt
 python src/visualization/smoke_test.py
 ```
 
+Visualizacoes das RQ03 e RQ04:
+
+```bash
+python src/analyzers/rq03_rq04_plots.py
+```
+
+As figuras sao salvas em `LAB1/reports/figures/rq03_releases.png` e
+`LAB1/reports/figures/rq04_atualizacao.png`.
+
 Snapshot do GitHub Projects:
 
 ```bash
