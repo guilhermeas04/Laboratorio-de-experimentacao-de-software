@@ -11,6 +11,8 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+from validators.figures import validate_figure_definition
+
 
 FIGURE_DPI = 150
 FIGURE_SIZE = (10, 6)
@@ -54,6 +56,9 @@ def save_figure(fig: plt.Figure, output_path: Path) -> Path:
     """Salva a figura em PNG com resolucao padrao."""
     output_path = Path(output_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
+    rq = output_path.name[:4].upper()
+    if rq in {f"RQ{index:02d}" for index in range(1, 8)}:
+        validate_figure_definition(rq, fig)
     fig.tight_layout()
     fig.savefig(output_path, dpi=FIGURE_DPI, bbox_inches="tight")
     plt.close(fig)

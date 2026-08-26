@@ -30,6 +30,7 @@ from validators.rq01_rq02 import validate_dataset as validate_rq01_rq02
 from validators.rq03_rq04 import validate_dataset as validate_rq03_rq04
 from validators.rq05_rq06 import validate_dataset as validate_rq05_rq06
 from validators.rq07 import validate_dataset as validate_rq07
+from validators.figures import validate_artifacts, write_validation_report
 from visualization.figures import figure_path
 from visualization.loader import load_top_repositories
 from visualization.style import apply_common_style
@@ -110,7 +111,7 @@ def generate_all() -> dict:
     except Exception as error:
         raise RuntimeError(f"falha ao atualizar os relatorios: {error}") from error
 
-    return {
+    result = {
         "repositories": len(repositories),
         "paths": paths,
         "metrics": {
@@ -124,6 +125,13 @@ def generate_all() -> dict:
             "language_groups": len(rq07["rows"]),
         },
     }
+    try:
+        validation = validate_artifacts(result["paths"], result["metrics"], result["repositories"])
+        write_validation_report(validation, result["metrics"], result["repositories"])
+    except Exception as error:
+        raise RuntimeError(f"falha na validacao dos artefatos: {error}") from error
+    result["validation"] = validation
+    return result
 
 
 def print_summary(result: dict) -> None:
