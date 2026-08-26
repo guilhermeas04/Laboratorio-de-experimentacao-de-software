@@ -59,6 +59,18 @@ backend `Agg`, sem interface grafica).
 Figuras ficam em `LAB1/reports/figures/` com a convencao `rqXX_<slug>.png`
 (ex.: `rq03_releases.png`).
 
+Para validar o CSV consolidado e gerar, sem intervencao manual, todas as figuras
+e relatorios das RQ01 a RQ07:
+
+```bash
+cd LAB1/code
+python src/generate_visualizations.py
+```
+
+O processo encerra com uma mensagem de erro caso o CSV esteja ausente ou
+invalido, ou se alguma figura ou relatorio nao puder ser gerado. Ao concluir,
+exibe os sete arquivos criados e as principais metricas de cada RQ.
+
 Grafico de teste do pipeline:
 
 ```bash
