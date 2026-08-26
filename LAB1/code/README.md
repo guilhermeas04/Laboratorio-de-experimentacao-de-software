@@ -68,8 +68,10 @@ python src/generate_visualizations.py
 ```
 
 O processo encerra com uma mensagem de erro caso o CSV esteja ausente ou
-invalido, ou se alguma figura ou relatorio nao puder ser gerado. Ao concluir,
-exibe os sete arquivos criados e as principais metricas de cada RQ.
+invalido, alguma figura ou relatorio nao possa ser gerado, ou os artefatos nao
+atendam aos requisitos de formato, resolucao, titulo, eixos e metricas. Ao
+concluir, exibe os sete arquivos criados e as principais metricas de cada RQ.
+Tambem gera `LAB1/reports/validacao-figuras.md` com o resumo da validacao.
 
 Grafico de teste do pipeline:
 
