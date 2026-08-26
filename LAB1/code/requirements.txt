@@ -2,3 +2,5 @@
 # A Lab01 nao permite bibliotecas de terceiros que consultem a API do GitHub.
 requests
 python-dotenv
+matplotlib
+seaborn
