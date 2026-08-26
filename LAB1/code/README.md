@@ -68,6 +68,16 @@ pip install -r requirements.txt
 python src/visualization/smoke_test.py
 ```
 
+Visualizacoes das RQ01 e RQ02:
+
+```bash
+python src/analyzers/rq01_rq02_plots.py
+```
+
+O comando gera `rq01_idade.png` e `rq02_pull_requests.png` em
+`LAB1/reports/figures/` e acrescenta a interpretacao objetiva ao relatorio
+`LAB1/reports/rq01-rq02.md`.
+
 Visualizacoes das RQ03 e RQ04:
 
 ```bash
