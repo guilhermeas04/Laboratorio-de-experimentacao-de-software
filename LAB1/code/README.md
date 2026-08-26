@@ -77,6 +77,16 @@ python src/analyzers/rq03_rq04_plots.py
 As figuras sao salvas em `LAB1/reports/figures/rq03_releases.png` e
 `LAB1/reports/figures/rq04_atualizacao.png`.
 
+Visualizacoes das RQ05, RQ06 e RQ07:
+
+```bash
+python src/analyzers/rq05_rq07_plots.py
+```
+
+O comando gera `rq05_linguagens.png`, `rq06_issues.png` e
+`rq07_linguagem_metricas.png` em `LAB1/reports/figures/`, além do relatório
+objetivo `LAB1/reports/rq05-rq06-rq07-visualizacoes.md`.
+
 Snapshot do GitHub Projects:
 
 ```bash
