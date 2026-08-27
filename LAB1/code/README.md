@@ -119,5 +119,7 @@ set GITHUB_PROJECT_NUMBER=3
 python src/exporters/project_snapshot.py
 ```
 
-O snapshot e salvo com timestamp em `LAB1/data/snapshots/` e registra os itens,
-issues, responsaveis e status atual do Project.
+O snapshot da Sprint 3 e salvo com timestamp e prefixo `lab01s03-project-` em
+`LAB1/data/snapshots/` e registra os itens, issues, responsaveis e status atual
+do Project. Para outra sprint, use `--sprint <identificador>`; um caminho
+especifico pode ser informado com `--output <arquivo.csv>`.

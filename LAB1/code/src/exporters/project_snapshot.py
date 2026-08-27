@@ -1,5 +1,6 @@
 """Exportacao dos itens atuais de um GitHub Project para CSV."""
 
+import argparse
 import csv
 from datetime import UTC, datetime
 from pathlib import Path
@@ -27,6 +28,19 @@ FIELDNAMES = [
     "assignees",
     "status",
 ]
+
+
+def default_snapshot_path(sprint: str = "lab01s03") -> Path:
+    """Retorna o caminho timestampado do snapshot da sprint informada."""
+    normalized_sprint = sprint.strip().lower()
+    if not normalized_sprint or not normalized_sprint.replace("-", "").isalnum():
+        raise ValueError(f"identificador de sprint invalido: {sprint!r}")
+    return (
+        Path(__file__).resolve().parents[3]
+        / "data"
+        / "snapshots"
+        / f"{normalized_sprint}-project-{datetime.now(UTC):%Y%m%dT%H%M%SZ}.csv"
+    )
 
 
 def _status_from_field_values(field_values: list[dict]) -> str:
@@ -110,12 +124,14 @@ def export_project_snapshot(
 
 
 if __name__ == "__main__":
-    settings = load_settings()
-    default_output = (
-        Path(__file__).resolve().parents[3]
-        / "data"
-        / "snapshots"
-        / f"lab01s02-project-{datetime.now(UTC):%Y%m%dT%H%M%SZ}.csv"
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--sprint",
+        default="lab01s03",
+        help="identificador usado no nome do arquivo (padrao: lab01s03)",
     )
-    count = export_project_snapshot(str(default_output))
-    print(f"Snapshot exportado: {default_output} ({count} itens).")
+    parser.add_argument("--output", help="caminho de saida opcional")
+    arguments = parser.parse_args()
+    output = Path(arguments.output) if arguments.output else default_snapshot_path(arguments.sprint)
+    count = export_project_snapshot(str(output))
+    print(f"Snapshot exportado: {output} ({count} itens).")
