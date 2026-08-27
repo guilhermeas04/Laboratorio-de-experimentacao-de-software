@@ -38,7 +38,7 @@ metricas com a base de 1.000 repositorios.
 | #36 | Visualizacoes RQ05, RQ06 e RQ07 | `amandabicalh` | `c0d39fc` | #42 | Done/closed |
 | #37 | Integracao das sete RQs | `guilhermeas04` | `a9cccc8` | #44 | Done/closed |
 | #38 | Validacao automatica | `amandabicalh` | `a97ba55` | #45 | Done/closed |
-| #39 | Revisao e snapshot final | `guilhermeas04` | este fechamento | a criar | Review/open |
+| #39 | Revisao e snapshot final | `guilhermeas04` | `2727574` | #46 | Review/open |
 
 ## Auditoria do GitHub Project
 
