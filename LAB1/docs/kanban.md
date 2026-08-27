@@ -33,4 +33,5 @@ Todo commit deve referenciar a issue correspondente, por exemplo:
 ## Snapshot de sprint
 
 Ao final de cada sprint, exportar os itens do Project e seus status atuais para
-`lab1/data/snapshots/`.
+`LAB1/data/snapshots/`. O snapshot final da Sprint 3 usa o prefixo
+`lab01s03-project-`.
