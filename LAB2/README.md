@@ -13,6 +13,7 @@ LAB2/
 │   └── tests/             # testes automatizados
 ├── data/
 │   ├── examples/          # registros fictícios para validar o ambiente
+│   ├── demo/              # saídas do smoke test (nunca misturar com raw)
 │   ├── sessions/          # estado transitório dos cronômetros ativos
 │   ├── raw/               # registros imutáveis dos trials reais
 │   └── processed/         # dados consolidados para análise
@@ -22,7 +23,8 @@ LAB2/
 
 Os diretórios `raw` e `processed` são separados para impedir que a limpeza dos
 dados altere os registros originais do experimento. O exemplo versionado é
-fictício e não deve ser incluído nas análises.
+fictício e não deve ser incluído nas análises. O diretório `demo` isola as
+saídas do smoke test.
 
 ## Ambiente reproduzível
 
@@ -123,6 +125,19 @@ campos `loc`, `cyclomatic_complexity_mean`, `cyclomatic_complexity_max`,
 registro da #47. Arquivos vazios, código inválido ou origem ausente produzem
 `status` explícito com métricas `null` — nunca zero silencioso.
 
+## Smoke test do ambiente
+
+A issue #50 adiciona o comando único `lab02-smoke`, que confirma Python,
+diretórios, Radon, cronômetro (#48) e métricas (#49). A demonstração usa o
+identificador `DEMO-SMOKE-P00-K00-MANUAL` e grava somente em `data/demo/`.
+
+```powershell
+cd LAB2/code
+lab02-smoke
+```
+
+O checklist manual correspondente está em `docs/checklist-pre-trial.md`.
+
 ## Contrato dos dados
 
 Cada trial deve conter identificação, participante, kata, tratamento, ordem,
@@ -150,4 +165,5 @@ documentação.
 
 Esta fundação corresponde à issue #47. Commits e pull requests relacionados
 ao cronômetro e à coleta devem mencionar `#48`. Commits e pull requests da
-pipeline de métricas estáticas devem mencionar `#49`.
+pipeline de métricas estáticas devem mencionar `#49`. Commits e pull requests
+da validação do ambiente devem mencionar `#50`.
