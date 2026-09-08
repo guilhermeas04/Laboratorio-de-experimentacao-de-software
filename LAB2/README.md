@@ -13,6 +13,7 @@ LAB2/
 │   └── tests/             # testes automatizados
 ├── data/
 │   ├── examples/          # registros fictícios para validar o ambiente
+│   ├── sessions/          # estado transitório dos cronômetros ativos
 │   ├── raw/               # registros imutáveis dos trials reais
 │   └── processed/         # dados consolidados para análise
 ├── docs/                  # desenho e protocolo experimental
@@ -59,6 +60,49 @@ python -m lab02.validate_record ../data/examples/trial-valid.json
 O comando termina com código `0` para um registro válido e com código diferente
 de zero quando encontra dados inválidos.
 
+## Cronometragem e coleta dos trials
+
+A issue #48 fornece a CLI `lab02-trial`, com três operações. Inicie o trial
+imediatamente antes de apresentar o enunciado ao participante:
+
+```powershell
+lab02-trial start `
+  --trial-id P01-K01-AI `
+  --participant participant-01 `
+  --kata-id kata-01 `
+  --treatment with_ai `
+  --execution-order 1 `
+  --assistant-name ChatGPT `
+  --assistant-version "versão registrada no protocolo"
+```
+
+Consulte o tempo sem alterar o registro:
+
+```powershell
+lab02-trial status --trial-id P01-K01-AI
+```
+
+Encerre assim que todos os testes passarem ou imediatamente ao atingir 35
+minutos:
+
+```powershell
+lab02-trial finish `
+  --trial-id P01-K01-AI `
+  --tests-total 12 `
+  --tests-passing 12 `
+  --prompt-count 4
+```
+
+No tratamento manual, omita `--assistant-name`, `--assistant-version` e
+`--prompt-count`. A CLI calcula a taxa de sucesso, aplica a censura e grava o
+resultado uma única vez em `data/raw/<trial-id>.json`. Registros existentes não
+são sobrescritos.
+
+O encerramento incompleto antes do limite é recusado. Se todos os testes forem
+informados como aprovados somente depois do limite, a CLI também recusa o
+registro, pois não seria possível determinar honestamente o `time-to-green`.
+Consulte o protocolo detalhado em `docs/coleta-trials.md`.
+
 ## Contrato dos dados
 
 Cada trial deve conter identificação, participante, kata, tratamento, ordem,
@@ -85,4 +129,4 @@ documentação.
 ## Rastreabilidade
 
 Esta fundação corresponde à issue #47. Commits e pull requests relacionados
-devem mencionar `#47`.
+ao cronômetro e à coleta devem mencionar `#48`.

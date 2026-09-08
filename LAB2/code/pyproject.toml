@@ -9,10 +9,13 @@ description = "Infraestrutura do experimento controlado do LAB02"
 requires-python = ">=3.13,<3.14"
 dependencies = []
 
+[project.scripts]
+lab02-trial = "lab02.trial_cli:main"
+
 [tool.setuptools.packages.find]
 where = ["src"]
 
 [tool.pytest.ini_options]
-addopts = "-q --basetemp=.pytest-tmp"
+addopts = "-q"
 pythonpath = ["src"]
 testpaths = ["tests"]
