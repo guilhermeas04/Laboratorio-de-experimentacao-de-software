@@ -103,6 +103,26 @@ informados como aprovados somente depois do limite, a CLI também recusa o
 registro, pois não seria possível determinar honestamente o `time-to-green`.
 Consulte o protocolo detalhado em `docs/coleta-trials.md`.
 
+## Métricas estáticas (RQ3)
+
+A issue #49 adiciona o comando `lab02-metrics`, que analisa o código final de um
+trial com Radon (LOC/SLOC, complexidade ciclomática e índice de
+manutenibilidade) e com o detector de duplicação configurado em
+`code/static_metrics.toml`.
+
+```powershell
+cd LAB2/code
+lab02-metrics `
+  --trial-id P01-K01-AI `
+  --source caminho\para\codigo_final
+```
+
+A saída JSON fica em `data/processed/metrics-<trial-id>.json` e contém os
+campos `loc`, `cyclomatic_complexity_mean`, `cyclomatic_complexity_max`,
+`duplication_percentage` e `maintainability_index`, prontos para integração ao
+registro da #47. Arquivos vazios, código inválido ou origem ausente produzem
+`status` explícito com métricas `null` — nunca zero silencioso.
+
 ## Contrato dos dados
 
 Cada trial deve conter identificação, participante, kata, tratamento, ordem,
@@ -129,4 +149,5 @@ documentação.
 ## Rastreabilidade
 
 Esta fundação corresponde à issue #47. Commits e pull requests relacionados
-ao cronômetro e à coleta devem mencionar `#48`.
+ao cronômetro e à coleta devem mencionar `#48`. Commits e pull requests da
+pipeline de métricas estáticas devem mencionar `#49`.

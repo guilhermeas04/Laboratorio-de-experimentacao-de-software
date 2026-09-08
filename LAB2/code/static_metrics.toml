@@ -1,0 +1,9 @@
+# Configuração da pipeline de métricas estáticas (issue #49).
+
+[radon]
+# LOC no esquema do trial corresponde ao SLOC reportado pelo Radon.
+loc_field = "sloc"
+
+[duplication]
+# Blocos com pelo menos este número de linhas normalizadas entram na comparação.
+min_block_lines = 4
