@@ -15,6 +15,7 @@ dependencies = [
 lab02-trial = "lab02.trial_cli:main"
 lab02-metrics = "lab02.metrics_cli:main"
 lab02-smoke = "lab02.smoke_cli:main"
+lab02-katas = "lab02.kata_runner:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
