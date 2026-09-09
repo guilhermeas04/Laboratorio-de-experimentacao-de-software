@@ -7,6 +7,7 @@ import pytest
 
 from lab02.counterbalance import (
     KATA_IDS,
+    KATA_PAIRS,
     PARTICIPANTS,
     TrialAssignment,
     generate_design,
@@ -48,6 +49,12 @@ def test_each_participant_has_all_katas_and_three_trials_per_treatment() -> None
         assert len({row.kata_id for row in rows}) == 6
         assert [row.treatment for row in rows].count("with_ai") == 3
         assert [row.treatment for row in rows].count("manual") == 3
+        treatment_by_kata = {row.kata_id: row.treatment for row in rows}
+        for first, second in KATA_PAIRS:
+            assert {treatment_by_kata[first], treatment_by_kata[second]} == {
+                "with_ai",
+                "manual",
+            }
 
 
 def test_order_and_treatment_sequences_differ_between_participants() -> None:
@@ -57,6 +64,17 @@ def test_order_and_treatment_sequences_differ_between_participants() -> None:
 
     assert len(kata_orders) == 3
     assert len(treatment_orders) == 3
+
+
+def test_treatment_is_balanced_by_position_and_kata() -> None:
+    rows = generate_design()
+
+    for position in range(1, 7):
+        assert sum(
+            row.treatment == "with_ai" for row in rows if row.execution_order == position
+        ) in (1, 2)
+    for kata_id in KATA_IDS:
+        assert sum(row.treatment == "with_ai" for row in rows if row.kata_id == kata_id) in (1, 2)
 
 
 def test_trial_id_matches_collection_schema() -> None:
@@ -90,5 +108,22 @@ def test_csv_round_trip_and_cli_check(tmp_path: Path, capsys) -> None:
     with output.open(newline="", encoding="utf-8") as file:
         assert len(list(csv.DictReader(file))) == 18
 
-    assert main(["--check", output]) == 0
+    assert main(["--check", str(output)]) == 0
     assert "válido: 18 trials" in capsys.readouterr().out
+
+
+def test_validator_rejects_same_treatment_inside_matched_pair() -> None:
+    rows = list(generate_design())
+    rows[0] = TrialAssignment("P01", "kata-01", "manual", 1)
+    rows[3] = TrialAssignment("P01", "kata-04", "with_ai", 4)
+
+    with pytest.raises(ValueError, match="tratamentos opostos"):
+        validate_design(rows)
+
+
+def test_cli_reports_invalid_csv_without_traceback(tmp_path: Path, capsys) -> None:
+    invalid = tmp_path / "invalid.csv"
+    invalid.write_text("participant,execution_order\nP01,wrong\n", encoding="utf-8")
+
+    assert main(["--check", str(invalid)]) == 1
+    assert "tabela de contrabalanceamento inválida" in capsys.readouterr().out

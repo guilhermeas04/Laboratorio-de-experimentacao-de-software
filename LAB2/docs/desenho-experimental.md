@@ -19,25 +19,25 @@ da #51.
 
 ### RQ1 - Produtividade
 
-O uso de IA altera o tempo para concluir uma kata?
+O uso de IA reduz o tempo para concluir uma kata?
 
 - Métrica primária: `time_to_green_seconds`; trials censurados entram como
   `elapsed_seconds = 2100` e não têm tempo para green.
 - `H0_1`: a distribuição pareada das diferenças de tempo entre IA e manual tem
   mediana igual a zero.
-- `H1_1`: a mediana pareada das diferenças é diferente de zero.
+- `H1_1`: a mediana pareada da diferença `IA - manual` é menor que zero.
 
 ### RQ2 - Eficácia
 
-O uso de IA altera a proporção de testes de aceitação que passam?
+O uso de IA aumenta a proporção de testes de aceitação que passam?
 
 - Métrica primária: `success_rate`, calculada pelo runner congelado da #51 como
   `100 * tests_passing / tests_total`.
 - Métrica secundária: indicador de conclusão sem censura (`censored = false`).
 - `H0_2`: a distribuição pareada das diferenças de `success_rate` tem mediana
   igual a zero.
-- `H1_2`: a mediana pareada das diferenças de `success_rate` é diferente de
-  zero.
+- `H1_2`: a mediana pareada da diferença `IA - manual` em `success_rate` é
+  maior que zero.
 
 ### RQ3 - Qualidade estrutural
 
@@ -54,11 +54,11 @@ O uso de IA altera a qualidade estrutural do código final?
   de manutenibilidade são interpretações de qualidade, não critérios para
   excluir observações.
 
-As hipóteses são bicaudais porque o objetivo é detectar efeito, não pressupor
-que a IA necessariamente melhora ou piora o resultado. O nível de significância
-planejado é `alpha = 0,05`; RQ3 deve reportar as cinco métricas separadamente e
-aplicar correção de multiplicidade, como Holm, quando forem feitos cinco testes
-confirmatórios.
+As hipóteses de RQ1 e RQ2 são direcionais, conforme as perguntas de pesquisa;
+RQ3 é bicaudal porque não pressupõe melhora ou piora estrutural. O nível de
+significância planejado é `alpha = 0,05`; RQ3 deve reportar as cinco métricas
+separadamente e aplicar correção de multiplicidade, como Holm, quando forem
+feitos cinco testes confirmatórios.
 
 ## 3. Variáveis e unidade experimental
 
@@ -114,8 +114,8 @@ não são alterados por tratamento.
    kata, tratamento e ordem.
 3. O cronômetro começa nesse instante; consultas e edição fazem parte do
    tempo. O pesquisador não pausa o relógio para dúvidas operacionais.
-4. O participante entrega a solução quando os testes públicos de aceitação
-   passariam, ou quando atingir o limite.
+4. O participante entrega a solução quando considerar a implementação pronta,
+   ou quando atingir o limite; os expected outputs congelados não são exibidos.
 5. O pesquisador executa os mesmos testes congelados da #51 e chama
    `lab02-trial finish` com `tests_total`, `tests_passing` e, apenas com IA,
    `prompt_count`.
@@ -133,15 +133,21 @@ após o limite é inválido.
 
 Para cada tratamento e métrica serão reportados tamanho amostral, mediana e
 IQR (Q3 - Q1). A comparação principal será o teste de Wilcoxon signed-rank
-pareado, usando os pares IA/manual do mesmo participante e da mesma kata. A
+pareado. Para cada participante, calcula-se primeiro a mediana de seus três
+trials com IA e a mediana de seus três trials manuais; essas duas medianas
+formam um par. Não existe pareamento do mesmo participante na mesma kata, pois
+cada participante resolve cada kata somente uma vez. A
 hipótese nula será mantida quando não houver evidência suficiente no nível
 `alpha = 0,05`; serão reportados estatística, p-valor e tamanho de efeito, sem
 interpretar significância como magnitude. Para RQ1, a análise de tempo deve
 explicitar os censurados; não se imputa um tempo para green inexistente.
 
-Com apenas três pares por métrica, a análise é exploratória e deve reportar os
-valores individuais, não apenas o p-valor. A tabela de execução não contém
-resultados de trial e pode ser usada para reproduzir a alocação.
+Com apenas três pares de participantes por métrica, a análise é exploratória e
+deve reportar os valores individuais, não apenas o p-valor. Com `n = 3`, o
+Wilcoxon exato não consegue atingir `p < 0,05`, mesmo no resultado mais extremo;
+por isso, ausência de significância não pode ser interpretada como ausência de
+efeito. A tabela de execução não contém resultados de trial e pode ser usada
+para reproduzir a alocação.
 
 ## 6. Ameaças à validade
 
@@ -169,6 +175,9 @@ resultados de trial e pode ser usada para reproduzir a alocação.
 - Tempo para green mede produtividade observada, mas não todo o esforço mental.
 - Passar testes mede eficácia perante o contrato, não correção para entradas
   não cobertas.
+- Os quatro primeiros objetos usam conceitos algorítmicos conhecidos; um
+  assistente ou participante pode reconhecer a família do problema, mesmo que
+  os contratos e casos tenham sido escritos localmente.
 - LOC, complexidade, duplicação e MI são proxies estruturais, não qualidade
   arquitetural completa; por isso são reportadas juntas e sem um escore único.
 - `prompt_count` mede quantidade, não qualidade das consultas.
@@ -181,6 +190,9 @@ resultados de trial e pode ser usada para reproduzir a alocação.
   evento explicitamente e não fingir tempos observados após 2100 segundos.
 - Cinco métricas em RQ3 aumentam falsos positivos; aplicar Holm nos testes
   confirmatórios e distinguir exploração de confirmação.
+- Código incompleto pode parecer artificialmente menor e menos complexo;
+  apresentar RQ3 para todos os trials e, complementarmente, somente para os
+  trials com 100% dos testes passando.
 
 ## 7. Contrabalanceamento reproduzível
 
@@ -195,6 +207,11 @@ python -m lab02.counterbalance --check ../data/design/counterbalancing.csv
 ```
 
 Cada participante tem seis linhas, três `with_ai`, três `manual` e as seis
-katas sem repetição. As três ordens de kata e as três ordens de tratamento são
-distintas. O `trial_id` segue o contrato da #48, por exemplo
+katas sem repetição. Os pares de dificuldade planejada K01/K05 (intervalos),
+K02/K06 (varredura de sequência) e K03/K04 (transformação/otimização) contêm
+um tratamento de cada tipo para todo participante. As três
+ordens de kata e as três ordens de tratamento são distintas. Em cada posição
+da sequência e em cada kata, uma ou duas das três execuções usam IA, que é o
+equilíbrio máximo possível com número ímpar de participantes. O `trial_id` segue
+o contrato da #48, por exemplo
 `P01-K01-AI` e `P01-K02-MANUAL`.

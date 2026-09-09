@@ -149,6 +149,35 @@ lab02-smoke
 
 O checklist manual correspondente está em `docs/checklist-pre-trial.md`.
 
+## Katas e testes de aceitação
+
+A issue #51 define seis katas e um runner comum. Cada solução implementa apenas
+uma kata e deve exportar `solve(value)`. Informe obrigatoriamente o identificador
+correspondente para obter as contagens usadas por `lab02-trial finish`:
+
+```powershell
+cd LAB2/code
+lab02-katas caminho\para\solucao.py --kata-id kata-01
+```
+
+O catálogo, os enunciados e as regras para não expor os expected outputs aos
+participantes estão em `docs/katas.md`.
+
+## Desenho e contrabalanceamento
+
+A issue #52 versiona os 18 trials em `data/design/counterbalancing.csv`. Valide
+a tabela antes de iniciar a coleta:
+
+```powershell
+cd LAB2/code
+lab02-design --check ../data/design/counterbalancing.csv
+```
+
+O comando verifica seis katas por participante, três trials em cada tratamento,
+tratamentos opostos nos pares planejados e equilíbrio por posição e por kata.
+Hipóteses, variáveis, protocolo e ameaças à validade estão documentados em
+`docs/desenho-experimental.md`.
+
 ## Contrato dos dados
 
 Cada trial deve conter identificação, participante, kata, tratamento, ordem,
@@ -177,4 +206,5 @@ documentação.
 Esta fundação corresponde à issue #47. Commits e pull requests relacionados
 ao cronômetro e à coleta devem mencionar `#48`. Commits e pull requests da
 pipeline de métricas estáticas devem mencionar `#49`. Commits e pull requests
-da validação do ambiente devem mencionar `#50`.
+da validação do ambiente devem mencionar `#50`; katas e testes, `#51`; desenho
+e contrabalanceamento, `#52`.

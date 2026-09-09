@@ -17,3 +17,24 @@ def solver(request):
 
 def pytest_addoption(parser):
     parser.addoption("--candidate", action="store", default=None)
+    parser.addoption(
+        "--kata-id",
+        action="store",
+        choices=tuple(f"kata-{index:02d}" for index in range(1, 7)),
+        default=None,
+    )
+
+
+def pytest_collection_modifyitems(config, items):
+    candidate = config.getoption("--candidate")
+    kata_id = config.getoption("--kata-id")
+    if candidate and kata_id is None:
+        raise pytest.UsageError("--kata-id é obrigatório quando --candidate é informado")
+    if kata_id is None:
+        return
+
+    selected_file = f"test_{kata_id.replace('-', '_')}.py"
+    skip = pytest.mark.skip(reason=f"execução selecionada para {kata_id}")
+    for item in items:
+        if "acceptance" in item.path.parts and item.path.name != selected_file:
+            item.add_marker(skip)

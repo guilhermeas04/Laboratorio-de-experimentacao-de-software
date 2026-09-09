@@ -13,7 +13,12 @@ from .kata_contract import load_solver, run_definition
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Executa os testes congelados dos seis katas")
     parser.add_argument("solution", type=Path, help="arquivo Python que exporta solve(value)")
-    parser.add_argument("--kata-id", choices=tuple(kata.kata_id for kata in KATAS))
+    parser.add_argument(
+        "--kata-id",
+        required=True,
+        choices=tuple(kata.kata_id for kata in KATAS),
+        help="kata correspondente à solução; uma solução nunca é aplicada às seis interfaces",
+    )
     return parser
 
 
@@ -21,12 +26,12 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     try:
         solver = load_solver(args.solution)
-        definitions = (KATAS_BY_ID[args.kata_id],) if args.kata_id else KATAS
+        definitions = (KATAS_BY_ID[args.kata_id],)
         results = [
             (definition, run_definition(definition, solver))
             for definition in definitions
         ]
-    except (OSError, ValueError, SyntaxError) as error:
+    except Exception as error:  # falhas da solução participante viram resultado controlado
         print(f"ERRO: {error}")
         return 2
 

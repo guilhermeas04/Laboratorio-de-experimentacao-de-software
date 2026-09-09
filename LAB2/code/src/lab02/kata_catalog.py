@@ -46,7 +46,7 @@ KATAS: tuple[KataDefinition, ...] = (
             AcceptanceCase("caso_normal", {"amount": 6, "coins": [1, 3, 4]}, [0, 2, 0]),
             AcceptanceCase("moeda_exata", {"amount": 14, "coins": [1, 5, 10]}, [4, 0, 1]),
             AcceptanceCase("valor_zero", {"amount": 0, "coins": [1, 2]}, [0, 0]),
-            AcceptanceCase("ordem_das_moedas", {"amount": 7, "coins": [5, 1, 2]}, [1, 0, 1]),
+            AcceptanceCase("desempate_lexicografico", {"amount": 6, "coins": [1, 2, 3, 4]}, [0, 0, 2, 0]),
             AcceptanceCase("sem_combinacao", {"amount": 3, "coins": [2]}, invalid=True),
         ),
     ),

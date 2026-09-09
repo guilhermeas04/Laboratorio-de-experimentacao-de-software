@@ -11,6 +11,7 @@ from typing import Iterable, Sequence
 KATA_IDS = tuple(f"kata-{index:02d}" for index in range(1, 7))
 PARTICIPANTS = ("P01", "P02", "P03")
 TREATMENTS = ("with_ai", "manual")
+KATA_PAIRS = (("kata-01", "kata-05"), ("kata-02", "kata-06"), ("kata-03", "kata-04"))
 
 _KATA_ORDERS = (
     ("kata-01", "kata-02", "kata-03", "kata-04", "kata-05", "kata-06"),
@@ -18,9 +19,9 @@ _KATA_ORDERS = (
     ("kata-05", "kata-06", "kata-01", "kata-02", "kata-03", "kata-04"),
 )
 _TREATMENT_ORDERS = (
-    ("with_ai", "manual", "with_ai", "manual", "with_ai", "manual"),
-    ("manual", "with_ai", "manual", "with_ai", "manual", "with_ai"),
-    ("with_ai", "with_ai", "manual", "manual", "with_ai", "manual"),
+    ("with_ai", "manual", "with_ai", "manual", "manual", "with_ai"),
+    ("manual", "with_ai", "manual", "with_ai", "with_ai", "manual"),
+    ("with_ai", "manual", "manual", "with_ai", "manual", "with_ai"),
 )
 
 
@@ -67,8 +68,8 @@ def validate_design(assignments: Iterable[TrialAssignment]) -> None:
     """Raise ValueError unless all issue #52 allocation invariants hold."""
 
     rows = tuple(assignments)
-    participants = tuple(dict.fromkeys(row.participant for row in rows))
-    if participants != PARTICIPANTS:
+    participants = {row.participant for row in rows}
+    if participants != set(PARTICIPANTS):
         raise ValueError(f"participantes esperados: {PARTICIPANTS!r}")
     if len(rows) != 18:
         raise ValueError("o desenho deve conter 18 trials")
@@ -94,6 +95,12 @@ def validate_design(assignments: Iterable[TrialAssignment]) -> None:
             raise ValueError(f"tratamento inválido para {participant}")
         if treatment_order.count("with_ai") != 3 or treatment_order.count("manual") != 3:
             raise ValueError(f"{participant} deve ter três trials por tratamento")
+        treatment_by_kata = {row.kata_id: row.treatment for row in participant_rows}
+        for first, second in KATA_PAIRS:
+            if {treatment_by_kata[first], treatment_by_kata[second]} != set(TREATMENTS):
+                raise ValueError(
+                    f"{participant} deve usar tratamentos opostos no par {first}/{second}"
+                )
         orders.append(kata_order)
         treatments.append(treatment_order)
 
@@ -101,6 +108,16 @@ def validate_design(assignments: Iterable[TrialAssignment]) -> None:
         raise ValueError("ordens de kata não podem ser idênticas entre participantes")
     if len(set(treatments)) != len(treatments):
         raise ValueError("ordens de tratamento não podem ser idênticas entre participantes")
+    for position in range(1, 7):
+        ai_count = sum(
+            row.treatment == "with_ai" for row in rows if row.execution_order == position
+        )
+        if ai_count not in (1, 2):
+            raise ValueError(f"posição {position} deve ter IA para um ou dois participantes")
+    for kata_id in KATA_IDS:
+        ai_count = sum(row.treatment == "with_ai" for row in rows if row.kata_id == kata_id)
+        if ai_count not in (1, 2):
+            raise ValueError(f"{kata_id} deve ter IA para um ou dois participantes")
     if len({row.trial_id for row in rows}) != len(rows):
         raise ValueError("trial_id duplicado")
 
@@ -132,20 +149,24 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Gera a ordem contrabalanceada do LAB02")
     parser.add_argument("--output", type=Path)
     parser.add_argument("--check", type=Path, help="valida uma tabela CSV existente")
-    args = parser.parse_args(argv)
+    args = parser.parse_args(None if argv is None else [str(value) for value in argv])
 
     if args.check:
-        with args.check.open(newline="", encoding="utf-8") as file:
-            rows = tuple(
-                TrialAssignment(
-                    participant=row["participant"],
-                    kata_id=row["kata_id"],
-                    treatment=row["treatment"],
-                    execution_order=int(row["execution_order"]),
+        try:
+            with args.check.open(newline="", encoding="utf-8") as file:
+                rows = tuple(
+                    TrialAssignment(
+                        participant=row["participant"],
+                        kata_id=row["kata_id"],
+                        treatment=row["treatment"],
+                        execution_order=int(row["execution_order"]),
+                    )
+                    for row in csv.DictReader(file)
                 )
-                for row in csv.DictReader(file)
-            )
-        validate_design(rows)
+            validate_design(rows)
+        except (OSError, UnicodeError, csv.Error, KeyError, TypeError, ValueError) as error:
+            print(f"ERRO: tabela de contrabalanceamento inválida: {error}")
+            return 1
         print(f"válido: {len(rows)} trials")
         return 0
 
