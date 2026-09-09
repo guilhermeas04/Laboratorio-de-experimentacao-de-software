@@ -15,7 +15,8 @@ A verificação automática correspondente é o comando `lab02-smoke` (issue #50
 ## Ferramentas
 
 5. `lab02-trial` responde aos subcomandos `start`, `status` e `finish`.
-6. `lab02-metrics` está disponível e o Radon importa sem erro.
+6. `lab02-metrics` está disponível, o Radon importa sem erro e
+   `static_metrics.toml` é aceito pelo smoke test.
 7. `lab02-smoke` termina com código 0 e não grava nada em `data/raw`.
 
 ## Protocolo operacional

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 import tomllib
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
@@ -22,6 +23,10 @@ STATUS_OK = "ok"
 STATUS_EMPTY = "empty_source"
 STATUS_INVALID = "invalid_code"
 STATUS_MISSING = "missing_source"
+STATUS_PARTIAL = "partial_analysis"
+
+_TRIAL_ID_PATTERN = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,99}$")
+_RADON_LOC_FIELDS = {"loc", "lloc", "sloc"}
 
 
 class StaticMetricsError(RuntimeError):
@@ -60,11 +65,31 @@ class StaticMetricsResult:
 def load_config(path: Path | None = None) -> dict[str, Any]:
     config_path = Path(path) if path is not None else DEFAULT_CONFIG_PATH
     if not config_path.exists():
-        return {"radon": {"loc_field": "sloc"}, "duplication": {"min_block_lines": 4}}
-    with config_path.open("rb") as handle:
-        data = tomllib.load(handle)
+        raise StaticMetricsError(f"arquivo de configuração inexistente: {config_path}")
+    try:
+        with config_path.open("rb") as handle:
+            data = tomllib.load(handle)
+    except (OSError, tomllib.TOMLDecodeError) as error:
+        raise StaticMetricsError(f"não foi possível ler a configuração {config_path}: {error}") from error
     if not isinstance(data, dict):
         raise StaticMetricsError(f"configuração inválida em {config_path}")
+
+    radon_config = data.get("radon", {})
+    duplication_config = data.get("duplication", {})
+    if not isinstance(radon_config, dict) or not isinstance(duplication_config, dict):
+        raise StaticMetricsError("as seções radon e duplication devem ser tabelas TOML")
+
+    loc_field = radon_config.get("loc_field", "sloc")
+    min_block_lines = duplication_config.get("min_block_lines", 4)
+    if loc_field not in _RADON_LOC_FIELDS:
+        allowed = ", ".join(sorted(_RADON_LOC_FIELDS))
+        raise StaticMetricsError(f"radon.loc_field deve ser um de: {allowed}")
+    if (
+        not isinstance(min_block_lines, int)
+        or isinstance(min_block_lines, bool)
+        or min_block_lines < 2
+    ):
+        raise StaticMetricsError("duplication.min_block_lines deve ser um inteiro maior ou igual a 2")
     return data
 
 
@@ -88,12 +113,14 @@ def analyze_trial_source(
 ) -> StaticMetricsResult:
     """Analisa o código final de um trial e devolve métricas ou ausência explícita."""
 
-    if not isinstance(trial_id, str) or not trial_id.strip():
-        raise StaticMetricsError("trial_id deve ser um texto não vazio")
+    if not isinstance(trial_id, str) or not _TRIAL_ID_PATTERN.fullmatch(trial_id):
+        raise StaticMetricsError(
+            "trial_id deve ter de 1 a 100 caracteres: letras, números, ponto, hífen ou sublinhado"
+        )
 
     config = load_config(config_path)
-    loc_field = str(config.get("radon", {}).get("loc_field", "sloc"))
-    min_block_lines = int(config.get("duplication", {}).get("min_block_lines", 4))
+    loc_field = config.get("radon", {}).get("loc_field", "sloc")
+    min_block_lines = config.get("duplication", {}).get("min_block_lines", 4)
     source_path = Path(source)
 
     try:
@@ -133,7 +160,12 @@ def analyze_trial_source(
     empty_files = 0
 
     for file_path in files:
-        text = file_path.read_text(encoding="utf-8")
+        try:
+            text = file_path.read_text(encoding="utf-8")
+        except (OSError, UnicodeError) as error:
+            invalid_files += 1
+            messages.append(f"não foi possível ler {file_path.name} como UTF-8: {error}")
+            continue
         if not text.strip():
             empty_files += 1
             messages.append(f"arquivo vazio ignorado: {file_path.name}")
@@ -185,10 +217,10 @@ def analyze_trial_source(
         mean_cc = round(sum(complexities) / len(complexities), 3)
         max_cc = max(complexities)
     else:
-        # Módulos só com atribuições podem não expor blocos CC; isso não é falha.
-        mean_cc = 0.0
-        max_cc = 0
-        messages.append("nenhum bloco ciclomático encontrado; complexidade registrada como 0")
+        # RQ3 mede a média por função/método. Sem blocos, a métrica não é aplicável.
+        mean_cc = None
+        max_cc = None
+        messages.append("nenhuma função ou método encontrado; complexidade registrada como nula")
 
     weight_sum = sum(weight for _mi, weight in mi_values)
     maintainability = round(
@@ -199,6 +231,7 @@ def analyze_trial_source(
 
     status = STATUS_OK
     if invalid_files:
+        status = STATUS_PARTIAL
         messages.append(
             f"{invalid_files} arquivo(s) inválido(s) foram excluídos; métricas usam só o restante"
         )
@@ -226,5 +259,9 @@ def write_metrics_result(result: StaticMetricsResult, output_path: Path) -> Path
 
 
 def default_output_path(trial_id: str, metrics_dir: Path | None = None) -> Path:
+    if not isinstance(trial_id, str) or not _TRIAL_ID_PATTERN.fullmatch(trial_id):
+        raise StaticMetricsError(
+            "trial_id deve ter de 1 a 100 caracteres: letras, números, ponto, hífen ou sublinhado"
+        )
     directory = Path(metrics_dir) if metrics_dir is not None else DEFAULT_METRICS_DIR
     return directory / f"metrics-{trial_id}.json"

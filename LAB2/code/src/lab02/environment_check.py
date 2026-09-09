@@ -11,7 +11,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Callable
 
-from .static_metrics import STATUS_OK, analyze_trial_source
+from .static_metrics import STATUS_OK, analyze_trial_source, load_config
 from .trial_timer import TrialTimer
 
 LAB2_ROOT = Path(__file__).resolve().parents[3]
@@ -58,7 +58,10 @@ class EnvironmentChecker:
         report.checks.append(self._check_python())
         report.checks.append(self._check_directories())
         report.checks.append(self._check_radon())
+        report.checks.append(self._check_pytest())
+        report.checks.append(self._check_metrics_config())
         report.checks.append(self._check_package_imports())
+        report.checks.append(self._check_cli_entry_points())
         report.checks.extend(self._run_demo_integration(report))
         return report
 
@@ -109,6 +112,27 @@ class EnvironmentChecker:
             return CheckResult("radon", False, f"radon instalado, mas falhou: {error}")
         return CheckResult("radon", True, f"radon {radon.__version__} operacional")
 
+    def _check_pytest(self) -> CheckResult:
+        if importlib.util.find_spec("pytest") is None:
+            return CheckResult(
+                "pytest",
+                False,
+                "pacote pytest ausente; instale requirements-dev.txt",
+            )
+        try:
+            import pytest
+        except Exception as error:
+            return CheckResult("pytest", False, f"pytest instalado, mas falhou ao importar: {error}")
+        return CheckResult("pytest", True, f"pytest {pytest.__version__} disponível")
+
+    def _check_metrics_config(self) -> CheckResult:
+        config_path = self.lab2_root / "code" / "static_metrics.toml"
+        try:
+            load_config(config_path)
+        except Exception as error:
+            return CheckResult("config_metricas", False, str(error))
+        return CheckResult("config_metricas", True, f"configuração válida: {config_path}")
+
     def _check_package_imports(self) -> CheckResult:
         try:
             from lab02 import TrialTimer, analyze_trial_source
@@ -117,6 +141,17 @@ class EnvironmentChecker:
         if TrialTimer is None or analyze_trial_source is None:
             return CheckResult("pacote_lab02", False, "símbolos essenciais ausentes")
         return CheckResult("pacote_lab02", True, "TrialTimer e analyze_trial_source disponíveis")
+
+    def _check_cli_entry_points(self) -> CheckResult:
+        try:
+            from lab02.metrics_cli import main as metrics_main
+            from lab02.smoke_cli import main as smoke_main
+            from lab02.trial_cli import main as trial_main
+        except Exception as error:
+            return CheckResult("cli", False, f"falha ao importar pontos de entrada: {error}")
+        if not all(callable(entry) for entry in (trial_main, metrics_main, smoke_main)):
+            return CheckResult("cli", False, "um ou mais pontos de entrada não são executáveis")
+        return CheckResult("cli", True, "lab02-trial, lab02-metrics e lab02-smoke disponíveis")
 
     def _run_demo_integration(self, report: SmokeReport) -> list[CheckResult]:
         checks: list[CheckResult] = []

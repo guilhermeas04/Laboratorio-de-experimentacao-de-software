@@ -125,10 +125,21 @@ campos `loc`, `cyclomatic_complexity_mean`, `cyclomatic_complexity_max`,
 registro da #47. Arquivos vazios, código inválido ou origem ausente produzem
 `status` explícito com métricas `null` — nunca zero silencioso.
 
+A duplicação é calculada por blocos normalizados de no mínimo quatro linhas,
+conforme `static_metrics.toml`. Comentários, linhas vazias e indentação externa
+são removidos antes da comparação; o percentual representa linhas úteis que
+participam de ao menos um bloco repetido. Essa implementação determinística é
+a ferramenta equivalente adotada pelo grupo e sua limitação deve ser citada na
+discussão da RQ3. Se parte dos arquivos for inválida, o resultado recebe
+`status = partial_analysis`, em vez de ser apresentado como integralmente
+válido. Arquivos sem função ou método mantêm a complexidade como `null`, pois a
+média por função não é aplicável.
+
 ## Smoke test do ambiente
 
 A issue #50 adiciona o comando único `lab02-smoke`, que confirma Python,
-diretórios, Radon, cronômetro (#48) e métricas (#49). A demonstração usa o
+pytest, diretórios, configuração, Radon, as três CLIs, cronômetro (#48) e
+métricas (#49). A demonstração usa o
 identificador `DEMO-SMOKE-P00-K00-MANUAL` e grava somente em `data/demo/`.
 
 ```powershell

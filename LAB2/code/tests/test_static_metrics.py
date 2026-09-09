@@ -3,13 +3,19 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import pytest
+
 from lab02.metrics_cli import main
 from lab02.static_metrics import (
     STATUS_EMPTY,
     STATUS_INVALID,
     STATUS_MISSING,
     STATUS_OK,
+    STATUS_PARTIAL,
+    StaticMetricsError,
     analyze_trial_source,
+    default_output_path,
+    load_config,
 )
 from lab02.trial_record import TrialRecord
 
@@ -141,3 +147,69 @@ def test_cli_signals_analysis_problems(tmp_path: Path) -> None:
     payload = json.loads(output.read_text(encoding="utf-8"))
     assert payload["status"] == STATUS_INVALID
     assert payload["loc"] is None
+
+
+def test_invalid_configuration_is_reported_without_traceback(tmp_path: Path, capsys) -> None:
+    config = tmp_path / "invalid.toml"
+    config.write_text('[duplication]\nmin_block_lines = "quatro"\n', encoding="utf-8")
+    output = tmp_path / "metrics.json"
+
+    code = main(
+        [
+            "--trial-id",
+            "P01-K01-AI",
+            "--source",
+            str(FIXTURES / "valid"),
+            "--config",
+            str(config),
+            "--output",
+            str(output),
+        ]
+    )
+
+    assert code == 1
+    assert "min_block_lines" in capsys.readouterr().out
+    assert not output.exists()
+
+
+def test_mixed_valid_and_invalid_sources_are_partial(tmp_path: Path) -> None:
+    (tmp_path / "valid.py").write_text("def ok():\n    return 1\n", encoding="utf-8")
+    (tmp_path / "broken.py").write_text("def broken(:\n", encoding="utf-8")
+
+    result = analyze_trial_source(trial_id="P01-K06-AI", source=tmp_path)
+
+    assert result.status == STATUS_PARTIAL
+    assert result.loc is not None
+    assert any("foram excluídos" in message for message in result.messages)
+
+
+def test_module_without_functions_has_null_complexity(tmp_path: Path) -> None:
+    source = tmp_path / "constants.py"
+    source.write_text("ANSWER = 42\n", encoding="utf-8")
+
+    result = analyze_trial_source(trial_id="P01-K06-MANUAL", source=source)
+
+    assert result.status == STATUS_OK
+    assert result.loc == 1
+    assert result.cyclomatic_complexity_mean is None
+    assert result.cyclomatic_complexity_max is None
+
+
+def test_rejects_unsafe_trial_id_and_unsupported_loc_field(tmp_path: Path) -> None:
+    with pytest.raises(StaticMetricsError, match="trial_id"):
+        default_output_path("../outside", tmp_path)
+
+    config = tmp_path / "invalid-field.toml"
+    config.write_text('[radon]\nloc_field = "comments"\n', encoding="utf-8")
+    with pytest.raises(StaticMetricsError, match="loc_field"):
+        load_config(config)
+
+    with pytest.raises(StaticMetricsError, match="inexistente"):
+        load_config(tmp_path / "missing.toml")
+
+
+def test_cli_rejects_unsafe_trial_id_without_traceback(capsys) -> None:
+    code = main(["--trial-id", "../outside", "--source", str(FIXTURES / "valid")])
+
+    assert code == 1
+    assert "trial_id" in capsys.readouterr().out

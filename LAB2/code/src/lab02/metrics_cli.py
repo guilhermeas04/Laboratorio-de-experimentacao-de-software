@@ -41,8 +41,8 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
-    output = args.output or default_output_path(args.trial_id)
     try:
+        output = args.output or default_output_path(args.trial_id)
         result = analyze_trial_source(
             trial_id=args.trial_id,
             source=args.source,
