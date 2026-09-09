@@ -13,6 +13,7 @@ LAB2/
 │   └── tests/             # testes automatizados
 ├── data/
 │   ├── examples/          # registros fictícios para validar o ambiente
+│   ├── demo/              # saídas do smoke test (nunca misturar com raw)
 │   ├── sessions/          # estado transitório dos cronômetros ativos
 │   ├── raw/               # registros imutáveis dos trials reais
 │   └── processed/         # dados consolidados para análise
@@ -22,7 +23,8 @@ LAB2/
 
 Os diretórios `raw` e `processed` são separados para impedir que a limpeza dos
 dados altere os registros originais do experimento. O exemplo versionado é
-fictício e não deve ser incluído nas análises.
+fictício e não deve ser incluído nas análises. O diretório `demo` isola as
+saídas do smoke test.
 
 ## Ambiente reproduzível
 
@@ -103,6 +105,50 @@ informados como aprovados somente depois do limite, a CLI também recusa o
 registro, pois não seria possível determinar honestamente o `time-to-green`.
 Consulte o protocolo detalhado em `docs/coleta-trials.md`.
 
+## Métricas estáticas (RQ3)
+
+A issue #49 adiciona o comando `lab02-metrics`, que analisa o código final de um
+trial com Radon (LOC/SLOC, complexidade ciclomática e índice de
+manutenibilidade) e com o detector de duplicação configurado em
+`code/static_metrics.toml`.
+
+```powershell
+cd LAB2/code
+lab02-metrics `
+  --trial-id P01-K01-AI `
+  --source caminho\para\codigo_final
+```
+
+A saída JSON fica em `data/processed/metrics-<trial-id>.json` e contém os
+campos `loc`, `cyclomatic_complexity_mean`, `cyclomatic_complexity_max`,
+`duplication_percentage` e `maintainability_index`, prontos para integração ao
+registro da #47. Arquivos vazios, código inválido ou origem ausente produzem
+`status` explícito com métricas `null` — nunca zero silencioso.
+
+A duplicação é calculada por blocos normalizados de no mínimo quatro linhas,
+conforme `static_metrics.toml`. Comentários, linhas vazias e indentação externa
+são removidos antes da comparação; o percentual representa linhas úteis que
+participam de ao menos um bloco repetido. Essa implementação determinística é
+a ferramenta equivalente adotada pelo grupo e sua limitação deve ser citada na
+discussão da RQ3. Se parte dos arquivos for inválida, o resultado recebe
+`status = partial_analysis`, em vez de ser apresentado como integralmente
+válido. Arquivos sem função ou método mantêm a complexidade como `null`, pois a
+média por função não é aplicável.
+
+## Smoke test do ambiente
+
+A issue #50 adiciona o comando único `lab02-smoke`, que confirma Python,
+pytest, diretórios, configuração, Radon, as três CLIs, cronômetro (#48) e
+métricas (#49). A demonstração usa o
+identificador `DEMO-SMOKE-P00-K00-MANUAL` e grava somente em `data/demo/`.
+
+```powershell
+cd LAB2/code
+lab02-smoke
+```
+
+O checklist manual correspondente está em `docs/checklist-pre-trial.md`.
+
 ## Contrato dos dados
 
 Cada trial deve conter identificação, participante, kata, tratamento, ordem,
@@ -129,4 +175,6 @@ documentação.
 ## Rastreabilidade
 
 Esta fundação corresponde à issue #47. Commits e pull requests relacionados
-ao cronômetro e à coleta devem mencionar `#48`.
+ao cronômetro e à coleta devem mencionar `#48`. Commits e pull requests da
+pipeline de métricas estáticas devem mencionar `#49`. Commits e pull requests
+da validação do ambiente devem mencionar `#50`.

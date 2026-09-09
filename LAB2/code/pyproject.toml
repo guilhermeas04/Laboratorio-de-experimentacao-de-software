@@ -7,10 +7,14 @@ name = "lab02-experiment"
 version = "0.1.0"
 description = "Infraestrutura do experimento controlado do LAB02"
 requires-python = ">=3.13,<3.14"
-dependencies = []
+dependencies = [
+    "radon==6.0.1",
+]
 
 [project.scripts]
 lab02-trial = "lab02.trial_cli:main"
+lab02-metrics = "lab02.metrics_cli:main"
+lab02-smoke = "lab02.smoke_cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
