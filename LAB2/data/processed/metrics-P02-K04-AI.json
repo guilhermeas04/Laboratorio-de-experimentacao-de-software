@@ -1,0 +1,11 @@
+{
+  "trial_id": "P02-K04-AI",
+  "source_path": "submissions/P02-K04-AI",
+  "status": "ok",
+  "loc": 39,
+  "cyclomatic_complexity_mean": 22.0,
+  "cyclomatic_complexity_max": 22,
+  "duplication_percentage": 0.0,
+  "maintainability_index": 43.633,
+  "messages": []
+}
