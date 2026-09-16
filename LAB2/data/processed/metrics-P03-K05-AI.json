@@ -1,0 +1,11 @@
+{
+  "trial_id": "P03-K05-AI",
+  "source_path": "submissions\\P03-K05-AI\\solution.py",
+  "status": "ok",
+  "loc": 40,
+  "cyclomatic_complexity_mean": 25.0,
+  "cyclomatic_complexity_max": 25,
+  "duplication_percentage": 0.0,
+  "maintainability_index": 47.407,
+  "messages": []
+}
