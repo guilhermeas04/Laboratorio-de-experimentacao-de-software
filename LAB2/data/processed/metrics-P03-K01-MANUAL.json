@@ -1,0 +1,11 @@
+{
+  "trial_id": "P03-K01-MANUAL",
+  "source_path": "submissions\\P03-K01-MANUAL\\solution.py",
+  "status": "ok",
+  "loc": 24,
+  "cyclomatic_complexity_mean": 14.0,
+  "cyclomatic_complexity_max": 14,
+  "duplication_percentage": 0.0,
+  "maintainability_index": 53.266,
+  "messages": []
+}
