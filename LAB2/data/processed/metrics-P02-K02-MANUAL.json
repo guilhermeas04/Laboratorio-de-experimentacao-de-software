@@ -1,0 +1,11 @@
+{
+  "trial_id": "P02-K02-MANUAL",
+  "source_path": "submissions/P02-K02-MANUAL",
+  "status": "ok",
+  "loc": 13,
+  "cyclomatic_complexity_mean": 6.0,
+  "cyclomatic_complexity_max": 6,
+  "duplication_percentage": 0.0,
+  "maintainability_index": 63.127,
+  "messages": []
+}
