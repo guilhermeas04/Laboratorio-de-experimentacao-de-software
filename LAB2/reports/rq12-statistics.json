@@ -1,0 +1,174 @@
+{
+  "trial_count": 18,
+  "official_trial_ids": [
+    "P01-K01-AI",
+    "P01-K02-MANUAL",
+    "P01-K03-AI",
+    "P01-K04-MANUAL",
+    "P01-K05-MANUAL",
+    "P01-K06-AI",
+    "P02-K03-MANUAL",
+    "P02-K04-AI",
+    "P02-K05-MANUAL",
+    "P02-K06-AI",
+    "P02-K01-AI",
+    "P02-K02-MANUAL",
+    "P03-K05-AI",
+    "P03-K06-MANUAL",
+    "P03-K01-MANUAL",
+    "P03-K02-AI",
+    "P03-K03-MANUAL",
+    "P03-K04-AI"
+  ],
+  "descriptive": {
+    "with_ai": {
+      "elapsed_seconds": {
+        "n": 9,
+        "min": 0.135,
+        "q1": 2.271,
+        "median": 18.073,
+        "q3": 39.171,
+        "iqr": 36.9,
+        "max": 308.704
+      },
+      "success_rate": {
+        "n": 9,
+        "min": 100.0,
+        "q1": 100.0,
+        "median": 100.0,
+        "q3": 100.0,
+        "iqr": 0.0,
+        "max": 100.0
+      },
+      "tests_failing": {
+        "n": 9,
+        "min": 0.0,
+        "q1": 0.0,
+        "median": 0.0,
+        "q3": 0.0,
+        "iqr": 0.0,
+        "max": 0.0
+      }
+    },
+    "manual": {
+      "elapsed_seconds": {
+        "n": 9,
+        "min": 0.143,
+        "q1": 0.233,
+        "median": 24.712,
+        "q3": 375.37,
+        "iqr": 375.137,
+        "max": 487.28
+      },
+      "success_rate": {
+        "n": 9,
+        "min": 100.0,
+        "q1": 100.0,
+        "median": 100.0,
+        "q3": 100.0,
+        "iqr": 0.0,
+        "max": 100.0
+      },
+      "tests_failing": {
+        "n": 9,
+        "min": 0.0,
+        "q1": 0.0,
+        "median": 0.0,
+        "q3": 0.0,
+        "iqr": 0.0,
+        "max": 0.0
+      }
+    }
+  },
+  "paired_medians": {
+    "elapsed_seconds": {
+      "P01": {
+        "with_ai": 0.183,
+        "manual": 0.183
+      },
+      "P02": {
+        "manual": 322.484,
+        "with_ai": 48.279
+      },
+      "P03": {
+        "with_ai": 18.073,
+        "manual": 26.657
+      }
+    },
+    "success_rate": {
+      "P01": {
+        "with_ai": 100.0,
+        "manual": 100.0
+      },
+      "P02": {
+        "manual": 100.0,
+        "with_ai": 100.0
+      },
+      "P03": {
+        "with_ai": 100.0,
+        "manual": 100.0
+      }
+    },
+    "tests_failing": {
+      "P01": {
+        "with_ai": 0.0,
+        "manual": 0.0
+      },
+      "P02": {
+        "manual": 0.0,
+        "with_ai": 0.0
+      },
+      "P03": {
+        "with_ai": 0.0,
+        "manual": 0.0
+      }
+    }
+  },
+  "wilcoxon": {
+    "rq1_elapsed_seconds": {
+      "status": "ok",
+      "n_pairs": 2,
+      "alternative": "less",
+      "statistic_w_plus": 0,
+      "p_value_exact": 0.25,
+      "differences": [
+        0.0,
+        -274.205,
+        -8.584
+      ],
+      "message": "Teste exato sobre medianas por participante. Com tres pares, o menor p-valor unilateral possivel e 0.125."
+    },
+    "rq2_success_rate": {
+      "status": "not_applicable",
+      "n_pairs": 0,
+      "alternative": "greater",
+      "statistic_w_plus": null,
+      "p_value_exact": null,
+      "differences": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "message": "Todas as diferencas pareadas sao zero; Wilcoxon nao e informativo."
+    },
+    "rq2_tests_failing": {
+      "status": "not_applicable",
+      "n_pairs": 0,
+      "alternative": "less",
+      "statistic_w_plus": null,
+      "p_value_exact": null,
+      "differences": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "message": "Todas as diferencas pareadas sao zero; Wilcoxon nao e informativo."
+    }
+  },
+  "notes": [
+    "Analise filtrada pelos 18 trial_id oficiais do contrabalanceamento.",
+    "Trials censurados sao mantidos com elapsed_seconds registrado no time-box.",
+    "Wilcoxon usa medianas por participante, nao pares mesma kata/mesmo participante.",
+    "N=3 limita conclusoes inferenciais; interpretar junto com estatisticas descritivas."
+  ]
+}

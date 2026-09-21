@@ -178,6 +178,22 @@ tratamentos opostos nos pares planejados e equilíbrio por posição e por kata.
 Hipóteses, variáveis, protocolo e ameaças à validade estão documentados em
 `docs/desenho-experimental.md`.
 
+## Análise RQ1/RQ2
+
+A Sprint LAB02S03 adiciona o comando `lab02-rq12`, que consolida os 18 trials
+oficiais, calcula estatísticas descritivas por tratamento e aplica Wilcoxon
+pareado exploratório para RQ1 e RQ2:
+
+```powershell
+cd LAB2/code
+lab02-rq12
+```
+
+A saída é gravada em `reports/rq12-trials.csv`,
+`reports/rq12-statistics.json` e `reports/rq12-summary.md`. A consolidação usa
+somente os `trial_id` presentes em `data/design/counterbalancing.csv`; qualquer
+registro extra em `data/raw/` é ignorado.
+
 ## Contrato dos dados
 
 Cada trial deve conter identificação, participante, kata, tratamento, ordem,
