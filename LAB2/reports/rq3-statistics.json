@@ -1,0 +1,377 @@
+{
+  "trial_count": 18,
+  "official_trial_ids": [
+    "P01-K01-AI",
+    "P01-K02-MANUAL",
+    "P01-K03-AI",
+    "P01-K04-MANUAL",
+    "P01-K05-MANUAL",
+    "P01-K06-AI",
+    "P02-K03-MANUAL",
+    "P02-K04-AI",
+    "P02-K05-MANUAL",
+    "P02-K06-AI",
+    "P02-K01-AI",
+    "P02-K02-MANUAL",
+    "P03-K05-AI",
+    "P03-K06-MANUAL",
+    "P03-K01-MANUAL",
+    "P03-K02-AI",
+    "P03-K03-MANUAL",
+    "P03-K04-AI"
+  ],
+  "completeness": {
+    "official_trial_count": 18,
+    "ok_count": 18,
+    "non_ok": [],
+    "missing_metric_values": [],
+    "all_complete": true
+  },
+  "descriptive": {
+    "with_ai": {
+      "loc": {
+        "n": 9,
+        "min": 12.0,
+        "q1": 22.0,
+        "median": 32.0,
+        "q3": 36.5,
+        "iqr": 14.5,
+        "max": 40.0
+      },
+      "cyclomatic_complexity_mean": {
+        "n": 9,
+        "min": 5.0,
+        "q1": 6.0,
+        "median": 13.0,
+        "q3": 20.5,
+        "iqr": 14.5,
+        "max": 25.0
+      },
+      "cyclomatic_complexity_max": {
+        "n": 9,
+        "min": 6.0,
+        "q1": 7.0,
+        "median": 13.0,
+        "q3": 20.5,
+        "iqr": 13.5,
+        "max": 25.0
+      },
+      "duplication_percentage": {
+        "n": 9,
+        "min": 0.0,
+        "q1": 0.0,
+        "median": 0.0,
+        "q3": 0.0,
+        "iqr": 0.0,
+        "max": 0.0
+      },
+      "maintainability_index": {
+        "n": 9,
+        "min": 43.633,
+        "q1": 48.584,
+        "median": 50.727,
+        "q3": 53.807,
+        "iqr": 5.223,
+        "max": 63.438
+      }
+    },
+    "manual": {
+      "loc": {
+        "n": 9,
+        "min": 13.0,
+        "q1": 18.5,
+        "median": 25.0,
+        "q3": 44.0,
+        "iqr": 25.5,
+        "max": 47.0
+      },
+      "cyclomatic_complexity_mean": {
+        "n": 9,
+        "min": 6.0,
+        "q1": 9.0,
+        "median": 14.0,
+        "q3": 22.5,
+        "iqr": 13.5,
+        "max": 27.0
+      },
+      "cyclomatic_complexity_max": {
+        "n": 9,
+        "min": 6.0,
+        "q1": 9.0,
+        "median": 14.0,
+        "q3": 22.5,
+        "iqr": 13.5,
+        "max": 27.0
+      },
+      "duplication_percentage": {
+        "n": 9,
+        "min": 0.0,
+        "q1": 0.0,
+        "median": 0.0,
+        "q3": 0.0,
+        "iqr": 0.0,
+        "max": 0.0
+      },
+      "maintainability_index": {
+        "n": 9,
+        "min": 42.33,
+        "q1": 44.342,
+        "median": 50.874,
+        "q3": 57.2665,
+        "iqr": 12.9245,
+        "max": 63.127
+      }
+    }
+  },
+  "descriptive_fully_green": {
+    "with_ai": {
+      "loc": {
+        "n": 9,
+        "min": 12.0,
+        "q1": 22.0,
+        "median": 32.0,
+        "q3": 36.5,
+        "iqr": 14.5,
+        "max": 40.0
+      },
+      "cyclomatic_complexity_mean": {
+        "n": 9,
+        "min": 5.0,
+        "q1": 6.0,
+        "median": 13.0,
+        "q3": 20.5,
+        "iqr": 14.5,
+        "max": 25.0
+      },
+      "cyclomatic_complexity_max": {
+        "n": 9,
+        "min": 6.0,
+        "q1": 7.0,
+        "median": 13.0,
+        "q3": 20.5,
+        "iqr": 13.5,
+        "max": 25.0
+      },
+      "duplication_percentage": {
+        "n": 9,
+        "min": 0.0,
+        "q1": 0.0,
+        "median": 0.0,
+        "q3": 0.0,
+        "iqr": 0.0,
+        "max": 0.0
+      },
+      "maintainability_index": {
+        "n": 9,
+        "min": 43.633,
+        "q1": 48.584,
+        "median": 50.727,
+        "q3": 53.807,
+        "iqr": 5.223,
+        "max": 63.438
+      }
+    },
+    "manual": {
+      "loc": {
+        "n": 9,
+        "min": 13.0,
+        "q1": 18.5,
+        "median": 25.0,
+        "q3": 44.0,
+        "iqr": 25.5,
+        "max": 47.0
+      },
+      "cyclomatic_complexity_mean": {
+        "n": 9,
+        "min": 6.0,
+        "q1": 9.0,
+        "median": 14.0,
+        "q3": 22.5,
+        "iqr": 13.5,
+        "max": 27.0
+      },
+      "cyclomatic_complexity_max": {
+        "n": 9,
+        "min": 6.0,
+        "q1": 9.0,
+        "median": 14.0,
+        "q3": 22.5,
+        "iqr": 13.5,
+        "max": 27.0
+      },
+      "duplication_percentage": {
+        "n": 9,
+        "min": 0.0,
+        "q1": 0.0,
+        "median": 0.0,
+        "q3": 0.0,
+        "iqr": 0.0,
+        "max": 0.0
+      },
+      "maintainability_index": {
+        "n": 9,
+        "min": 42.33,
+        "q1": 44.342,
+        "median": 50.874,
+        "q3": 57.2665,
+        "iqr": 12.9245,
+        "max": 63.127
+      }
+    }
+  },
+  "fully_green_trial_count": 18,
+  "wilcoxon": {
+    "loc": {
+      "status": "ok",
+      "n_pairs": 3,
+      "alternative": "two-sided",
+      "statistic_w_plus": 3.0,
+      "p_value_exact": 1.0,
+      "differences": [
+        -15.0,
+        9.0,
+        9.0
+      ],
+      "message": "Teste exato sobre medianas por participante. Com tres pares, o menor p-valor unilateral possivel e 0.125."
+    },
+    "cyclomatic_complexity_mean": {
+      "status": "ok",
+      "n_pairs": 3,
+      "alternative": "two-sided",
+      "statistic_w_plus": 2.0,
+      "p_value_exact": 1.0,
+      "differences": [
+        -16.0,
+        -1.0,
+        5.0
+      ],
+      "message": "Teste exato sobre medianas por participante. Com tres pares, o menor p-valor unilateral possivel e 0.125."
+    },
+    "cyclomatic_complexity_max": {
+      "status": "ok",
+      "n_pairs": 3,
+      "alternative": "two-sided",
+      "statistic_w_plus": 2.0,
+      "p_value_exact": 1.0,
+      "differences": [
+        -14.0,
+        -1.0,
+        5.0
+      ],
+      "message": "Teste exato sobre medianas por participante. Com tres pares, o menor p-valor unilateral possivel e 0.125."
+    },
+    "duplication_percentage": {
+      "status": "not_applicable",
+      "n_pairs": 0,
+      "alternative": "two-sided",
+      "statistic_w_plus": null,
+      "p_value_exact": null,
+      "differences": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "message": "Todas as diferencas pareadas sao zero; Wilcoxon nao e informativo."
+    },
+    "maintainability_index": {
+      "status": "ok",
+      "n_pairs": 3,
+      "alternative": "two-sided",
+      "statistic_w_plus": 3.0,
+      "p_value_exact": 1.0,
+      "differences": [
+        6.8,
+        -0.001,
+        -3.505
+      ],
+      "message": "Teste exato sobre medianas por participante. Com tres pares, o menor p-valor unilateral possivel e 0.125."
+    }
+  },
+  "holm": {
+    "loc": {
+      "raw_p": 1.0,
+      "holm_threshold": 0.0125,
+      "reject_h0": false
+    },
+    "cyclomatic_complexity_mean": {
+      "raw_p": 1.0,
+      "holm_threshold": 0.016667,
+      "reject_h0": false
+    },
+    "cyclomatic_complexity_max": {
+      "raw_p": 1.0,
+      "holm_threshold": 0.025,
+      "reject_h0": false
+    },
+    "duplication_percentage": {
+      "raw_p": null,
+      "holm_threshold": null,
+      "reject_h0": false
+    },
+    "maintainability_index": {
+      "raw_p": 1.0,
+      "holm_threshold": 0.05,
+      "reject_h0": false
+    }
+  },
+  "extremes": {
+    "loc": {
+      "min": {
+        "trial_id": "P03-K02-AI",
+        "value": 12.0
+      },
+      "max": {
+        "trial_id": "P02-K05-MANUAL",
+        "value": 47.0
+      }
+    },
+    "cyclomatic_complexity_mean": {
+      "min": {
+        "trial_id": "P01-K03-AI",
+        "value": 5.0
+      },
+      "max": {
+        "trial_id": "P02-K05-MANUAL",
+        "value": 27.0
+      }
+    },
+    "cyclomatic_complexity_max": {
+      "min": {
+        "trial_id": "P01-K03-AI",
+        "value": 6.0
+      },
+      "max": {
+        "trial_id": "P02-K05-MANUAL",
+        "value": 27.0
+      }
+    },
+    "duplication_percentage": {
+      "min": {
+        "trial_id": "P01-K01-AI",
+        "value": 0.0
+      },
+      "max": {
+        "trial_id": "P01-K01-AI",
+        "value": 0.0
+      }
+    },
+    "maintainability_index": {
+      "min": {
+        "trial_id": "P01-K04-MANUAL",
+        "value": 42.33
+      },
+      "max": {
+        "trial_id": "P03-K02-AI",
+        "value": 63.438
+      }
+    }
+  },
+  "notes": [
+    "Analise filtrada pelos 18 trial_id oficiais do contrabalanceamento.",
+    "Metricas ausentes permanecem nulas; nao sao convertidas em zero.",
+    "Wilcoxon bicaudal usa medianas por participante (within-subject).",
+    "Correcao de Holm aplicada aos cinco testes confirmatórios da RQ3.",
+    "LOC entra como controle de verbosidade ao interpretar complexidade.",
+    "N=3 limita o poder do Wilcoxon; ausencia de significancia nao implica ausencia de efeito."
+  ]
+}

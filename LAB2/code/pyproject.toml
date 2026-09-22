@@ -18,6 +18,7 @@ lab02-smoke = "lab02.smoke_cli:main"
 lab02-katas = "lab02.kata_runner:main"
 lab02-design = "lab02.counterbalance:main"
 lab02-rq12 = "lab02.rq12_analysis:main"
+lab02-rq3 = "lab02.rq3_analysis:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
