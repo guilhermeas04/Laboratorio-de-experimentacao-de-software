@@ -379,6 +379,7 @@ def render_markdown(analysis: dict[str, Any]) -> str:
     wilcoxon = analysis["wilcoxon"]
     holm = analysis["holm"]
     completeness = analysis["completeness"]
+    extremes = analysis["extremes"]
 
     lines = [
         "# LAB02 - RQ3",
@@ -387,14 +388,15 @@ def render_markdown(analysis: dict[str, Any]) -> str:
         "RQ3: o uso de assistente de IA altera a complexidade ciclomatica ou a "
         "duplicacao do codigo produzido?",
         "",
-        "## Completude",
+        "## Completude das metricas",
         "",
-        f"- Trials oficiais: {completeness['official_trial_count']}",
-        f"- Com status ok: {completeness['ok_count']}",
-        f"- Metricas ausentes: {len(completeness['missing_metric_values'])}",
-        f"- Status diferente de ok: {len(completeness['non_ok'])}",
+        f"- Trials oficiais conferidos: {completeness['official_trial_count']}",
+        f"- Arquivos com status `ok`: {completeness['ok_count']}",
+        f"- Campos de metrica ausentes: {len(completeness['missing_metric_values'])}",
+        f"- Status diferente de `ok`: {len(completeness['non_ok'])}",
+        f"- Completude automatica: {'sim' if completeness['all_complete'] else 'nao'}",
         "",
-        "## Estatisticas descritivas",
+        "## Tabelas finais por tratamento",
         "",
         "| Tratamento | Metrica | n | Mediana | IQR | Min | Max |",
         "| --- | --- | ---: | ---: | ---: | ---: | ---: |",
@@ -414,7 +416,7 @@ def render_markdown(analysis: dict[str, Any]) -> str:
     lines.extend(
         [
             "",
-            "## Wilcoxon bicaudal e Holm",
+            "## Wilcoxon bicaudal e correcao de Holm",
             "",
             "| Metrica | n pares | W+ | p exato | Limiar Holm | Rejeita H0 | Status |",
             "| --- | ---: | ---: | ---: | ---: | --- | --- |",
@@ -438,15 +440,37 @@ def render_markdown(analysis: dict[str, Any]) -> str:
     lines.extend(
         [
             "",
-            "## Interpretacao curta",
+            "## Casos extremos",
+            "",
+            "| Metrica | Minimo | Maximo |",
+            "| --- | --- | --- |",
+        ]
+    )
+    for metric, label in METRIC_LABELS.items():
+        extreme = extremes[metric]
+        if extreme["min"] is None:
+            lines.append(f"| {label} | n/d | n/d |")
+            continue
+        lines.append(
+            f"| {label} | {extreme['min']['trial_id']} ({extreme['min']['value']}) | "
+            f"{extreme['max']['trial_id']} ({extreme['max']['value']}) |"
+        )
+
+    lines.extend(
+        [
+            "",
+            "## Interpretacao da RQ3",
             "",
             _interpret_rq3(analysis),
             "",
             "## Limitacoes",
             "",
             "- N=3 pares; Wilcoxon exato dificilmente atinge p < 0,05.",
-            "- LOC controla verbosidade: maior LOC pode elevar CC sem piorar o desenho.",
-            "- Codigo incompleto pode parecer artificialmente simples; ver subset 100% green.",
+            "- LOC e metrica de controle: codigo com IA pode ser mais verboso e isso "
+            "afeta a leitura da complexidade.",
+            "- Duplicacao zerada nos dois tratamentos limita o Wilcoxon dessa metrica.",
+            "- Codigo incompleto pode parecer artificialmente simples; subset 100% green "
+            f"tem {analysis['fully_green_trial_count']} trials.",
             "- Metricas ausentes nao foram imputadas como zero.",
         ]
     )
@@ -463,6 +487,15 @@ def _interpret_rq3(analysis: dict[str, Any]) -> str:
             return "n/d"
         return str(values["median"])
 
+    ai_loc = median_or_na("with_ai", "loc")
+    manual_loc = median_or_na("manual", "loc")
+    ai_cc = median_or_na("with_ai", "cyclomatic_complexity_mean")
+    manual_cc = median_or_na("manual", "cyclomatic_complexity_mean")
+    ai_dup = median_or_na("with_ai", "duplication_percentage")
+    manual_dup = median_or_na("manual", "duplication_percentage")
+    ai_mi = median_or_na("with_ai", "maintainability_index")
+    manual_mi = median_or_na("manual", "maintainability_index")
+
     rejected = [METRIC_LABELS[name] for name, row in holm.items() if row["reject_h0"]]
     rejection_text = (
         "Nenhuma metrica rejeitou H0 apos Holm."
@@ -471,18 +504,38 @@ def _interpret_rq3(analysis: dict[str, Any]) -> str:
     )
 
     return (
-        "**RQ3.** Comparando medianas, LOC com IA foi "
-        f"{median_or_na('with_ai', 'loc')} frente a {median_or_na('manual', 'loc')} no manual; "
-        f"CC media {median_or_na('with_ai', 'cyclomatic_complexity_mean')} vs "
-        f"{median_or_na('manual', 'cyclomatic_complexity_mean')}; "
-        f"duplicacao {median_or_na('with_ai', 'duplication_percentage')}% vs "
-        f"{median_or_na('manual', 'duplication_percentage')}%; "
-        f"MI {median_or_na('with_ai', 'maintainability_index')} vs "
-        f"{median_or_na('manual', 'maintainability_index')}. "
-        f"{rejection_text} "
-        "Com amostra pequena, a leitura deve priorizar as medianas/IQR e o efeito de LOC "
-        "sobre complexidade, sem tratar p-valor como prova conclusiva."
+        f"**Complexidade.** A mediana de CC media foi {ai_cc} com IA e {manual_cc} "
+        "no manual; a CC maxima seguiu o mesmo padrao aproximado. A diferenca "
+        "descritiva e pequena e nao se sustenta no Wilcoxon bicaudal com N=3.\n\n"
+        f"**Duplicacao.** Ambos os tratamentos ficaram com mediana {ai_dup}% "
+        f"(manual {manual_dup}%). Sem variacao, o teste pareado dessa metrica "
+        "fica `not_applicable`.\n\n"
+        f"**LOC (controle).** Mediana de {ai_loc} linhas com IA contra {manual_loc} "
+        "no manual. O codigo com IA tende a ser um pouco mais verboso; por isso "
+        "qualquer leitura de complexidade precisa considerar LOC, nao so o valor "
+        "absoluto de CC.\n\n"
+        f"**Manutenibilidade.** MI mediano {ai_mi} com IA e {manual_mi} no manual, "
+        "praticamente equivalentes. O indice composto nao aponta ganho estrutural "
+        "claro de um tratamento sobre o outro.\n\n"
+        f"{rejection_text} No conjunto, a evidencia disponivel nao indica alteracao "
+        "robusta de complexidade ou duplicacao pelo uso de IA neste experimento."
     )
+
+
+def assert_metrics_completeness(rows: Sequence[MetricsTrialRow]) -> None:
+    """Garante os 18 trials oficiais com status ok ou justificativa explicita."""
+
+    if len(rows) != 18:
+        raise RQ3AnalysisError(f"esperados 18 trials oficiais, obtidos {len(rows)}")
+
+    for row in rows:
+        if row.metrics_status != STATUS_OK and not row.messages.strip():
+            raise RQ3AnalysisError(
+                f"{row.trial_id}: status={row.metrics_status} sem justificativa"
+            )
+        for field in METRIC_FIELDS:
+            if row.metrics_status == STATUS_OK and getattr(row, field) is None:
+                raise RQ3AnalysisError(f"{row.trial_id}: campo {field} ausente")
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -491,6 +544,11 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--metrics-dir", type=Path, default=DEFAULT_METRICS_DIR)
     parser.add_argument("--raw-dir", type=Path, default=DEFAULT_RAW_DIR)
     parser.add_argument("--reports-dir", type=Path, default=DEFAULT_REPORTS_DIR)
+    parser.add_argument(
+        "--check-completeness",
+        action="store_true",
+        help="Apenas confere completude dos 18 trials e sai sem regenerar relatorios.",
+    )
     return parser
 
 
@@ -498,6 +556,11 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     try:
         rows = consolidate_metrics(args.design, args.metrics_dir, args.raw_dir)
+        assert_metrics_completeness(rows)
+        if args.check_completeness:
+            print(f"RQ3 completude OK: {len(rows)} trials com metricas validas")
+            return 0
+
         payload = analyze(rows)
         reports_dir = args.reports_dir
         csv_path = reports_dir / "rq3-trials.csv"

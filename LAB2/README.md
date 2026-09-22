@@ -194,6 +194,22 @@ A saída é gravada em `reports/rq12-trials.csv`,
 somente os `trial_id` presentes em `data/design/counterbalancing.csv`; qualquer
 registro extra em `data/raw/` é ignorado.
 
+## Análise RQ3
+
+O comando `lab02-rq3` consolida as métricas estáticas dos 18 trials oficiais
+(`metrics-*.json`), calcula medianas/IQR por tratamento, aplica Wilcoxon
+bicaudal com correção de Holm e gera o resumo da RQ3:
+
+```powershell
+cd LAB2/code
+lab02-rq3
+lab02-rq3 --check-completeness
+```
+
+A saída é gravada em `reports/rq3-trials.csv`,
+`reports/rq3-statistics.json` e `reports/rq3-summary.md`. LOC entra como
+métrica de controle ao interpretar complexidade e duplicação.
+
 ## Contrato dos dados
 
 Cada trial deve conter identificação, participante, kata, tratamento, ordem,
