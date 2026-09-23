@@ -23,6 +23,7 @@ lab02-design = "lab02.counterbalance:main"
 lab02-rq12 = "lab02.rq12_analysis:main"
 lab02-rq3 = "lab02.rq3_analysis:main"
 lab02-dashboard = "lab02.dashboard:main"
+lab02-dashboard-validate = "lab02.validate_dashboard:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

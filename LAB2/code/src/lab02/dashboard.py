@@ -12,6 +12,7 @@ import seaborn as sns
 
 from .rq12_analysis import DEFAULT_DESIGN, DEFAULT_RAW_DIR, consolidate_trials
 from .rq3_analysis import DEFAULT_METRICS_DIR, METRIC_FIELDS, METRIC_LABELS, consolidate_metrics
+from .validate_dashboard import validate_dashboard_artifacts
 
 
 LAB2_ROOT = Path(__file__).resolve().parents[3]
@@ -248,6 +249,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         _plot_rq2(frame, figures_dir / "dashboard-rq2-outcomes.png")
         _plot_rq3(frame, figures_dir / "dashboard-rq3-static-metrics.png")
         _write_markdown(frame, summary, args.reports_dir / "dashboard-summary.md")
+        validate_dashboard_artifacts(args.reports_dir, args.design)
     except (DashboardError, OSError, ValueError, KeyError) as error:
         print(f"ERRO: {error}")
         return 1

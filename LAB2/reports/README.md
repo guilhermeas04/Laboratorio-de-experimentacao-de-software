@@ -36,6 +36,8 @@ Arquivos esperados:
 
 ## Dashboard
 
+Esta entrega finaliza os artefatos visuais da LAB02S03, relacionada a #86.
+
 O dashboard consolida diretamente o desenho oficial, os registros em `data/raw/`
 e as metricas em `data/processed/`. A partir de `LAB2/code`, um unico comando
 recria as tabelas e as figuras:
@@ -56,3 +58,14 @@ arquivos extras e grava em `reports/`:
 
 Cada ponto representa um trial e a caixa resume mediana/IQR. Trials censurados
 sao mantidos no tempo registrado e marcados com X vermelho na figura da RQ1.
+
+Depois da geracao, a validacao automatica confere tabela 18/18, IDs oficiais,
+cabecalho PNG, tamanho minimo de 10 KB e dimensoes minimas de 640 x 400 px:
+
+```powershell
+python -m lab02.validate_dashboard
+```
+
+O proprio `python -m lab02.dashboard` executa essa validacao ao final. Falhas
+de existencia, formato, dimensao ou tabela interrompem o comando com codigo
+diferente de zero.
