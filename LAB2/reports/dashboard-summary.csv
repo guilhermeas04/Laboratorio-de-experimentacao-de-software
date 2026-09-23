@@ -1,0 +1,17 @@
+treatment,metric,n,q1,median,q3,iqr,min,max
+with_ai,elapsed_seconds,9,4.359,18.073,30.063,25.704,0.135,308.704
+with_ai,success_rate,9,100.0,100.0,100.0,0.0,100.0,100.0
+with_ai,tests_failing,9,0.0,0.0,0.0,0.0,0.0,0.0
+with_ai,loc,9,23.0,32.0,34.0,11.0,12.0,40.0
+with_ai,cyclomatic_complexity_mean,9,6.0,13.0,19.0,13.0,5.0,25.0
+with_ai,cyclomatic_complexity_max,9,8.0,13.0,19.0,11.0,6.0,25.0
+with_ai,duplication_percentage,9,0.0,0.0,0.0,0.0,0.0,0.0
+with_ai,maintainability_index,9,49.761,50.727,53.807,4.046,43.633,63.438
+manual,elapsed_seconds,9,0.283,24.712,322.484,322.201,0.143,487.28
+manual,success_rate,9,100.0,100.0,100.0,0.0,100.0,100.0
+manual,tests_failing,9,0.0,0.0,0.0,0.0,0.0,0.0
+manual,loc,9,19.0,25.0,43.0,24.0,13.0,47.0
+manual,cyclomatic_complexity_mean,9,11.0,14.0,22.0,11.0,6.0,27.0
+manual,cyclomatic_complexity_max,9,11.0,14.0,22.0,11.0,6.0,27.0
+manual,duplication_percentage,9,0.0,0.0,0.0,0.0,0.0,0.0
+manual,maintainability_index,9,44.439,50.874,56.138,11.699,42.33,63.127
