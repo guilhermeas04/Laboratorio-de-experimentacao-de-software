@@ -33,3 +33,26 @@ Arquivos esperados:
 - `rq3-trials.csv`: LOC, complexidade, duplicacao e MI por trial oficial.
 - `rq3-statistics.json`: descritivas, Wilcoxon bicaudal, Holm e completude.
 - `rq3-summary.md`: tabelas finais e interpretacao da RQ3.
+
+## Dashboard
+
+O dashboard consolida diretamente o desenho oficial, os registros em `data/raw/`
+e as metricas em `data/processed/`. A partir de `LAB2/code`, um unico comando
+recria as tabelas e as figuras:
+
+```powershell
+python -m lab02.dashboard
+```
+
+O comando usa somente os 18 trials de `data/design/counterbalancing.csv`, ignora
+arquivos extras e grava em `reports/`:
+
+- `dashboard-trials.csv`: tabela unificada de RQ1/RQ2/RQ3 por trial;
+- `dashboard-summary.csv`: n, quartis, mediana e IQR por tratamento;
+- `dashboard-summary.md`: resumo citavel e inventario dos artefatos;
+- `figures/dashboard-rq1-time.png`: tempo por tratamento;
+- `figures/dashboard-rq2-outcomes.png`: taxa de sucesso e testes falhando;
+- `figures/dashboard-rq3-static-metrics.png`: metricas estaticas.
+
+Cada ponto representa um trial e a caixa resume mediana/IQR. Trials censurados
+sao mantidos no tempo registrado e marcados com X vermelho na figura da RQ1.

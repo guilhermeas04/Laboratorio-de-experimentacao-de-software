@@ -1,2 +1,5 @@
+matplotlib==3.10.6
+pandas==2.3.2
 pytest==8.4.2
 radon==6.0.1
+seaborn==0.13.2
