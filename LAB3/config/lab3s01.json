@@ -1,0 +1,23 @@
+{
+  "observation_window": {
+    "start": "2025-01-01",
+    "end": "2025-12-31"
+  },
+  "repository_search": {
+    "star_ranges": [
+      "1000..2000",
+      "2001..5000",
+      "5001..10000",
+      "10001..50000",
+      "50001..*"
+    ],
+    "sort": "stars",
+    "order": "desc",
+    "per_page": 100
+  },
+  "selection": {
+    "target_s01_sample_size": 100,
+    "minimum_releases": 5,
+    "minimum_valid_workflow_runs": 50
+  }
+}
