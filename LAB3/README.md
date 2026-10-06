@@ -35,3 +35,15 @@ outras conclusões são descartados.
 
 O resultado também informa `windows_at_limit`: os meses em que a API reportou
 `total_count >= 1000`, para investigação e eventual subdivisão adicional.
+
+## Resiliência e métricas
+
+`lab03_dora.api.GitHubApiClient` mantém respostas em cache por rota e
+parâmetros, espera o horário informado por `X-RateLimit-Reset` quando o limite
+é atingido e repete erros 5xx com backoff exponencial. O token é usado somente
+no cabeçalho da requisição e nunca é salvo no cache.
+
+Em `lab03_dora.metrics`, `calculate_cfr` calcula a proporção de falhas entre
+execuções válidas. `calculate_recovery` agrupa falhas consecutivas até o
+primeiro sucesso posterior e registra como censurado o episódio que termina
+sem recuperação antes do fim da observação.

@@ -7,8 +7,7 @@ from datetime import UTC, datetime
 import json
 from pathlib import Path
 
-from urllib.parse import urlencode
-from urllib.request import Request, urlopen
+from lab03_dora.api import GitHubApiClient
 
 VALID_CONCLUSIONS = frozenset({"success", "failure", "timed_out", "startup_failure"})
 DEFAULT_PER_PAGE = 100
@@ -70,28 +69,20 @@ def normalize_workflow_run(raw: dict, *, repository: str, observation_month: str
     }
 
 
-class WorkflowRunClient:
+class WorkflowRunClient(GitHubApiClient):
     """Cliente mínimo da API REST, mantendo autenticação fora do coletor."""
 
-    def __init__(self, token: str, *, api_url: str = "https://api.github.com") -> None:
-        if not token:
-            raise ValueError("GITHUB_TOKEN não configurado")
-        self.token = token
-        self.api_url = api_url.rstrip("/")
+    def __init__(
+        self,
+        token: str,
+        *,
+        api_url: str = "https://api.github.com",
+        cache_dir: Path | None = None,
+    ) -> None:
+        super().__init__(token, api_url=api_url, cache_dir=cache_dir)
 
     def list_runs(self, repository: str, params: dict[str, str | int]) -> dict:
-        query = urlencode(params)
-        request = Request(
-            f"{self.api_url}/repos/{repository}/actions/runs?{query}",
-            headers={
-                "Accept": "application/vnd.github+json",
-                "Authorization": f"Bearer {self.token}",
-                "X-GitHub-Api-Version": "2022-11-28",
-                "User-Agent": "lab03-dora",
-            },
-        )
-        with urlopen(request, timeout=60) as response:
-            return json.loads(response.read())
+        return self.get_json(f"repos/{repository}/actions/runs", params)
 
 
 @dataclass(frozen=True)
