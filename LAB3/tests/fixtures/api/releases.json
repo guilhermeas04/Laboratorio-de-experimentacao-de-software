@@ -1,0 +1,56 @@
+[
+  {
+    "id": 10,
+    "tag_name": "v1.0.0",
+    "name": "v1.0.0",
+    "draft": false,
+    "prerelease": false,
+    "published_at": "2024-11-01T12:00:00Z",
+    "target_commitish": "main"
+  },
+  {
+    "id": 11,
+    "tag_name": "v1.1.0",
+    "name": "v1.1.0",
+    "draft": false,
+    "prerelease": false,
+    "published_at": "2025-03-15T00:00:00Z",
+    "target_commitish": "main"
+  },
+  {
+    "id": 12,
+    "tag_name": "v1.2.0-rc.1",
+    "name": "rc",
+    "draft": false,
+    "prerelease": true,
+    "published_at": "2025-04-01T00:00:00Z",
+    "target_commitish": "main"
+  },
+  {
+    "id": 13,
+    "tag_name": "v1.2.0",
+    "name": "rascunho",
+    "draft": true,
+    "prerelease": false,
+    "published_at": null,
+    "target_commitish": "main"
+  },
+  {
+    "id": 14,
+    "tag_name": "v9.0.0",
+    "name": "outro branch",
+    "draft": false,
+    "prerelease": false,
+    "published_at": "2025-07-01T00:00:00Z",
+    "target_commitish": "dev"
+  },
+  {
+    "id": 15,
+    "tag_name": "",
+    "name": "sem tag",
+    "draft": false,
+    "prerelease": false,
+    "published_at": "2025-06-01T00:00:00Z",
+    "target_commitish": "main"
+  }
+]

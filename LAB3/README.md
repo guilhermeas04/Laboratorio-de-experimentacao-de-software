@@ -1,49 +1,112 @@
-# LAB3 — Métricas DORA e integração contínua
+# LAB3 — Mineração de Métricas DORA
 
-Este diretório reúne a coleta de dados do GitHub Actions para as métricas DORA.
-A issue #99 implementa a coleta de workflow runs do branch padrão, somente para
-eventos `push`.
+Estrutura inicial para o laboratório de mineração das métricas DORA em repositórios open-source com GitHub Actions.
 
-## Estrutura
+## Organização
 
-```text
-LAB3/
-├── code/
-│   ├── src/lab03_dora/collection/  # coletor e normalização
-│   └── tests/                      # testes e fixtures
-├── data/
-│   ├── raw/                       # respostas brutas cacheadas
-│   └── interim/                    # dados intermediários
-├── docs/                           # protocolo e decisões
-└── reports/                        # resultados consolidados
-```
+- `config/`: arquivos de configuração do pipeline, como janela de observação, tamanho da amostra e parâmetros de coleta.
+- `src/lab03_dora/`: código-fonte do pipeline.
+  - `api/`: cliente REST/GraphQL próprio para GitHub, paginação, rate limit e backoff.
+  - `collection/`: seleção de repositórios e coleta de releases, commits, tags e workflow runs.
+  - `metrics/`: cálculo das métricas DORA, classificação e funções reutilizáveis.
+  - `analysis/`: análises estatísticas das RQs.
+  - `validation/`: validação manual, amostra-ouro, kappa, precisão, recall e F1.
+  - `pipeline/`: orquestração para execução com comando único.
+  - `utils/`: utilitários compartilhados.
+- `tests/`: testes unitários e de integração, com fixtures pequenas e controladas.
+- `data/`: dados do estudo.
+  - `raw/`: respostas brutas da API, normalmente regeneráveis e não versionadas.
+  - `interim/`: dados intermediários, funil de seleção e planilhas de validação manual.
+  - `processed/`: datasets finais, métricas calculadas e amostra-ouro consolidada.
+- `cache/`: cache local de API/SQLite para retomada da coleta.
+- `notebooks/`: explorações e análises por grupos de RQs.
+- `reports/`: tabelas, figuras e funil de seleção usados no artigo.
+- `docs/`: metodologia, artigo, dicionário de dados e documentação de replicação.
+- `scripts/`: comandos auxiliares de desenvolvimento.
 
-## Executar
+## Requisito central
+
+O pipeline final deve ser reprodutível por outro grupo a partir do README, com um único comando, lendo o token do GitHub por variável de ambiente (`GITHUB_TOKEN`) e sem usar bibliotecas prontas de acesso à API do GitHub.
+
+## Sprint 1 — seleção de repositórios e funil
+
+As issues `(LAB3S01 - 1)` e `(LAB3S01 - 2)` implementam a seleção inicial de candidatos e o funil da amostra de 100 repositórios.
+
+### Preparar ambiente
 
 ```powershell
-cd LAB3/code
-python -m pip install -e .
+cd LAB3
+python -m pip install -e .[dev]
+```
+
+### Executar com a API do GitHub
+
+No PowerShell:
+
+```powershell
+cd LAB3
+$env:GITHUB_TOKEN = "seu_token"
+python -m lab03_dora.pipeline.select_repositories
+```
+
+Saídas geradas:
+
+- `data/interim/selection/candidate_repositories.csv`: candidatos coletados e metadados básicos.
+- `data/interim/selection/s01_repository_selection.csv`: candidatos classificados pelo funil.
+- `reports/funnel/s01_selection_funnel.csv`: contagens por etapa do funil.
+
+### Executar a partir de um CSV local
+
+Para reprocessar o funil sem chamar a API:
+
+```powershell
+cd LAB3
+python -m lab03_dora.pipeline.select_repositories --input-csv data/interim/selection/candidate_repositories.csv
+```
+
+### Testes
+
+```powershell
+cd LAB3
 python -m pytest
 ```
 
-A função `collect_workflow_runs` recebe o repositório, o branch padrão e uma
-janela UTC configurável. Ela divide a janela em meses, envia `event=push` e
-`branch=<default branch>`, salva cada página em `data/raw/workflow_runs/` e
-retorna apenas runs concluídos com conclusão `success`, `failure`, `timed_out`
-ou `startup_failure`. Runs cancelados, ignorados, neutros, pendentes ou com
-outras conclusões são descartados.
+Observação: nesta primeira etapa, quando as contagens de releases e workflow runs ainda não foram produzidas pelas issues seguintes, os 100 repositórios com GitHub Actions ficam marcados como `s01_base_sample`. Quando essas contagens existirem, o mesmo funil passa a classificar os repositórios como `eligible_s01` ou descartar por releases/runs insuficientes.
 
-O resultado também informa `windows_at_limit`: os meses em que a API reportou
-`total_count >= 1000`, para investigação e eventual subdivisão adicional.
+## Sprint 1 — releases, tags e commits entre releases
 
-## Resiliência e métricas
+A issue `(LAB3S01 - 3)` coleta releases, tags e os commits entre uma release e a anterior. Draft fica de fora da definição principal. Pré-release e tag são gravados para a análise de sensibilidade. A janela e o default branch vêm da configuração e do repositório.
 
-`lab03_dora.api.GitHubApiClient` mantém respostas em cache por rota e
-parâmetros, espera o horário informado por `X-RateLimit-Reset` quando o limite
-é atingido e repete erros 5xx com backoff exponencial. O token é usado somente
-no cabeçalho da requisição e nunca é salvo no cache.
+Por padrão, o comando lê o CSV da seleção, coleta os 100 repositórios marcados como `s01_base_sample` e atualiza a coluna `releases_count` no mesmo arquivo:
 
-Em `lab03_dora.metrics`, `calculate_cfr` calcula a proporção de falhas entre
-execuções válidas. `calculate_recovery` agrupa falhas consecutivas até o
-primeiro sucesso posterior e registra como censurado o episódio que termina
-sem recuperação antes do fim da observação.
+```powershell
+cd LAB3
+$env:GITHUB_TOKEN = "seu_token"
+python -m lab03_dora.collection.history
+```
+
+Para testar somente um repositório:
+
+```powershell
+python -m lab03_dora.collection.history --repo owner/nome --default-branch main
+```
+
+Saídas:
+
+- `cache/api/<owner>__<repo>/`: respostas brutas de releases, tags e compare.
+- `data/raw/github/releases/`, `tags/` e `commits/`: saídas intermediárias.
+- `data/interim/release_history/`: casos ignorados ou com problema, sem interromper a coleta.
+- `data/interim/release_history/release_changes.csv`: commits e datas por release, em formato consumível pelas métricas de lead time da issue #98.
+- `data/interim/selection/s01_repository_selection.csv`: funil atualizado com a contagem de releases dos repositórios coletados.
+
+## Sprint 1 — deployment frequency e lead time
+
+A issue `(LAB3S01 - 5)` calcula as métricas sem chamar a API.
+
+- RQ01, `lab03_dora.metrics.deployment_frequency`: releases publicadas na janela divididas pelo número de semanas. Para 2025-01-01 a 2025-12-31 isso é 365/7, cerca de 52,1.
+- RQ02, `lab03_dora.metrics.lead_time`: mediana por release (data da release menos o commit mais antigo) e mediana por commit (data da release menos cada commit). A primeira release, release sem commit novo e data de commit posterior à publicação ficam de fora da mediana.
+
+```powershell
+cd LAB3
+python -m pytest tests/unit/test_deployment_frequency.py tests/unit/test_lead_time.py
+```

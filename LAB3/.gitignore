@@ -1,0 +1,27 @@
+# Cache local da coleta: deve ser regenerável.
+cache/**
+!cache/**/
+!cache/**/.gitkeep
+
+# Respostas brutas da API podem ficar grandes; versionar apenas se o grupo decidir.
+data/raw/**
+!data/raw/**/
+!data/raw/**/.gitkeep
+
+# Credenciais locais.
+.env
+.env.*
+
+# Bancos/cache locais.
+*.sqlite
+*.sqlite3
+*.db
+
+# Artefatos Python.
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
