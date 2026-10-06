@@ -33,6 +33,12 @@ LAB1/data/snapshots/*
 !LAB1/data/snapshots/.gitkeep
 !LAB1/data/snapshots/*.csv
 
+# LAB3 local collection cache
+LAB3/data/raw/*
+LAB3/data/interim/*
+!LAB3/data/raw/.gitkeep
+!LAB3/data/interim/.gitkeep
+
 # Logs
 *.log
 logs/
