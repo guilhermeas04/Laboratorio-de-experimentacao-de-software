@@ -98,3 +98,15 @@ Saídas:
 - `data/interim/release_history/`: casos ignorados ou com problema, sem interromper a coleta.
 - `data/interim/release_history/release_changes.csv`: commits e datas por release, em formato consumível pelas métricas de lead time da issue #98.
 - `data/interim/selection/s01_repository_selection.csv`: funil atualizado com a contagem de releases dos repositórios coletados.
+
+## Sprint 1 — deployment frequency e lead time
+
+A issue `(LAB3S01 - 5)` calcula as métricas sem chamar a API.
+
+- RQ01, `lab03_dora.metrics.deployment_frequency`: releases publicadas na janela divididas pelo número de semanas. Para 2025-01-01 a 2025-12-31 isso é 365/7, cerca de 52,1.
+- RQ02, `lab03_dora.metrics.lead_time`: mediana por release (data da release menos o commit mais antigo) e mediana por commit (data da release menos cada commit). A primeira release, release sem commit novo e data de commit posterior à publicação ficam de fora da mediana.
+
+```powershell
+cd LAB3
+python -m pytest tests/unit/test_deployment_frequency.py tests/unit/test_lead_time.py
+```
