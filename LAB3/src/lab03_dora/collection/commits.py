@@ -10,7 +10,7 @@ from lab03_dora.api.github import GitHubApiError
 from lab03_dora.collection.tags import GitHubReader
 
 
-MAX_COMPARE_PAGES = 20
+MAX_PER_PAGE = 100
 
 
 @dataclass(frozen=True)
@@ -45,7 +45,7 @@ def collect_commits_between(
     base_tag: str | None,
     head_tag: str,
     *,
-    per_page: int = 250,
+    per_page: int = MAX_PER_PAGE,
 ) -> tuple[CompareResult, list[dict[str, Any]]]:
     """Busca os commits de base...head.
 
@@ -62,12 +62,15 @@ def collect_commits_between(
     collected: list[CommitRecord] = []
     seen: set[str] = set()
     skipped = 0
+    received = 0
     total_commits: int | None = None
+    page = 1
+    requested_per_page = min(max(per_page, 1), MAX_PER_PAGE)
     try:
-        for page in range(1, MAX_COMPARE_PAGES + 1):
+        while True:
             response = client.get(
                 f"/repos/{repository}/compare/{_compare_ref(base_tag, head_tag)}",
-                {"per_page": per_page, "page": page},
+                {"per_page": requested_per_page, "page": page},
             )
             payload = response.payload if isinstance(response.payload, dict) else {}
             raw_pages.append(payload)
@@ -85,7 +88,7 @@ def collect_commits_between(
                     _problem(repository, base_tag, head_tag, "compare_error", "O campo commits nao e uma lista."),
                     raw_pages,
                 )
-            new_on_page = 0
+            received += len(page_commits)
             for item in page_commits:
                 if not isinstance(item, dict):
                     skipped += 1
@@ -98,30 +101,20 @@ def collect_commits_between(
                     continue
                 seen.add(parsed.sha)
                 collected.append(parsed)
-                new_on_page += 1
-            if new_on_page == 0 or len(page_commits) < per_page:
+            if total_commits is not None and received >= total_commits:
                 break
-            if total_commits is not None and len(collected) >= total_commits:
+            if not page_commits or len(page_commits) < requested_per_page:
                 break
-        else:
-            return (
-                CompareResult(
-                    repository=repository,
-                    base_tag=base_tag,
-                    head_tag=head_tag,
-                    commits=tuple(collected),
-                    problem="compare_truncated",
-                    detail=f"A paginacao parou em {MAX_COMPARE_PAGES} paginas.",
-                    skipped_missing_date=skipped,
-                ),
-                raw_pages,
-            )
+            page += 1
     except GitHubApiError as error:
         return _problem(repository, base_tag, head_tag, "compare_error", str(error)), raw_pages
 
     problem = ""
     detail = ""
-    if not collected:
+    if total_commits is not None and received < total_commits:
+        problem = "compare_truncated"
+        detail = f"A API informou {total_commits} commits, mas {received} foram recebidos."
+    elif not collected:
         problem = "no_new_commits"
         detail = "O compare nao trouxe commits novos com data de autor."
     elif skipped:

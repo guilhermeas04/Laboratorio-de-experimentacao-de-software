@@ -122,7 +122,10 @@ def _branch_status(target: str, default_branch: str) -> tuple[bool, str]:
     if cleaned == default_branch:
         return True, ""
     if len(cleaned) == 40 and all(character in "0123456789abcdefABCDEF" for character in cleaned):
-        return True, "target_commitish_is_sha"
+        # A resposta de releases nao informa a ancestralidade do SHA. Ele e
+        # mantido para evitar falso descarte, mas fica explicitamente marcado
+        # para validacao posterior contra a default branch.
+        return True, "unverified_target_commitish_sha"
     if not cleaned:
         return False, "missing_target_commitish"
     return False, "outside_default_branch"
