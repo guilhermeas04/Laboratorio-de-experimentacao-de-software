@@ -138,6 +138,7 @@ runs, cache HTTP e as métricas iniciais em uma única execução:
 cd LAB3
 python -m pip install -e ".[dev]"
 $env:GITHUB_TOKEN = gh auth token       # ou defina um token pessoal equivalente
+$env:PYTHONPATH = "src"                # necessário se não instalar o pacote
 python -m lab03_dora.pipeline             # amostra S01 (até 100 repositórios)
 python -m lab03_dora.pipeline --limit 3 --target-with-actions 3  # smoke real
 ```
