@@ -7,7 +7,7 @@ from datetime import UTC, datetime
 import json
 from pathlib import Path
 
-from lab03_dora.api import GitHubApiClient
+from lab03_dora.api.github import GitHubClient
 
 VALID_CONCLUSIONS = frozenset({"success", "failure", "timed_out", "startup_failure"})
 DEFAULT_PER_PAGE = 100
@@ -49,7 +49,17 @@ def classify_conclusion(conclusion: str | None) -> str | None:
     return normalized if normalized in VALID_CONCLUSIONS else None
 
 
-def normalize_workflow_run(raw: dict, *, repository: str, observation_month: str) -> dict | None:
+def normalize_workflow_run(
+    raw: dict,
+    *,
+    repository: str,
+    observation_month: str,
+    default_branch: str | None = None,
+) -> dict | None:
+    if raw.get("event") != "push":
+        return None
+    if default_branch is not None and raw.get("head_branch") != default_branch:
+        return None
     conclusion = classify_conclusion(raw.get("conclusion"))
     if conclusion is None or raw.get("status") != "completed":
         return None
@@ -69,7 +79,7 @@ def normalize_workflow_run(raw: dict, *, repository: str, observation_month: str
     }
 
 
-class WorkflowRunClient(GitHubApiClient):
+class WorkflowRunClient(GitHubClient):
     """Cliente mínimo da API REST, mantendo autenticação fora do coletor."""
 
     def __init__(
@@ -79,10 +89,11 @@ class WorkflowRunClient(GitHubApiClient):
         api_url: str = "https://api.github.com",
         cache_dir: Path | None = None,
     ) -> None:
-        super().__init__(token, api_url=api_url, cache_dir=cache_dir)
+        super().__init__(token=token, api_root=api_url)
 
     def list_runs(self, repository: str, params: dict[str, str | int]) -> dict:
-        return self.get_json(f"repos/{repository}/actions/runs", params)
+        response = self.get(f"/repos/{repository}/actions/runs", params)
+        return response.payload if isinstance(response.payload, dict) else {}
 
 
 @dataclass(frozen=True)
@@ -93,6 +104,34 @@ class CollectionResult:
     @property
     def total_count(self) -> int:
         return len(self.runs)
+
+
+def collect_workflow_runs_for_repositories(
+    repositories: list[tuple[str, str]],
+    start: datetime | str,
+    end: datetime | str,
+    client: WorkflowRunClient,
+    *,
+    cache_dir: Path | None = None,
+) -> dict[str, CollectionResult]:
+    """Executa a coleta para a amostra S01 inteira, sem interromper por repo."""
+    results: dict[str, CollectionResult] = {}
+    for repository, default_branch in repositories:
+        try:
+            results[repository] = collect_workflow_runs(
+                repository,
+                default_branch,
+                start,
+                end,
+                client,
+                cache_dir=cache_dir,
+            )
+        except Exception as error:
+            results[repository] = CollectionResult(
+                runs=[],
+                windows_at_limit=[f"error:{type(error).__name__}"],
+            )
+    return results
 
 
 def _default_cache_dir() -> Path:
@@ -131,7 +170,7 @@ def collect_workflow_runs(
                     {
                         "event": "push",
                         "branch": default_branch,
-                        "created": f"{window_start.isoformat()},{window_end.isoformat()}",
+                    "created": f"{window_start.isoformat()}..{window_end.isoformat()}",
                         "per_page": per_page,
                         "page": page,
                     },
@@ -143,7 +182,10 @@ def collect_workflow_runs(
                 windows_at_limit.append(month)
             for raw_run in payload.get("workflow_runs", []):
                 normalized = normalize_workflow_run(
-                    raw_run, repository=repository, observation_month=month
+                    raw_run,
+                    repository=repository,
+                    observation_month=month,
+                    default_branch=default_branch,
                 )
                 if normalized is not None:
                     collected.append(normalized)

@@ -110,3 +110,22 @@ A issue `(LAB3S01 - 5)` calcula as métricas sem chamar a API.
 cd LAB3
 python -m pytest tests/unit/test_deployment_frequency.py tests/unit/test_lead_time.py
 ```
+
+## Sprint 1 — workflow runs e confiabilidade
+
+`lab03_dora.collection.workflow_runs` coleta execuções do GitHub Actions no
+branch padrão, somente para `event=push`, particionando a janela em meses.
+Cada consulta usa o intervalo `created=...` da API e grava as páginas em cache.
+Os resultados podem ser coletados para a amostra inteira com
+`collect_workflow_runs_for_repositories`.
+
+```powershell
+cd LAB3
+$env:PYTHONPATH = "src"
+python -m pytest
+```
+
+São aceitas apenas as conclusões `success`, `failure`, `timed_out` e
+`startup_failure`; execuções canceladas, ignoradas ou em andamento ficam fora.
+Meses com 1.000 ou mais resultados são sinalizados em `windows_at_limit` para
+subdivisão adicional antes da análise final.

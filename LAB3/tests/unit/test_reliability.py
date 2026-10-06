@@ -35,7 +35,7 @@ def test_recovery_closes_episode_at_next_success() -> None:
     assert summary.recovered_count == 1
     assert summary.episodes[0].censored is False
     assert summary.episodes[0].failure_count == 2
-    assert summary.episodes[0].recovery_hours == 2.0
+    assert summary.episodes[0].recovery_hours == 2.5
 
 
 def test_recovery_marks_failure_without_success_as_censored() -> None:
@@ -46,4 +46,4 @@ def test_recovery_marks_failure_without_success_as_censored() -> None:
 
     assert summary.censored_count == 1
     assert summary.episodes[0].recovered_at is None
-    assert summary.episodes[0].recovery_hours == 2.0
+    assert summary.episodes[0].recovery_hours == 2.5

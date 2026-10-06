@@ -14,9 +14,9 @@ class FakeClient:
         return {
             "total_count": 1000,
             "workflow_runs": [
-                {"id": 1, "status": "completed", "conclusion": "success", "event": "push"},
-                {"id": 2, "status": "completed", "conclusion": "cancelled", "event": "push"},
-                {"id": 3, "status": "in_progress", "conclusion": None, "event": "push"},
+                {"id": 1, "status": "completed", "conclusion": "success", "event": "push", "head_branch": "main"},
+                {"id": 2, "status": "completed", "conclusion": "cancelled", "event": "push", "head_branch": "main"},
+                {"id": 3, "status": "in_progress", "conclusion": None, "event": "push", "head_branch": "main"},
             ],
         }
 
@@ -64,6 +64,7 @@ def test_collects_default_branch_push_runs_and_marks_api_limit(tmp_path: Path) -
     assert client.calls[0][0] == "org/project"
     assert client.calls[0][1]["event"] == "push"
     assert client.calls[0][1]["branch"] == "main"
+    assert ".." in str(client.calls[0][1]["created"])
     assert json.loads(next(tmp_path.glob("*.json")).read_text())
 
 

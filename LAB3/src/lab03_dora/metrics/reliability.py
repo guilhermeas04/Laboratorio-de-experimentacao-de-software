@@ -66,7 +66,7 @@ def calculate_recovery(
 ) -> RecoverySummary:
     """Agrupa falhas consecutivas até o primeiro sucesso posterior.
 
-    O episódio começa no fim da primeira execução falha e termina no início da
+    O episódio começa no início da primeira execução falha e termina no fim da
     primeira execução bem-sucedida. Sem sucesso até observation_end, o episódio
     é censurado e seu tempo vai até o fim da observação.
     """
@@ -85,13 +85,13 @@ def calculate_recovery(
         conclusion = run["conclusion"]
         if conclusion != "success":
             if active_start is None:
-                active_start = _timestamp(run, "updated_at", "run_started_at", "created_at")
+                active_start = _timestamp(run, "run_started_at", "created_at")
                 active_failures = 0
             active_failures += 1
             continue
         if active_start is None:
             continue
-        recovered_at = _timestamp(run, "run_started_at", "created_at")
+        recovered_at = _timestamp(run, "updated_at", "run_started_at", "created_at")
         episodes.append(
             RecoveryEpisode(
                 started_at=active_start.isoformat(),
