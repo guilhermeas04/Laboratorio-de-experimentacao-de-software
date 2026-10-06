@@ -72,3 +72,29 @@ python -m pytest
 ```
 
 Observação: nesta primeira etapa, quando as contagens de releases e workflow runs ainda não foram produzidas pelas issues seguintes, os 100 repositórios com GitHub Actions ficam marcados como `s01_base_sample`. Quando essas contagens existirem, o mesmo funil passa a classificar os repositórios como `eligible_s01` ou descartar por releases/runs insuficientes.
+
+## Sprint 1 — releases, tags e commits entre releases
+
+A issue `(LAB3S01 - 3)` coleta releases, tags e os commits entre uma release e a anterior. Draft fica de fora da definição principal. Pré-release e tag são gravados para a análise de sensibilidade. A janela e o default branch vêm da configuração e do repositório.
+
+Por padrão, o comando lê o CSV da seleção, coleta os 100 repositórios marcados como `s01_base_sample` e atualiza a coluna `releases_count` no mesmo arquivo:
+
+```powershell
+cd LAB3
+$env:GITHUB_TOKEN = "seu_token"
+python -m lab03_dora.collection.history
+```
+
+Para testar somente um repositório:
+
+```powershell
+python -m lab03_dora.collection.history --repo owner/nome --default-branch main
+```
+
+Saídas:
+
+- `cache/api/<owner>__<repo>/`: respostas brutas de releases, tags e compare.
+- `data/raw/github/releases/`, `tags/` e `commits/`: saídas intermediárias.
+- `data/interim/release_history/`: casos ignorados ou com problema, sem interromper a coleta.
+- `data/interim/release_history/release_changes.csv`: commits e datas por release, em formato consumível pelas métricas de lead time da issue #98.
+- `data/interim/selection/s01_repository_selection.csv`: funil atualizado com a contagem de releases dos repositórios coletados.
