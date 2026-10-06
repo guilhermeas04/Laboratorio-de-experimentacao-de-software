@@ -320,7 +320,7 @@ def test_batch_cli_reads_selection_and_updates_release_count(tmp_path: Path, mon
         )
     monkeypatch.setattr(
         "lab03_dora.collection.history.GitHubClient.from_environment",
-        lambda: FakeGitHub(),
+        lambda **kwargs: FakeGitHub(),
     )
     changes = tmp_path / "release_changes.csv"
     funnel = tmp_path / "funnel.csv"

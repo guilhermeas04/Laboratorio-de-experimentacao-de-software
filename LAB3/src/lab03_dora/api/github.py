@@ -8,11 +8,13 @@ basic error handling for the collection modules.
 from __future__ import annotations
 
 import json
+import hashlib
 import os
 import time
 from dataclasses import dataclass
 from email.utils import parsedate_to_datetime
 from typing import Any, Iterable
+from pathlib import Path
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
@@ -44,29 +46,39 @@ class GitHubClient:
         api_root: str = API_ROOT,
         timeout_seconds: int = DEFAULT_TIMEOUT_SECONDS,
         max_retries: int = 3,
+        cache_dir: Path | None = None,
     ) -> None:
         self.token = token if token is not None else os.getenv("GITHUB_TOKEN")
         self.api_root = api_root.rstrip("/")
         self.timeout_seconds = timeout_seconds
         self.max_retries = max_retries
+        self.cache_dir = cache_dir
+        if cache_dir is not None:
+            cache_dir.mkdir(parents=True, exist_ok=True)
 
     @classmethod
-    def from_environment(cls) -> "GitHubClient":
+    def from_environment(cls, *, cache_dir: Path | None = None) -> "GitHubClient":
         token = os.getenv("GITHUB_TOKEN")
         if not token:
             raise GitHubApiError(
                 "GITHUB_TOKEN nao configurado. Defina a variavel de ambiente antes da coleta."
             )
-        return cls(token=token)
+        return cls(token=token, cache_dir=cache_dir)
 
     def get(self, path: str, params: dict[str, Any] | None = None) -> GitHubResponse:
         """Run one GET request and return the decoded JSON payload."""
 
         url = self._build_url(path, params)
+        cache_path = self._cache_path(url)
+        if cache_path is not None and cache_path.exists():
+            return GitHubResponse(payload=json.loads(cache_path.read_text(encoding="utf-8")), headers={})
         last_error: Exception | None = None
         for attempt in range(self.max_retries + 1):
             try:
-                return self._request_json(url)
+                response = self._request_json(url)
+                if cache_path is not None:
+                    cache_path.write_text(json.dumps(response.payload, ensure_ascii=False, indent=2), encoding="utf-8")
+                return response
             except HTTPError as error:
                 if error.code == 403 and self._is_rate_limited(error.headers):
                     self._wait_for_rate_limit(error.headers)
@@ -90,7 +102,7 @@ class GitHubClient:
 
         next_url = self._build_url(path, params)
         while next_url:
-            response = self._request_json(next_url)
+            response = self.get(next_url)
             if not isinstance(response.payload, list):
                 raise GitHubApiError(f"Endpoint paginado nao retornou lista: {next_url}")
             yield from response.payload
@@ -168,6 +180,12 @@ class GitHubClient:
         if reset and str(reset).isdigit():
             wait_seconds = max(0, int(reset) - int(time.time())) + 1
             time.sleep(wait_seconds)
+
+    def _cache_path(self, url: str) -> Path | None:
+        if self.cache_dir is None:
+            return None
+        key = hashlib.sha256(url.encode("utf-8")).hexdigest()
+        return self.cache_dir / f"{key}.json"
 
 
 def _next_link(link_header: str) -> str | None:

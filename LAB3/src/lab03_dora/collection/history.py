@@ -278,7 +278,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     config = json.loads(args.config.read_text(encoding="utf-8"))
     window = ObservationWindow.from_config(config)
-    client = GitHubClient.from_environment()
+    client = GitHubClient.from_environment(cache_dir=args.lab_root / "cache" / "http")
     selection = config.get("selection") or {}
     criteria = SelectionCriteria(
         target_s01_sample_size=int(selection.get("target_s01_sample_size", 100)),
