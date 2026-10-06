@@ -27,3 +27,5 @@ acompanhar as atividades dos laboratórios durante o semestre.
 ## Laboratórios
 
 - [LAB1 — Características de repositórios populares](https://github.com/guilhermeas04/Laboratorio-de-experimentacao-de-software/tree/main/lab1)
+- [LAB2 — Assistentes de IA vs. codificação manual](LAB2/README.md)
+- [LAB3 — Métricas DORA e integração contínua](LAB3/README.md)
