@@ -129,3 +129,24 @@ São aceitas apenas as conclusões `success`, `failure`, `timed_out` e
 `startup_failure`; execuções canceladas, ignoradas ou em andamento ficam fora.
 Meses com 1.000 ou mais resultados são sinalizados em `windows_at_limit` para
 subdivisão adicional antes da análise final.
+# Pipeline integrado da Sprint 1
+
+O ponto de entrada executa a seleção, coleta de releases/tags/commits, workflow
+runs, cache HTTP e as métricas iniciais em uma única execução:
+
+```powershell
+cd LAB3
+python -m pip install -e ".[dev]"
+$env:GITHUB_TOKEN = gh auth token       # ou defina um token pessoal equivalente
+python -m lab03_dora.pipeline             # amostra S01 (até 100 repositórios)
+python -m lab03_dora.pipeline --limit 3 --target-with-actions 3  # smoke real
+```
+
+`GITHUB_TOKEN` é obrigatório para consultar a API, nunca é gravado no cache ou
+nas saídas. O cache permite retomar a coleta sem repetir requisições. As saídas
+principais são `data/interim/selection/`, `data/cache/`/`cache/`,
+`data/raw/workflow_runs/`, `reports/funnel/` e
+`data/processed/metrics/s01_metrics.csv` (frequência, lead time, CFR e recuperação).
+
+O workflow `.github/workflows/lab3-tests.yml` instala o projeto e executa
+`pytest` automaticamente em todo push ou pull request que altere `LAB3/`.

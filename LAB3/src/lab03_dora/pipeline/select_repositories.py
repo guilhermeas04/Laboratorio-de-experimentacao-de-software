@@ -34,8 +34,8 @@ def load_config(path: Path) -> dict:
         return json.load(file)
 
 
-def collect_candidates(config: dict, *, limit: int | None = None, target_with_actions: int = 100) -> list[dict]:
-    client = GitHubClient.from_environment()
+def collect_candidates(config: dict, *, limit: int | None = None, target_with_actions: int = 100, client: GitHubClient | None = None) -> list[dict]:
+    client = client or GitHubClient.from_environment()
     search_config = config.get("repository_search", {})
     repositories = []
     for stars in search_config.get("star_ranges", ["1000..*"]):
