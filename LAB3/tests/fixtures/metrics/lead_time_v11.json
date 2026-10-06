@@ -1,0 +1,11 @@
+{
+  "tag_name": "v1.1",
+  "published_at": "2025-03-15T00:00:00Z",
+  "commit_authored_at": [
+    "2025-03-02T00:00:00Z",
+    "2025-03-10T00:00:00Z",
+    "2025-03-14T00:00:00Z"
+  ],
+  "expected_release_days": 13,
+  "expected_commit_days": [13, 5, 1]
+}

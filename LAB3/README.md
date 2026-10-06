@@ -72,3 +72,15 @@ python -m pytest
 ```
 
 Observação: nesta primeira etapa, quando as contagens de releases e workflow runs ainda não foram produzidas pelas issues seguintes, os 100 repositórios com GitHub Actions ficam marcados como `s01_base_sample`. Quando essas contagens existirem, o mesmo funil passa a classificar os repositórios como `eligible_s01` ou descartar por releases/runs insuficientes.
+
+## Sprint 1 — deployment frequency e lead time
+
+A issue `(LAB3S01 - 5)` calcula as métricas sem chamar a API.
+
+- RQ01, `lab03_dora.metrics.deployment_frequency`: releases publicadas na janela divididas pelo número de semanas. Para 2025-01-01 a 2025-12-31 isso é 365/7, cerca de 52,1.
+- RQ02, `lab03_dora.metrics.lead_time`: mediana por release (data da release menos o commit mais antigo) e mediana por commit (data da release menos cada commit). A primeira release, release sem commit novo e data de commit posterior à publicação ficam de fora da mediana.
+
+```powershell
+cd LAB3
+python -m pytest tests/unit/test_deployment_frequency.py tests/unit/test_lead_time.py
+```
