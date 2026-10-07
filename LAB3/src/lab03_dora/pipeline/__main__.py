@@ -87,17 +87,21 @@ def main(argv: Sequence[str] | None = None) -> int:
         minimum_valid_workflow_runs=int(selection_cfg.get("minimum_valid_workflow_runs", 50)),
     )
     client = GitHubClient.from_environment(cache_dir=root / "cache" / "http")
+    print("[1/5] selecionando repositorios...", flush=True)
     candidates = read_csv(args.input_csv) if args.input_csv else collect_candidates(
         config, limit=args.limit, target_with_actions=args.target_with_actions or criteria.target_s01_sample_size, client=client)
     selection = build_selection_table(candidates, criteria)
+    print(f"[2/5] candidatos selecionados: {len(candidates)}", flush=True)
     write_csv(root / "data/interim/selection/candidate_repositories.csv", candidates)
     repos = repositories_from_selection(selection, limit=args.limit or criteria.target_s01_sample_size)
     histories = collect_many(client, repos, window=window, lab_root=root)
+    print(f"[3/5] releases/commits coletados: {len(histories)}", flush=True)
     selection = update_selection_with_release_counts(selection, histories, criteria)
     workflow = collect_workflow_runs_for_repositories(
         repos, datetime.combine(window.start, time.min, tzinfo=UTC),
         datetime.combine(window.end, time.max, tzinfo=UTC), client,
         cache_dir=root / "data/raw/workflow_runs")
+    print(f"[4/5] workflow runs coletados: {sum(result.total_count for result in workflow.values())}", flush=True)
     counts = {name: result.total_count for name, result in workflow.items()}
     selection = build_selection_table([{**row, "valid_workflow_runs_count": counts.get(row.get("full_name"))}
                                        for row in selection], criteria)
@@ -107,6 +111,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     write_csv(root / "data/processed/metrics/s01_metrics.csv", metrics)
     _write_json(root / "data/interim/workflow_runs/s01_workflow_runs.json",
                 {name: {"runs": result.runs, "windows_at_limit": result.windows_at_limit} for name, result in workflow.items()})
+    print("[5/5] metricas e saidas gravadas", flush=True)
     print(f"Pipeline concluido: {len(repos)} repositorios; metricas={root / 'data/processed/metrics/s01_metrics.csv'}")
     return 0
 
