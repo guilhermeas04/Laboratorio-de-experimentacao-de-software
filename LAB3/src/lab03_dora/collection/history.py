@@ -158,21 +158,24 @@ def collect_many(
     """Coleta varios repositorios. A falha de um nao interrompe os demais."""
 
     histories: list[ReleaseHistory] = []
-    for repository, default_branch in repositories:
+    total = len(repositories)
+    for index, (repository, default_branch) in enumerate(repositories, start=1):
+        print(f"    [releases {index}/{total}] iniciando {repository}", flush=True)
         try:
-            histories.append(
-                collect_release_history(
+            history = collect_release_history(
                     client,
                     repository=repository,
                     default_branch=default_branch,
                     window=window,
                     lab_root=lab_root,
                 )
-            )
+            histories.append(history)
+            print(f"    [releases {index}/{total}] concluido {repository}: {history.primary_count} releases", flush=True)
         except GitHubApiError as error:
             failed = ReleaseHistory(repository=repository, default_branch=default_branch)
             failed.problems.append(_problem(repository, "repository_collection_failed", repository, str(error)))
             histories.append(failed)
+            print(f"    [releases {index}/{total}] falhou {repository}: {error}", flush=True)
     return histories
 
 
