@@ -171,7 +171,7 @@ def collect_many(
                 )
             histories.append(history)
             print(f"    [releases {index}/{total}] concluido {repository}: {history.primary_count} releases", flush=True)
-        except GitHubApiError as error:
+        except (GitHubApiError, OSError) as error:
             failed = ReleaseHistory(repository=repository, default_branch=default_branch)
             failed.problems.append(_problem(repository, "repository_collection_failed", repository, str(error)))
             histories.append(failed)

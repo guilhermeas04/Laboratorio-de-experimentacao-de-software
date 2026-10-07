@@ -89,7 +89,7 @@ class GitHubClient:
                     last_error = error
                     continue
                 raise GitHubApiError(f"GitHub API retornou HTTP {error.code} para {url}") from error
-            except URLError as error:
+            except (URLError, OSError) as error:
                 last_error = error
                 if attempt < self.max_retries:
                     time.sleep(2**attempt)
