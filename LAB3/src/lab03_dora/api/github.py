@@ -146,6 +146,11 @@ class GitHubClient:
     def repository_workflows(self, full_name: str) -> dict[str, Any]:
         return self.get(f"/repos/{full_name}/actions/workflows", {"per_page": 1}).payload
 
+    def list_runs(self, repository: str, params: dict[str, Any]) -> dict[str, Any]:
+        """Lista workflow runs usando o mesmo cliente autenticado e cacheado."""
+        payload = self.get(f"/repos/{repository}/actions/runs", params).payload
+        return payload if isinstance(payload, dict) else {}
+
     def _build_url(self, path: str, params: dict[str, Any] | None = None) -> str:
         if path.startswith("https://"):
             url = path

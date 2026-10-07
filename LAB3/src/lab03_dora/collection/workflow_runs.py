@@ -89,7 +89,7 @@ class WorkflowRunClient(GitHubClient):
         api_url: str = "https://api.github.com",
         cache_dir: Path | None = None,
     ) -> None:
-        super().__init__(token=token, api_root=api_url)
+        super().__init__(token=token, api_root=api_url, cache_dir=cache_dir)
 
     def list_runs(self, repository: str, params: dict[str, str | int]) -> dict:
         response = self.get(f"/repos/{repository}/actions/runs", params)

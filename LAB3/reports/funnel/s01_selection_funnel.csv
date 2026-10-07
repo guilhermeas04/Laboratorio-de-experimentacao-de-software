@@ -1,9 +1,9 @@
 stage,count,discarded,description
-candidates,187,0,Repositorios retornados pela busca inicial.
-active_repositories,187,0,Repositorios nao arquivados e nao desabilitados.
-with_github_actions,100,87,Repositorios com ao menos um workflow do GitHub Actions.
-with_minimum_releases,100,0,"Repositorios com evidencia de pelo menos 5 releases, quando a contagem ja existe."
-with_minimum_workflow_runs,100,0,"Repositorios com evidencia de pelo menos 50 workflow runs validos, quando a contagem ja existe."
-s01_base_sample,100,0,"Base da Sprint 1 com repositorios que usam GitHub Actions, limitada a 100, aguardando contagens de releases e workflow runs."
-eligible_s01_sample,0,100,"Repositorios elegiveis selecionados para a amostra S01, limitado a 100."
-pending_downstream_collection,0,0,Repositorios com Actions que ainda dependem das coletas de releases/workflow runs das issues seguintes.
+candidates,186,0,Repositorios retornados pela busca inicial.
+active_repositories,186,0,Repositorios nao arquivados e nao desabilitados.
+with_github_actions,100,86,Repositorios com ao menos um workflow do GitHub Actions.
+with_minimum_releases,18,82,"Repositorios com evidencia de pelo menos 5 releases, quando a contagem ja existe."
+with_minimum_workflow_runs,5,13,"Repositorios com evidencia de pelo menos 50 workflow runs validos, quando a contagem ja existe."
+s01_base_sample,0,5,"Base da Sprint 1 com repositorios que usam GitHub Actions, limitada a 100, aguardando contagens de releases e workflow runs."
+eligible_s01_sample,5,0,"Repositorios elegiveis selecionados para a amostra S01, limitado a 100."
+pending_downstream_collection,0,5,Repositorios com Actions que ainda dependem das coletas de releases/workflow runs das issues seguintes.
