@@ -111,6 +111,16 @@ def main(argv: Sequence[str] | None = None) -> int:
     write_csv(root / "data/processed/metrics/s01_metrics.csv", metrics)
     _write_json(root / "data/interim/workflow_runs/s01_workflow_runs.json",
                 {name: {"runs": result.runs, "windows_at_limit": result.windows_at_limit} for name, result in workflow.items()})
+    _write_json(root / "data/processed/metrics/s01_manifest.json", {
+        "pipeline": "LAB3S01",
+        "observation_window": {"start": window.start.isoformat(), "end": window.end.isoformat()},
+        "repositories_requested": args.limit or criteria.target_s01_sample_size,
+        "repositories_processed": len(repos),
+        "workflow_runs_collected": sum(result.total_count for result in workflow.values()),
+        "metrics_file": "data/processed/metrics/s01_metrics.csv",
+        "generated_at_utc": datetime.now(UTC).isoformat(),
+        "raw_data_policy": "JSON bruto e cache permanecem locais; resultados tabulares sao versionados.",
+    })
     print("[5/5] metricas e saidas gravadas", flush=True)
     print(f"Pipeline concluido: {len(repos)} repositorios; metricas={root / 'data/processed/metrics/s01_metrics.csv'}")
     return 0

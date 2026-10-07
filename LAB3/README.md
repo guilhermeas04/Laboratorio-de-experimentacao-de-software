@@ -151,3 +151,14 @@ principais são `data/interim/selection/`, `data/cache/`/`cache/`,
 
 O workflow `.github/workflows/lab3-tests.yml` instala o projeto e executa
 `pytest` automaticamente em todo push ou pull request que altere `LAB3/`.
+
+## Versionamento dos dados
+
+O cache da API e as respostas brutas ficam locais e são regeneráveis; eles não
+devem ser adicionados ao Git. Os resultados tabulares consolidados e o manifesto
+da execução podem ser versionados:
+
+- `data/processed/metrics/s01_metrics.csv`
+- `data/processed/metrics/s01_manifest.json`
+- `reports/funnel/s01_selection_funnel.csv`
+- `data/interim/selection/s01_repository_selection.csv`
