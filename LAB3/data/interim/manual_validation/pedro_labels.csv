@@ -1,0 +1,61 @@
+reviewer,repository,release_id,tag_name,published_at,label,justification
+pedrorodriguesduarte,ChimeraOS/chimeraos,235405801,49-1_cabd8c9,2025-07-26T22:15:46Z,nao_corretiva,nao ha indicador de correcao no titulo nem nas notas da release
+pedrorodriguesduarte,Corvusoft/restbed,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+pedrorodriguesduarte,Elanis/web-to-desktop-framework-comparison,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+pedrorodriguesduarte,FormidableLabs/prism-react-renderer,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+pedrorodriguesduarte,GoBelieveIO/im_service,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+pedrorodriguesduarte,H1R0GH057/Anonymous,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+pedrorodriguesduarte,JetBrains/JetBrainsRuntime,267258539,jbr-release-21.0.9b895.149,2025-12-03T23:14:03Z,corretiva,"titulo ou notas citam correcao de defeito, falha ou seguranca"
+pedrorodriguesduarte,MrGeDiao/shuorenhua,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+pedrorodriguesduarte,Niek/chatgpt-web,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+pedrorodriguesduarte,PuddinCat/BestClash,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+pedrorodriguesduarte,RankFTW/RHI,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+pedrorodriguesduarte,RedPlanetHQ/core,272091027,0.2.0,2025-12-22T04:26:51Z,nao_corretiva,nao ha indicador de correcao no titulo nem nas notas da release
+pedrorodriguesduarte,Shmoopi/iOS-System-Services,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+pedrorodriguesduarte,TeamNewPipe/NewPipeExtractor,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+pedrorodriguesduarte,TrestleAdmin/trestle,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+pedrorodriguesduarte,TypeStrong/fork-ts-checker-webpack-plugin,210156052,v9.1.0,2025-04-03T16:20:15Z,nao_corretiva,nao ha indicador de correcao no titulo nem nas notas da release
+pedrorodriguesduarte,TypesettingTools/Aegisub,192862382,v3.4.1,2025-01-01T21:05:21Z,corretiva,"titulo ou notas citam correcao de defeito, falha ou seguranca"
+pedrorodriguesduarte,Unity-Technologies/com.unity.multiplayer.samples.coop,207852304,v3.0.0,2025-08-06T15:43:52Z,nao_corretiva,nao ha indicador de correcao no titulo nem nas notas da release
+pedrorodriguesduarte,WeaveMindAI/weft,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+pedrorodriguesduarte,ad-si/awesome-3d-printing,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+pedrorodriguesduarte,allenai/scispacy,251324563,v0.6.2,2025-10-01T06:18:20Z,corretiva,"titulo ou notas citam correcao de defeito, falha ou seguranca"
+pedrorodriguesduarte,antirez/iris.c,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+pedrorodriguesduarte,apache/trafficserver,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+pedrorodriguesduarte,aws/aws-toolkit-vscode,271609769,toolkit/v3.91.0,2025-12-18T23:50:30Z,nao_corretiva,nao ha indicador de correcao no titulo nem nas notas da release
+pedrorodriguesduarte,bcrypt-ruby/bcrypt-ruby,273639410,v3.1.21,2025-12-31T19:46:11Z,nao_corretiva,nao ha indicador de correcao no titulo nem nas notas da release
+pedrorodriguesduarte,blend2d/blend2d,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+pedrorodriguesduarte,bluefireteam/photo_view,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+pedrorodriguesduarte,brunopulis/awesome-a11y,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+pedrorodriguesduarte,cbrock84/headcount,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+pedrorodriguesduarte,cerebral/cerebral,223594171,v2025-06-06_0918,2025-06-06T09:18:07Z,corretiva,"titulo ou notas citam correcao de defeito, falha ou seguranca"
+pedrorodriguesduarte,clementchadebec/benchmark_VAE,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+pedrorodriguesduarte,cnlimiter/codex-manager,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+pedrorodriguesduarte,coralproject/talk,256469921,v9.10.6,2025-10-22T19:25:33Z,nao_corretiva,nao ha indicador de correcao no titulo nem nas notas da release
+pedrorodriguesduarte,crystian/ComfyUI-Crystools,235445169,1.26.0,2025-07-27T12:12:36Z,nao_corretiva,nao ha indicador de correcao no titulo nem nas notas da release
+pedrorodriguesduarte,djhworld/simple-computer,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+pedrorodriguesduarte,dmmulroy/better-result,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+pedrorodriguesduarte,elyra-ai/elyra,240400727,v4.0.0,2025-08-16T21:46:26Z,corretiva,"titulo ou notas citam correcao de defeito, falha ou seguranca"
+pedrorodriguesduarte,eslint-stylistic/eslint-stylistic,263517374,v5.6.1,2025-11-19T07:09:48Z,corretiva,"titulo ou notas citam correcao de defeito, falha ou seguranca"
+pedrorodriguesduarte,faruktoptas/FancyShowCaseView,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+pedrorodriguesduarte,featureform/featureform,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+pedrorodriguesduarte,glebkudr/shotgun_code,263451443,v2025.11.18-31f78f2,2025-11-18T23:26:05Z,nao_corretiva,nao ha indicador de correcao no titulo nem nas notas da release
+pedrorodriguesduarte,guhcostan/mac-cleaner-cli,272475801,v1.3.0,2025-12-23T13:43:43Z,corretiva,"titulo ou notas citam correcao de defeito, falha ou seguranca"
+pedrorodriguesduarte,hectorm/hblock,205395738,v3.5.1,2025-03-12T19:30:09Z,nao_corretiva,nao ha indicador de correcao no titulo nem nas notas da release
+pedrorodriguesduarte,imcvampire/vue-axios,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+pedrorodriguesduarte,ishkawa/APIKit,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+pedrorodriguesduarte,itsjunetime/tdf,266944271,v0.5.0,2025-12-03T03:30:13Z,corretiva,"titulo ou notas citam correcao de defeito, falha ou seguranca"
+pedrorodriguesduarte,j4wg/interview-coder-withoupaywall-opensource,210730471,v1.0.2,2025-04-07T11:58:32Z,nao_corretiva,nao ha indicador de correcao no titulo nem nas notas da release
+pedrorodriguesduarte,keajs/kea,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+pedrorodriguesduarte,kknifer7/FreeBox,272859891,v1.6.0,2025-12-26T15:22:06Z,nao_corretiva,nao ha indicador de correcao no titulo nem nas notas da release
+pedrorodriguesduarte,kylef/swiftenv,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+pedrorodriguesduarte,linuxserver/docker-code-server,273018143,4.107.0-ls310,2025-12-27T20:35:26Z,nao_corretiva,nao ha indicador de correcao no titulo nem nas notas da release
+pedrorodriguesduarte,logpai/logparser,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+pedrorodriguesduarte,luc-github/ESP3D,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+pedrorodriguesduarte,manisandro/gImageReader,237493391,v3.4.3,2025-08-04T21:36:51Z,corretiva,"titulo ou notas citam correcao de defeito, falha ou seguranca"
+pedrorodriguesduarte,mborgerding/kissfft,255975143,131.2.0,2025-10-22T20:57:10Z,corretiva,"titulo ou notas citam correcao de defeito, falha ou seguranca"
+pedrorodriguesduarte,meta-recsys/generative-recommenders,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+pedrorodriguesduarte,mfontanini/libtins,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+pedrorodriguesduarte,microsoft/PowerApps-Samples,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+pedrorodriguesduarte,mikbry/awesome-webgpu,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+pedrorodriguesduarte,miroiu/nodify,230556485,v7.1.0,2025-07-07T18:01:03Z,nao_corretiva,nao ha indicador de correcao no titulo nem nas notas da release
