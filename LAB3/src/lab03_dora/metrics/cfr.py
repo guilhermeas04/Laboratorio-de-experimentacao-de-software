@@ -150,3 +150,4 @@ def _timestamp(value: datetime | str | Any) -> datetime:
     if parsed.tzinfo is None:
         parsed = parsed.replace(tzinfo=UTC)
     return parsed.astimezone(UTC)
+    return parsed.astimezone(UTC)
