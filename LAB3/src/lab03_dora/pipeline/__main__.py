@@ -20,7 +20,9 @@ from lab03_dora.collection.selection import (SelectionCriteria, build_funnel,
 from lab03_dora.collection.workflow_runs import collect_workflow_runs_for_repositories
 from lab03_dora.metrics.deployment_frequency import deployment_frequency
 from lab03_dora.metrics.lead_time import release_changes, summarize_lead_time
+from lab03_dora.metrics.cfr import calculate_cfr_b
 from lab03_dora.metrics.reliability import calculate_cfr, calculate_recovery
+from lab03_dora.validation.labels import validate_gold_standard
 from lab03_dora.pipeline.select_repositories import (DEFAULT_CONFIG, LAB3_ROOT,
                                                       collect_candidates, load_config)
 
@@ -50,6 +52,7 @@ def _metrics(histories, workflow_results, window: ObservationWindow) -> list[dic
         runs = result.runs if result else []
         lead = summarize_lead_time(by_repo.get(history.repository, []))
         recoveries = calculate_recovery(runs, observation_end=end_dt)
+        cfr_b = calculate_cfr_b(history.releases, history.compares, observation_end=end_dt)
         durations = [item.recovery_hours for item in recoveries.episodes if item.recovery_hours is not None]
         rows.append({
             "repository": history.repository,
@@ -59,6 +62,10 @@ def _metrics(histories, workflow_results, window: ObservationWindow) -> list[dic
             "lead_time_by_commit_days": lead.by_commit_days,
             "valid_workflow_runs_count": len(runs),
             "cfr_ci": calculate_cfr(runs),
+            "cfr_b": cfr_b.cfr,
+            "cfr_b_evaluated_releases": cfr_b.evaluated_count,
+            "cfr_b_failed_releases": cfr_b.failed_count,
+            "cfr_b_censored_releases": cfr_b.censored_count,
             "recovery_median_hours": statistics.median(durations) if durations else None,
             "recovery_censored_count": recoveries.censored_count,
         })
@@ -109,6 +116,16 @@ def main(argv: Sequence[str] | None = None) -> int:
     write_csv(root / "reports/funnel/s01_selection_funnel.csv", build_funnel(selection, criteria))
     metrics = _metrics(histories, workflow, window)
     write_csv(root / "data/processed/metrics/s01_metrics.csv", metrics)
+    outcomes = []
+    end_dt = datetime.combine(window.end, time.max, tzinfo=UTC)
+    for history in histories:
+        summary = calculate_cfr_b(history.releases, history.compares, observation_end=end_dt)
+        outcomes.extend(item.to_dict() for item in summary.outcomes)
+    write_csv(root / "data/processed/metrics/cfr_b_predictions.csv", outcomes)
+    gold_path = root / "data/processed/gold_standard/gold_standard_consensus.csv"
+    if gold_path.exists():
+        gold_validation = validate_gold_standard(read_csv(gold_path), outcomes)
+        _write_json(root / "reports/validation/cfr_b_validation.json", gold_validation)
     _write_json(root / "data/interim/workflow_runs/s01_workflow_runs.json",
                 {name: {"runs": result.runs, "windows_at_limit": result.windows_at_limit} for name, result in workflow.items()})
     _write_json(root / "data/processed/metrics/s01_manifest.json", {

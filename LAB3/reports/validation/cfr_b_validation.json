@@ -1,0 +1,21 @@
+{
+  "n": 24,
+  "true_positive": 3,
+  "false_positive": 2,
+  "false_negative": 7,
+  "precision": 0.6,
+  "recall": 0.3,
+  "f1": 0.4,
+  "sample_size": 60,
+  "evaluable_count": 24,
+  "matched_count": 24,
+  "excluded_non_evaluable_count": 36,
+  "missing_prediction_count": 0,
+  "coverage": 1.0,
+  "confusion_matrix": {
+    "true_negative": 12,
+    "false_positive": 2,
+    "false_negative": 7,
+    "true_positive": 3
+  }
+}
