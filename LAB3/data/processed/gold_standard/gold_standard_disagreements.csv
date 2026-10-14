@@ -1,0 +1,12 @@
+repository,release_id,tag_name,label_guilherme,label_amanda,label_pedro,consensus_label,agreement_count,consensus_status
+ChimeraOS/chimeraos,235405801,49-1_cabd8c9,nao_corretiva,corretiva,nao_corretiva,nao_corretiva,2,majority
+JetBrains/JetBrainsRuntime,267258539,jbr-release-21.0.9b895.149,nao_corretiva,corretiva,corretiva,corretiva,2,majority
+TypesettingTools/Aegisub,192862382,v3.4.1,nao_corretiva,corretiva,corretiva,corretiva,2,majority
+Unity-Technologies/com.unity.multiplayer.samples.coop,207852304,v3.0.0,nao_corretiva,corretiva,nao_corretiva,nao_corretiva,2,majority
+allenai/scispacy,251324563,v0.6.2,nao_corretiva,corretiva,corretiva,corretiva,2,majority
+cerebral/cerebral,223594171,v2025-06-06_0918,nao_corretiva,corretiva,corretiva,corretiva,2,majority
+elyra-ai/elyra,240400727,v4.0.0,nao_corretiva,corretiva,corretiva,corretiva,2,majority
+eslint-stylistic/eslint-stylistic,263517374,v5.6.1,nao_corretiva,corretiva,corretiva,corretiva,2,majority
+itsjunetime/tdf,266944271,v0.5.0,nao_corretiva,corretiva,corretiva,corretiva,2,majority
+manisandro/gImageReader,237493391,v3.4.3,nao_corretiva,corretiva,corretiva,corretiva,2,majority
+mborgerding/kissfft,255975143,131.2.0,nao_corretiva,corretiva,corretiva,corretiva,2,majority

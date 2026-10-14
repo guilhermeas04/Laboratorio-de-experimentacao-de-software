@@ -152,6 +152,22 @@ principais são `data/interim/selection/`, `data/cache/`/`cache/`,
 O workflow `.github/workflows/lab3-tests.yml` instala o projeto e executa
 `pytest` automaticamente em todo push ou pull request que altere `LAB3/`.
 
+### Consolidação da amostra-ouro
+
+Depois que os três avaliadores commitarem seus CSVs independentes, a
+concordância e o consenso podem ser reproduzidos com:
+
+```powershell
+cd LAB3
+$env:PYTHONPATH = "src"
+python scripts/consolidate_gold_standard.py
+```
+
+O comando gera `data/processed/gold_standard/gold_standard_consensus.csv`,
+`gold_standard_disagreements.csv` e `fleiss_kappa.json`. Os casos
+`sem_release` permanecem documentados, mas a estatística específica para os
+casos avaliáveis também é reportada separadamente.
+
 ## Versionamento dos dados
 
 O cache da API e as respostas brutas ficam locais e são regeneráveis; eles não

@@ -1,0 +1,35 @@
+{
+  "reviewers": [
+    "guilherme",
+    "amanda",
+    "pedro"
+  ],
+  "sample_size": 60,
+  "unanimous_items": 49,
+  "majority_items": 11,
+  "without_consensus": 0,
+  "all_items": {
+    "n_items": 60,
+    "n_raters": 3,
+    "categories": [
+      "corretiva",
+      "nao_corretiva",
+      "sem_release"
+    ],
+    "agreement_mean": 0.8777777777777778,
+    "chance_agreement": 0.45043209876543205,
+    "fleiss_kappa": 0.7776030551499494
+  },
+  "evaluable_without_sem_release": {
+    "n_items": 24,
+    "n_raters": 3,
+    "categories": [
+      "corretiva",
+      "nao_corretiva"
+    ],
+    "agreement_mean": 0.6944444444444445,
+    "chance_agreement": 0.5652006172839507,
+    "fleiss_kappa": 0.2972493345164154
+  },
+  "excluded_label": "sem_release"
+}
