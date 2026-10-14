@@ -5,14 +5,14 @@
     "end": "2025-12-31"
   },
   "heuristic": "docs/cfr-b-heuristica.md",
-  "source_metrics": "/Users/pedroduarte/Documents/LAB EXPERIMENTACAO/Laboratorio-de-experimentacao-de-software/LAB3/data/processed/metrics/s01_metrics.csv",
   "dataset": "data/processed/datasets/s02_metrics.csv",
   "dictionary": "data/processed/datasets/s02_data_dictionary.csv",
   "funnel": "reports/funnel/s02_selection_funnel.csv",
-  "generated_at_utc": "2026-10-14T18:05:16.110942+00:00",
-  "rows": 100,
+  "generated_at_utc": "2026-10-14T18:59:43.383144+00:00",
+  "rows": 66,
   "duplicate_count": 0,
-  "eligible_count": 5,
+  "eligible_count": 66,
   "target_eligible": 300,
-  "target_met": false
+  "target_met": false,
+  "candidates_screened": 1576
 }

@@ -184,6 +184,7 @@ class GitHubClient:
         reset = headers.get("X-RateLimit-Reset")
         if reset and str(reset).isdigit():
             wait_seconds = max(0, int(reset) - int(time.time())) + 1
+            print(f"cota da API esgotada, esperando {wait_seconds}s", flush=True)
             time.sleep(wait_seconds)
 
     def _cache_path(self, url: str) -> Path | None:

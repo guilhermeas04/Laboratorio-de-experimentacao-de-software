@@ -145,7 +145,8 @@ def _commit_from_payload(item: dict[str, Any]) -> CommitRecord | None:
     authored_at = str(author.get("date") or "") if isinstance(author, dict) else ""
     if not sha or not authored_at:
         return None
-    message = str(commit.get("message") or "").splitlines()[0]
+    message_lines = str(commit.get("message") or "").splitlines()
+    message = message_lines[0] if message_lines else ""
     return CommitRecord(sha=sha, authored_at=authored_at, message=message)
 
 

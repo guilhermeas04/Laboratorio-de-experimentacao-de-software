@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import UTC, datetime
 import json
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 from lab03_dora.api.github import GitHubClient
@@ -138,6 +139,61 @@ def _default_cache_dir() -> Path:
     return Path(__file__).resolve().parents[3] / "data" / "raw" / "workflow_runs"
 
 
+def _collect_month(
+    repository: str,
+    default_branch: str,
+    window_start: datetime,
+    window_end: datetime,
+    client: WorkflowRunClient,
+    cache_root: Path,
+    per_page: int,
+) -> tuple[str, list[dict], bool]:
+    month = window_start.strftime("%Y-%m")
+    collected: list[dict] = []
+    at_limit = False
+    page = 1
+    total_count = 0
+    while True:
+        cache_path = cache_root / f"{repository.replace('/', '__')}_{month}_p{page}.json"
+        if cache_path.exists():
+            payload = json.loads(cache_path.read_text(encoding="utf-8"))
+        else:
+            payload = client.list_runs(
+                repository,
+                {
+                    "event": "push",
+                    "branch": default_branch,
+                    "created": f"{window_start.isoformat()}..{window_end.isoformat()}",
+                    "per_page": per_page,
+                    "page": page,
+                },
+            )
+            cache_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+
+        total_count = int(payload.get("total_count", 0))
+        if total_count >= 1000:
+            at_limit = True
+        for raw_run in payload.get("workflow_runs", []):
+            normalized = normalize_workflow_run(
+                raw_run,
+                repository=repository,
+                observation_month=month,
+                default_branch=default_branch,
+            )
+            if normalized is not None:
+                collected.append(normalized)
+
+        runs_in_page = payload.get("workflow_runs", [])
+        if (
+            page * per_page >= min(total_count, 1000)
+            or not runs_in_page
+            or len(runs_in_page) < per_page
+        ):
+            break
+        page += 1
+    return month, collected, at_limit
+
+
 def collect_workflow_runs(
     repository: str,
     default_branch: str,
@@ -147,56 +203,28 @@ def collect_workflow_runs(
     *,
     cache_dir: Path | None = None,
     per_page: int = DEFAULT_PER_PAGE,
+    workers: int = 1,
 ) -> CollectionResult:
     """Coleta runs push do branch padrão, particionando e cacheando cada mês."""
     if not 1 <= per_page <= 100:
         raise ValueError("per_page deve estar entre 1 e 100")
     cache_root = cache_dir or _default_cache_dir()
     cache_root.mkdir(parents=True, exist_ok=True)
+    windows = month_windows(start, end)
+
+    def collect_one(window: tuple[datetime, datetime]) -> tuple[str, list[dict], bool]:
+        return _collect_month(repository, default_branch, window[0], window[1], client, cache_root, per_page)
+
+    if workers > 1:
+        with ThreadPoolExecutor(max_workers=workers) as pool:
+            parts = list(pool.map(collect_one, windows))
+    else:
+        parts = [collect_one(window) for window in windows]
+
     collected: list[dict] = []
     windows_at_limit: list[str] = []
-
-    for window_start, window_end in month_windows(start, end):
-        month = window_start.strftime("%Y-%m")
-        page = 1
-        total_count = 0
-        while True:
-            cache_path = cache_root / f"{repository.replace('/', '__')}_{month}_p{page}.json"
-            if cache_path.exists():
-                payload = json.loads(cache_path.read_text(encoding="utf-8"))
-            else:
-                payload = client.list_runs(
-                    repository,
-                    {
-                        "event": "push",
-                        "branch": default_branch,
-                    "created": f"{window_start.isoformat()}..{window_end.isoformat()}",
-                        "per_page": per_page,
-                        "page": page,
-                    },
-                )
-                cache_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
-
-            total_count = int(payload.get("total_count", 0))
-            if total_count >= 1000 and month not in windows_at_limit:
-                windows_at_limit.append(month)
-            for raw_run in payload.get("workflow_runs", []):
-                normalized = normalize_workflow_run(
-                    raw_run,
-                    repository=repository,
-                    observation_month=month,
-                    default_branch=default_branch,
-                )
-                if normalized is not None:
-                    collected.append(normalized)
-
-            runs_in_page = payload.get("workflow_runs", [])
-            if (
-                page * per_page >= min(total_count, 1000)
-                or not runs_in_page
-                or len(runs_in_page) < per_page
-            ):
-                break
-            page += 1
-
+    for month, runs, at_limit in parts:
+        collected.extend(runs)
+        if at_limit:
+            windows_at_limit.append(month)
     return CollectionResult(runs=collected, windows_at_limit=windows_at_limit)

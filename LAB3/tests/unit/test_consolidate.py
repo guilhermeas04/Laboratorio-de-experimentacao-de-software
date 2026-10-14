@@ -1,5 +1,11 @@
 from lab03_dora.collection.selection import SelectionCriteria
 from lab03_dora.pipeline.consolidate import build_dataset, deduplicate_rows
+from lab03_dora.pipeline.expand_sample import split_star_range
+
+
+def test_star_range_splits_when_search_hits_the_cap() -> None:
+    assert split_star_range("1000..2000") == ["1000..1500", "1501..2000"]
+    assert split_star_range("50001..*") == ["50001..55000", "55001..*"]
 
 
 def test_duplicate_repository_keeps_the_first_row() -> None:

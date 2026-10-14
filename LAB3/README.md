@@ -174,8 +174,11 @@ A issue `(LAB3S02 - 6)` consolida a tabela de métricas, o funil e o dicionário
 
 ```powershell
 cd LAB3
-python -m lab03_dora.pipeline.consolidate
+$env:GITHUB_TOKEN = "seu_token"
+python -m lab03_dora.pipeline.expand_sample --target 300
 ```
+
+O comando retoma de `data/interim/s02_expand/state.json` se a coleta parar. Ele grava o dataset, o funil e o manifesto a cada repositório elegível.
 
 Saídas:
 
@@ -184,14 +187,7 @@ Saídas:
 - `data/processed/datasets/s02_manifest.json`
 - `reports/funnel/s02_selection_funnel.csv`
 
-O alvo são 300 repositórios elegíveis, com pelo menos 5 releases e 50 workflow runs na janela. A tabela versionada da Sprint 1 ainda tem 100 repositórios processados. Para ampliar a coleta:
-
-```powershell
-cd LAB3
-$env:GITHUB_TOKEN = "seu_token"
-python -m lab03_dora.pipeline --config config/lab3s02.json
-python -m lab03_dora.pipeline.consolidate
-```
+O alvo são 300 repositórios elegíveis: pelo menos 5 e no máximo 60 releases primárias na janela, e pelo menos 50 workflow runs válidos. O teto de 60 existe porque cada release pede um compare; acima disso o repositório entra no funil como `release_cap_skipped` e fica fora da amostra. `python -m lab03_dora.pipeline.consolidate` só remonta uma tabela já coletada. O padrão dele lê `s01_metrics.csv` e regrava `s02_metrics.csv`. Não use esse padrão depois da coleta final.
 
 ## Versionamento dos dados
 
