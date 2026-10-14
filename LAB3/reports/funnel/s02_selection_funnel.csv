@@ -1,0 +1,7 @@
+stage,count,discarded,description
+candidates,1576,0,"Repositorios retornados pela busca, com push em 2025."
+with_minimum_workflow_runs,162,1414,"Pelo menos 50 workflow runs de push no default branch, dentro da janela."
+with_minimum_releases,76,86,Pelo menos 5 releases primarias dentro da janela.
+eligible_final,66,0,"Amostra final, sem repositorio duplicado."
+release_cap_skipped,9,9,"Repositorios com mais de 60 releases primarias na janela. O compare de cada release estoura a cota da API, entao ficam fora da amostra."
+errors,0,0,Repositorios cuja consulta falhou e nao entraram na amostra.
