@@ -1,0 +1,61 @@
+reviewer,repository,release_id,tag_name,published_at,release_url,label,justification
+amanda,ChimeraOS/chimeraos,235405801,49-1_cabd8c9,2025-07-26T22:15:46Z,https://github.com/ChimeraOS/chimeraos/releases/tag/49-1_cabd8c9,corretiva,"release notes ou changelog registram correcao de erro, falha, bug, regressao ou seguranca"
+amanda,Corvusoft/restbed,,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+amanda,Elanis/web-to-desktop-framework-comparison,,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+amanda,FormidableLabs/prism-react-renderer,,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+amanda,GoBelieveIO/im_service,,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+amanda,H1R0GH057/Anonymous,,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+amanda,JetBrains/JetBrainsRuntime,267258539,jbr-release-21.0.9b895.149,2025-12-03T23:14:03Z,https://github.com/JetBrains/JetBrainsRuntime/releases/tag/jbr-release-21.0.9b895.149,corretiva,"release notes ou changelog registram correcao de erro, falha, bug, regressao ou seguranca"
+amanda,MrGeDiao/shuorenhua,,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+amanda,Niek/chatgpt-web,,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+amanda,PuddinCat/BestClash,,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+amanda,RankFTW/RHI,,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+amanda,RedPlanetHQ/core,272091027,0.2.0,2025-12-22T04:26:51Z,https://github.com/RedPlanetHQ/core/releases/tag/0.2.0,nao_corretiva,release notes e changelog nao registram correcao de defeito
+amanda,Shmoopi/iOS-System-Services,,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+amanda,TeamNewPipe/NewPipeExtractor,,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+amanda,TrestleAdmin/trestle,,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+amanda,TypeStrong/fork-ts-checker-webpack-plugin,210156052,v9.1.0,2025-04-03T16:20:15Z,https://github.com/TypeStrong/fork-ts-checker-webpack-plugin/releases/tag/v9.1.0,nao_corretiva,release notes e changelog nao registram correcao de defeito
+amanda,TypesettingTools/Aegisub,192862382,v3.4.1,2025-01-01T21:05:21Z,https://github.com/TypesettingTools/Aegisub/releases/tag/v3.4.1,corretiva,"release notes ou changelog registram correcao de erro, falha, bug, regressao ou seguranca"
+amanda,Unity-Technologies/com.unity.multiplayer.samples.coop,207852304,v3.0.0,2025-08-06T15:43:52Z,https://github.com/Unity-Technologies/com.unity.multiplayer.samples.coop/releases/tag/v3.0.0,corretiva,"release notes ou changelog registram correcao de erro, falha, bug, regressao ou seguranca"
+amanda,WeaveMindAI/weft,,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+amanda,ad-si/awesome-3d-printing,,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+amanda,allenai/scispacy,251324563,v0.6.2,2025-10-01T06:18:20Z,https://github.com/allenai/scispacy/releases/tag/v0.6.2,corretiva,"release notes ou changelog registram correcao de erro, falha, bug, regressao ou seguranca"
+amanda,antirez/iris.c,,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+amanda,apache/trafficserver,,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+amanda,aws/aws-toolkit-vscode,271609769,toolkit/v3.91.0,2025-12-18T23:50:30Z,https://github.com/aws/aws-toolkit-vscode/releases/tag/toolkit/v3.91.0,nao_corretiva,release notes e changelog nao registram correcao de defeito
+amanda,bcrypt-ruby/bcrypt-ruby,273639410,v3.1.21,2025-12-31T19:46:11Z,https://github.com/bcrypt-ruby/bcrypt-ruby/releases/tag/v3.1.21,nao_corretiva,release notes e changelog nao registram correcao de defeito
+amanda,blend2d/blend2d,,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+amanda,bluefireteam/photo_view,,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+amanda,brunopulis/awesome-a11y,,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+amanda,cbrock84/headcount,,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+amanda,cerebral/cerebral,223594171,v2025-06-06_0918,2025-06-06T09:18:07Z,https://github.com/cerebral/cerebral/releases/tag/v2025-06-06_0918,corretiva,"release notes ou changelog registram correcao de erro, falha, bug, regressao ou seguranca"
+amanda,clementchadebec/benchmark_VAE,,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+amanda,cnlimiter/codex-manager,,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+amanda,coralproject/talk,256469921,v9.10.6,2025-10-22T19:25:33Z,https://github.com/coralproject/talk/releases/tag/v9.10.6,nao_corretiva,release notes e changelog nao registram correcao de defeito
+amanda,crystian/ComfyUI-Crystools,235445169,1.26.0,2025-07-27T12:12:36Z,https://github.com/crystian/ComfyUI-Crystools/releases/tag/1.26.0,nao_corretiva,release notes e changelog nao registram correcao de defeito
+amanda,djhworld/simple-computer,,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+amanda,dmmulroy/better-result,,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+amanda,elyra-ai/elyra,240400727,v4.0.0,2025-08-16T21:46:26Z,https://github.com/elyra-ai/elyra/releases/tag/v4.0.0,corretiva,"release notes ou changelog registram correcao de erro, falha, bug, regressao ou seguranca"
+amanda,eslint-stylistic/eslint-stylistic,263517374,v5.6.1,2025-11-19T07:09:48Z,https://github.com/eslint-stylistic/eslint-stylistic/releases/tag/v5.6.1,corretiva,"release notes ou changelog registram correcao de erro, falha, bug, regressao ou seguranca"
+amanda,faruktoptas/FancyShowCaseView,,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+amanda,featureform/featureform,,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+amanda,glebkudr/shotgun_code,263451443,v2025.11.18-31f78f2,2025-11-18T23:26:05Z,https://github.com/glebkudr/shotgun_code/releases/tag/v2025.11.18-31f78f2,nao_corretiva,release notes e changelog nao registram correcao de defeito
+amanda,guhcostan/mac-cleaner-cli,272475801,v1.3.0,2025-12-23T13:43:43Z,https://github.com/guhcostan/mac-cleaner-cli/releases/tag/v1.3.0,corretiva,"release notes ou changelog registram correcao de erro, falha, bug, regressao ou seguranca"
+amanda,hectorm/hblock,205395738,v3.5.1,2025-03-12T19:30:09Z,https://github.com/hectorm/hblock/releases/tag/v3.5.1,nao_corretiva,release notes e changelog nao registram correcao de defeito
+amanda,imcvampire/vue-axios,,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+amanda,ishkawa/APIKit,,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+amanda,itsjunetime/tdf,266944271,v0.5.0,2025-12-03T03:30:13Z,https://github.com/itsjunetime/tdf/releases/tag/v0.5.0,corretiva,"release notes ou changelog registram correcao de erro, falha, bug, regressao ou seguranca"
+amanda,j4wg/interview-coder-withoupaywall-opensource,210730471,v1.0.2,2025-04-07T11:58:32Z,https://github.com/j4wg/interview-coder-withoupaywall-opensource/releases/tag/v1.0.2,nao_corretiva,release notes e changelog nao registram correcao de defeito
+amanda,keajs/kea,,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+amanda,kknifer7/FreeBox,272859891,v1.6.0,2025-12-26T15:22:06Z,https://github.com/kknifer7/FreeBox/releases/tag/v1.6.0,nao_corretiva,release notes e changelog nao registram correcao de defeito
+amanda,kylef/swiftenv,,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+amanda,linuxserver/docker-code-server,273018143,4.107.0-ls310,2025-12-27T20:35:26Z,https://github.com/linuxserver/docker-code-server/releases/tag/4.107.0-ls310,nao_corretiva,release notes e changelog nao registram correcao de defeito
+amanda,logpai/logparser,,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+amanda,luc-github/ESP3D,,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+amanda,manisandro/gImageReader,237493391,v3.4.3,2025-08-04T21:36:51Z,https://github.com/manisandro/gImageReader/releases/tag/v3.4.3,corretiva,"release notes ou changelog registram correcao de erro, falha, bug, regressao ou seguranca"
+amanda,mborgerding/kissfft,255975143,131.2.0,2025-10-22T20:57:10Z,https://github.com/mborgerding/kissfft/releases/tag/131.2.0,corretiva,"release notes ou changelog registram correcao de erro, falha, bug, regressao ou seguranca"
+amanda,meta-recsys/generative-recommenders,,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+amanda,mfontanini/libtins,,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+amanda,microsoft/PowerApps-Samples,,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+amanda,mikbry/awesome-webgpu,,,,,sem_release,nao existe release primaria publicada na janela para avaliar
+amanda,miroiu/nodify,230556485,v7.1.0,2025-07-07T18:01:03Z,https://github.com/miroiu/nodify/releases/tag/v7.1.0,nao_corretiva,release notes e changelog nao registram correcao de defeito
