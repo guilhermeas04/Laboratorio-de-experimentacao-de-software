@@ -14,3 +14,5 @@ na janela, o caso recebeu `sem_release` e não entra na avaliação da heurísti
 
 O arquivo foi produzido sem ler rótulos de outros avaliadores. A heurística é
 registrada junto ao rótulo para permitir auditoria e comparação posterior.
+Casos `sem_release` permanecem no arquivo bruto, mas são excluídos de precisão,
+recall e F1; não existe release para a heurística classificar.

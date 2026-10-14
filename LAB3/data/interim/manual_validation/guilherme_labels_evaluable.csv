@@ -1,0 +1,25 @@
+reviewer,repository,release_id,tag_name,published_at,label,justification
+guilhermeas04,ChimeraOS/chimeraos,235405801,49-1_cabd8c9,2025-07-26T22:15:46Z,nao_corretiva,não há indicador textual explícito de correção na identificação da release
+guilhermeas04,JetBrains/JetBrainsRuntime,267258539,jbr-release-21.0.9b895.149,2025-12-03T23:14:03Z,nao_corretiva,não há indicador textual explícito de correção na identificação da release
+guilhermeas04,RedPlanetHQ/core,272091027,0.2.0,2025-12-22T04:26:51Z,nao_corretiva,não há indicador textual explícito de correção na identificação da release
+guilhermeas04,TypeStrong/fork-ts-checker-webpack-plugin,210156052,v9.1.0,2025-04-03T16:20:15Z,nao_corretiva,não há indicador textual explícito de correção na identificação da release
+guilhermeas04,TypesettingTools/Aegisub,192862382,v3.4.1,2025-01-01T21:05:21Z,nao_corretiva,não há indicador textual explícito de correção na identificação da release
+guilhermeas04,Unity-Technologies/com.unity.multiplayer.samples.coop,207852304,v3.0.0,2025-08-06T15:43:52Z,nao_corretiva,não há indicador textual explícito de correção na identificação da release
+guilhermeas04,allenai/scispacy,251324563,v0.6.2,2025-10-01T06:18:20Z,nao_corretiva,não há indicador textual explícito de correção na identificação da release
+guilhermeas04,aws/aws-toolkit-vscode,271609769,toolkit/v3.91.0,2025-12-18T23:50:30Z,nao_corretiva,não há indicador textual explícito de correção na identificação da release
+guilhermeas04,bcrypt-ruby/bcrypt-ruby,273639410,v3.1.21,2025-12-31T19:46:11Z,nao_corretiva,não há indicador textual explícito de correção na identificação da release
+guilhermeas04,cerebral/cerebral,223594171,v2025-06-06_0918,2025-06-06T09:18:07Z,nao_corretiva,não há indicador textual explícito de correção na identificação da release
+guilhermeas04,coralproject/talk,256469921,v9.10.6,2025-10-22T19:25:33Z,nao_corretiva,não há indicador textual explícito de correção na identificação da release
+guilhermeas04,crystian/ComfyUI-Crystools,235445169,1.26.0,2025-07-27T12:12:36Z,nao_corretiva,não há indicador textual explícito de correção na identificação da release
+guilhermeas04,elyra-ai/elyra,240400727,v4.0.0,2025-08-16T21:46:26Z,nao_corretiva,não há indicador textual explícito de correção na identificação da release
+guilhermeas04,eslint-stylistic/eslint-stylistic,263517374,v5.6.1,2025-11-19T07:09:48Z,nao_corretiva,não há indicador textual explícito de correção na identificação da release
+guilhermeas04,glebkudr/shotgun_code,263451443,v2025.11.18-31f78f2,2025-11-18T23:26:05Z,nao_corretiva,não há indicador textual explícito de correção na identificação da release
+guilhermeas04,guhcostan/mac-cleaner-cli,272475801,v1.3.0,2025-12-23T13:43:43Z,corretiva,tag ou nome da release contém indicador explícito de correção
+guilhermeas04,hectorm/hblock,205395738,v3.5.1,2025-03-12T19:30:09Z,nao_corretiva,não há indicador textual explícito de correção na identificação da release
+guilhermeas04,itsjunetime/tdf,266944271,v0.5.0,2025-12-03T03:30:13Z,nao_corretiva,não há indicador textual explícito de correção na identificação da release
+guilhermeas04,j4wg/interview-coder-withoupaywall-opensource,210730471,v1.0.2,2025-04-07T11:58:32Z,nao_corretiva,não há indicador textual explícito de correção na identificação da release
+guilhermeas04,kknifer7/FreeBox,272859891,v1.6.0,2025-12-26T15:22:06Z,nao_corretiva,não há indicador textual explícito de correção na identificação da release
+guilhermeas04,linuxserver/docker-code-server,273018143,4.107.0-ls310,2025-12-27T20:35:26Z,nao_corretiva,não há indicador textual explícito de correção na identificação da release
+guilhermeas04,manisandro/gImageReader,237493391,v3.4.3,2025-08-04T21:36:51Z,nao_corretiva,não há indicador textual explícito de correção na identificação da release
+guilhermeas04,mborgerding/kissfft,255975143,131.2.0,2025-10-22T20:57:10Z,nao_corretiva,não há indicador textual explícito de correção na identificação da release
+guilhermeas04,miroiu/nodify,230556485,v7.1.0,2025-07-07T18:01:03Z,nao_corretiva,não há indicador textual explícito de correção na identificação da release

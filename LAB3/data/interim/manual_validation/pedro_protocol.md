@@ -16,3 +16,5 @@ janela, o rotulo e `sem_release`.
 
 Versao patch sozinha nao vira corretiva. Sem a palavra de correcao nas notas,
 deixo `nao_corretiva`.
+Casos `sem_release` permanecem no arquivo bruto, mas sao excluidos de
+precisao, recall e F1 porque nao possuem release para classificar.
