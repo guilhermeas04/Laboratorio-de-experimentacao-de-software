@@ -168,6 +168,31 @@ O comando gera `data/processed/gold_standard/gold_standard_consensus.csv`,
 `sem_release` permanecem documentados, mas a estatística específica para os
 casos avaliáveis também é reportada separadamente.
 
+## Sprint 2 — dataset final
+
+A issue `(LAB3S02 - 6)` consolida a tabela de métricas, o funil e o dicionário. A heurística de CFR(b) é a da issue #108, descrita em `docs/cfr-b-heuristica.md`. A metodologia do artigo está em `docs/article/metodologia.md`.
+
+```powershell
+cd LAB3
+python -m lab03_dora.pipeline.consolidate
+```
+
+Saídas:
+
+- `data/processed/datasets/s02_metrics.csv`
+- `data/processed/datasets/s02_data_dictionary.csv`
+- `data/processed/datasets/s02_manifest.json`
+- `reports/funnel/s02_selection_funnel.csv`
+
+O alvo são 300 repositórios elegíveis, com pelo menos 5 releases e 50 workflow runs na janela. A tabela versionada da Sprint 1 ainda tem 100 repositórios processados. Para ampliar a coleta:
+
+```powershell
+cd LAB3
+$env:GITHUB_TOKEN = "seu_token"
+python -m lab03_dora.pipeline --config config/lab3s02.json
+python -m lab03_dora.pipeline.consolidate
+```
+
 ## Versionamento dos dados
 
 O cache da API e as respostas brutas ficam locais e são regeneráveis; eles não

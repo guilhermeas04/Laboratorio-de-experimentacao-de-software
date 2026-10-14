@@ -1,0 +1,16 @@
+coluna,tipo,unidade,definicao,origem,ausentes
+repository,texto,,Nome completo owner/name.,selecao GitHub,Linha sem nome e descartada.
+release_count,inteiro,releases,"Releases primarias publicadas na janela, sem draft e sem pre-release.",coleta de releases,Vazio se a coleta nao rodou. Zero significa que rodou e nao achou release.
+deployment_frequency_per_week,decimal,releases/semana,"release_count dividido pelas semanas da janela, 365/7 em 2025.",RQ01,Vazio se release_count estiver vazio.
+lead_time_by_release_days,decimal,dias,"Mediana, por release, de published_at menos o commit mais antigo do compare.",RQ02 variante a,Vazio se nao ha release anterior ou nao ha commit. Nao vira zero.
+lead_time_by_commit_days,decimal,dias,Mediana de published_at menos cada commit incluido nas releases.,RQ02 variante b,Vazio se nao ha commit valido. Nao vira zero.
+valid_workflow_runs_count,inteiro,runs,Workflow runs de push no default branch dentro da janela.,coleta de workflow runs,Vazio se a coleta nao rodou.
+cfr_ci,decimal,proporcao,Falhas de CI divididas por falhas mais sucessos. Cancelados ficam de fora.,RQ03 variante a,Vazio se nao ha run com sucesso ou falha.
+cfr_b,decimal,proporcao,"Releases com corretiva em ate 7 dias, pela heuristica da #108, sobre as releases avaliadas.",RQ03 variante b,Vazio se a tabela de origem nao trouxe a coluna ou se nao ha release avaliavel.
+cfr_b_evaluated_releases,inteiro,releases,Releases primarias fora dos ultimos 7 dias da janela.,heuristica #108,Vazio quando cfr_b nao foi calculado.
+cfr_b_failed_releases,inteiro,releases,Releases avaliadas cuja seguinte e corretiva no prazo de 7 dias.,heuristica #108,Vazio quando cfr_b nao foi calculado.
+cfr_b_censored_releases,inteiro,releases,Releases dos ultimos 7 dias da janela. Ficam fora do CFR(b).,heuristica #108,Vazio quando cfr_b nao foi calculado.
+recovery_median_hours,decimal,horas,Mediana do tempo entre a primeira falha de um workflow e o proximo sucesso.,RQ04,Vazio se nao ha episodio recuperado. Nao vira zero.
+recovery_censored_count,inteiro,episodios,Episodios de falha sem sucesso ate o fim da janela.,RQ04,Vazio se a coleta de runs nao rodou.
+eligible,booleano,,true quando release_count >= 5 e valid_workflow_runs_count >= 50.,criterio de inclusao,Nao se aplica.
+exclusion_reason,texto,,insufficient_releases ou insufficient_valid_workflow_runs.,funil,Vazio quando eligible e true.

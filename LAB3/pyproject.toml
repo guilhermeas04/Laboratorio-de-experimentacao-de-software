@@ -17,6 +17,7 @@ dev = [
 
 [project.scripts]
 lab03-select-repositories = "lab03_dora.pipeline.select_repositories:main"
+lab03-consolidate = "lab03_dora.pipeline.consolidate:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
