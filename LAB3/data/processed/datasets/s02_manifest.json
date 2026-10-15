@@ -8,11 +8,11 @@
   "dataset": "data/processed/datasets/s02_metrics.csv",
   "dictionary": "data/processed/datasets/s02_data_dictionary.csv",
   "funnel": "reports/funnel/s02_selection_funnel.csv",
-  "generated_at_utc": "2026-10-14T18:59:43.383144+00:00",
-  "rows": 66,
+  "generated_at_utc": "2026-10-15T00:11:34.779425+00:00",
+  "rows": 186,
   "duplicate_count": 0,
-  "eligible_count": 66,
+  "eligible_count": 186,
   "target_eligible": 300,
   "target_met": false,
-  "candidates_screened": 1576
+  "candidates_screened": 5220
 }
