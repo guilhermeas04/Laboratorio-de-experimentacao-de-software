@@ -46,6 +46,7 @@ def collect_commits_between(
     head_tag: str,
     *,
     per_page: int = MAX_PER_PAGE,
+    max_pages: int | None = None,
 ) -> tuple[CompareResult, list[dict[str, Any]]]:
     """Busca os commits de base...head.
 
@@ -104,6 +105,8 @@ def collect_commits_between(
             if total_commits is not None and received >= total_commits:
                 break
             if not page_commits or len(page_commits) < requested_per_page:
+                break
+            if max_pages is not None and page >= max_pages:
                 break
             page += 1
     except GitHubApiError as error:
