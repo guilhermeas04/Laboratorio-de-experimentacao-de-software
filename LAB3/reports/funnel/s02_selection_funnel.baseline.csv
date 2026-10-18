@@ -1,0 +1,10 @@
+stage,count,discarded,description
+candidates,5220,0,"Repositorios distintos retornados pela busca, nao arquivados, com push em 2025."
+excluded_low_releases,1193,1193,Menos de 5 releases primarias dentro da janela.
+excluded_low_workflow_runs,3466,3466,"Menos de 50 workflow runs de push concluidos no default branch, dentro da janela."
+release_cap_skipped,27,27,"Mais de 60 releases primarias na janela. O compare de cada release estoura a cota da API, entao o repositorio fica fora da amostra."
+measured_not_eligible,3,3,"Passou na triagem, mas a medicao completa nao confirmou 5 releases primarias no default branch e 50 runs validos."
+errors,0,0,Consulta falhou; o repositorio nao entrou na amostra.
+interrupted,0,0,"Retornado pela busca, mas nao medido: a coleta foi reiniciada no meio do lote ou o alvo de 300 ja tinha sido atingido."
+eligible_final,186,0,"Amostra final, sem repositorio duplicado."
+duplicates_ignored,0,0,Repositorio devolvido de novo por outra busca; so a primeira ocorrencia conta.

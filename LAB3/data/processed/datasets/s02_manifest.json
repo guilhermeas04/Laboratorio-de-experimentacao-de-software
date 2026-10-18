@@ -8,11 +8,13 @@
   "dataset": "data/processed/datasets/s02_metrics.csv",
   "dictionary": "data/processed/datasets/s02_data_dictionary.csv",
   "funnel": "reports/funnel/s02_selection_funnel.csv",
-  "generated_at_utc": "2026-10-15T00:11:34.779425+00:00",
-  "rows": 186,
-  "duplicate_count": 0,
-  "eligible_count": 186,
+  "generated_at_utc": "2026-10-18T20:15:48.620461+00:00",
+  "rows": 300,
+  "duplicate_count": 5,
+  "eligible_count": 300,
   "target_eligible": 300,
-  "target_met": false,
-  "candidates_screened": 5220
+  "target_met": true,
+  "candidates_screened": 5924,
+  "imported_baseline_count": 186,
+  "historical_candidates_note": "Imported baseline excludes unidentified historical rejects; new screening is counted separately from the previous funnel."
 }

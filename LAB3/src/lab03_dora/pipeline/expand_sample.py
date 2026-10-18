@@ -7,11 +7,13 @@ workflow runs de push no default branch. A busca so usa a API REST propria.
 from __future__ import annotations
 
 import argparse
+import csv
+import hashlib
 import json
 import statistics
 import time
 from concurrent.futures import ThreadPoolExecutor
-from datetime import UTC, datetime, time as dt_time
+from datetime import UTC, datetime, time as dt_time, timedelta
 from pathlib import Path
 from typing import Any, Sequence
 from urllib.error import HTTPError, URLError
@@ -60,14 +62,33 @@ def _state_path(root: Path) -> Path:
 def _load_state(root: Path) -> dict[str, Any]:
     path = _state_path(root)
     if not path.exists():
+        dataset = root / "data/processed/datasets/s02_metrics.csv"
+        rows = []
+        if dataset.exists():
+            with dataset.open(encoding="utf-8", newline="") as handle:
+                rows = list(csv.DictReader(handle))
+            names = [row["repository"].casefold() for row in rows]
+            if len(names) != len(set(names)) or any(
+                int(row["release_count"]) < 5 or int(row["valid_workflow_runs_count"]) < 50
+                for row in rows
+            ):
+                raise ValueError("Dataset existente invalido; nao sera sobrescrito.")
+            for companion in (root / "reports/funnel/s02_selection_funnel.csv", dataset.with_name("s02_manifest.json")):
+                destination = companion.with_name(companion.stem + ".baseline" + companion.suffix)
+                if companion.exists() and not destination.exists():
+                    destination.write_bytes(companion.read_bytes())
+            backup = dataset.with_suffix(".baseline.csv")
+            if not backup.exists():
+                backup.write_bytes(dataset.read_bytes())
         return {
-            "seen": [],
-            "eligible": [],
+            "seen": [row["repository"] for row in rows],
+            "eligible": rows,
+            "imported_baseline_count": len(rows),
             "funnel": {
-                "candidates": 0,
+                "candidates": len(rows),
                 "with_workflow_runs": 0,
                 "with_releases": 0,
-                "eligible": 0,
+                "eligible": len(rows),
                 "duplicates": 0,
                 "errors": 0,
                 "low_runs": 0,
@@ -96,7 +117,9 @@ def _load_state(root: Path) -> dict[str, Any]:
 def _save_state(root: Path, state: dict[str, Any]) -> None:
     path = _state_path(root)
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(state, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    temporary = path.with_suffix(".tmp")
+    temporary.write_text(json.dumps(state, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    temporary.replace(path)
     _write_dataset(root, state)
 
 
@@ -135,6 +158,8 @@ def _write_dataset(root: Path, state: dict[str, Any]) -> None:
         "target_eligible": TARGET_ELIGIBLE,
         "target_met": counts["eligible"] >= TARGET_ELIGIBLE,
         "candidates_screened": counts["candidates"],
+        "imported_baseline_count": state.get("imported_baseline_count", 0),
+        "historical_candidates_note": "Imported baseline excludes unidentified historical rejects; new screening is counted separately from the previous funnel.",
     }
     path = root / "data" / "processed" / "datasets" / "s02_manifest.json"
     path.write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
@@ -166,34 +191,39 @@ def _collect_runs_fast(
 ) -> CollectionResult:
     """Um pedido cobre o ano inteiro. Meses separados so se a API corta em 1000."""
 
-    created = f"{window.start.isoformat()}..{window.end.isoformat()}"
-    params = {"branch": branch, "event": "push", "status": "completed", "created": created, "per_page": 100, "page": 1}
-    first = client.get(f"/repos/{repository}/actions/runs", params).payload
-    if not isinstance(first, dict):
-        return CollectionResult(runs=[], windows_at_limit=[])
-    total = int(first.get("total_count") or 0)
-    at_limit = total >= 1000
-    collected: list[dict[str, Any]] = []
-    page = 1
-    payload: dict[str, Any] | Any = first
-    while isinstance(payload, dict):
-        for raw in payload.get("workflow_runs") or []:
-            if not isinstance(raw, dict):
-                continue
-            normalized = normalize_workflow_run(
-                raw,
-                repository=repository,
-                observation_month=str(raw.get("created_at") or "")[:7],
-                default_branch=branch,
-            )
-            if normalized is not None:
-                collected.append(normalized)
-        runs_in_page = payload.get("workflow_runs") or []
-        if page >= 10 or page * 100 >= total or not runs_in_page or len(runs_in_page) < 100:
-            break
-        page += 1
-        payload = client.get(f"/repos/{repository}/actions/runs", {**params, "page": page}).payload
-    return CollectionResult(runs=collected, windows_at_limit=["2025"] if at_limit else [])
+    def fetch(start: datetime, end: datetime) -> list[dict[str, Any]]:
+        params = {"branch": branch, "event": "push", "status": "completed",
+                  "created": f"{start.isoformat()}..{end.isoformat()}", "per_page": 100}
+        endpoint = f"/repos/{repository}/actions/runs"
+        first = client.get(endpoint, {**params, "page": 1}).payload
+        if not isinstance(first, dict):
+            raise GitHubApiError("Resposta de workflow runs invalida")
+        total = int(first.get("total_count") or 0)
+        if total >= 1000:
+            seconds = int((end - start).total_seconds())
+            if seconds < 1:
+                raise GitHubApiError("Mais de 1000 runs no mesmo segundo; coleta incompleta")
+            middle = start + timedelta(seconds=seconds // 2)
+            return fetch(start, middle) + fetch(middle + timedelta(seconds=1), end)
+        collected = []
+        for page in range(1, (total + 99) // 100 + 1):
+            payload = first if page == 1 else client.get(endpoint, {**params, "page": page}).payload
+            if not isinstance(payload, dict):
+                raise GitHubApiError("Pagina de workflow runs invalida")
+            for raw in payload.get("workflow_runs") or []:
+                normalized = normalize_workflow_run(
+                    raw, repository=repository,
+                    observation_month=str(raw.get("created_at") or "")[:7], default_branch=branch,
+                )
+                if normalized is not None:
+                    collected.append(normalized)
+        return collected
+
+    start = datetime.combine(window.start, dt_time.min, tzinfo=UTC)
+    end = datetime.combine(window.end, dt_time(23, 59, 59), tzinfo=UTC)
+    runs = fetch(start, end)
+    unique = {run["id"]: run for run in runs}
+    return CollectionResult(runs=list(unique.values()), windows_at_limit=[])
 
 
 def _has_minimum_releases(client: GitHubClient, repository: str, branch: str, window: ObservationWindow) -> bool:
@@ -316,7 +346,7 @@ def _bounded_history(
             }
         try:
             compare, _pages = collect_commits_between(
-                client, repository, previous.tag_name, head.tag_name, max_pages=1
+                client, repository, previous.tag_name, head.tag_name
             )
         except Exception as error:
             return {
@@ -385,7 +415,7 @@ def _graphql_compares(token: str, repository: str, pairs: list[tuple[Any, Any]])
             nodes = list(connection.get("nodes") or [])
             page_info = connection.get("pageInfo") or {}
             pages = 1
-            while page_info.get("hasNextPage") and pages < 20:
+            while page_info.get("hasNextPage"):
                 follow = (
                     f"query($after: String) {{ repository(owner: {json.dumps(owner)}, name: {json.dumps(name)}) {{"
                     f" ref(qualifiedName: {json.dumps('refs/tags/' + base_tag)}) {{"
@@ -396,7 +426,7 @@ def _graphql_compares(token: str, repository: str, pairs: list[tuple[Any, Any]])
                     more = _graphql(token, follow, {"after": page_info.get("endCursor")})
                     more_connection = (((more.get("repository") or {}).get("ref") or {}).get("compare") or {}).get("commits") or {}
                 except GitHubApiError:
-                    break
+                    raise
                 nodes.extend(more_connection.get("nodes") or [])
                 page_info = more_connection.get("pageInfo") or {}
                 pages += 1
@@ -455,6 +485,11 @@ query($q: String!, $after: String) {
 
 def _graphql(token: str, query: str, variables: dict[str, Any]) -> dict[str, Any]:
     body = json.dumps({"query": query, "variables": variables}).encode("utf-8")
+    cache = LAB3_ROOT / "cache" / "graphql"
+    cache.mkdir(parents=True, exist_ok=True)
+    cache_path = cache / (hashlib.sha256(body).hexdigest() + ".json")
+    if cache_path.exists():
+        return json.loads(cache_path.read_text(encoding="utf-8"))
     last_error: Exception | None = None
     for attempt in range(6):
         request = Request(
@@ -490,7 +525,11 @@ def _graphql(token: str, query: str, variables: dict[str, Any]) -> dict[str, Any
             last_error = GitHubApiError(str(payload["errors"])[:300])
             time.sleep(2**attempt)
             continue
-        return payload.get("data") or {}
+        if payload.get("errors"):
+            raise GitHubApiError("GraphQL retornou dados parciais; consulta pendente")
+        data = payload.get("data") or {}
+        cache_path.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+        return data
     raise GitHubApiError(f"GraphQL falhou: {last_error}")
 
 
@@ -512,7 +551,7 @@ def _release_hint(node: dict[str, Any], window: ObservationWindow) -> bool:
             in_window += 1
     if in_window >= 5:
         return True
-    return len(releases) >= 50 and in_window + newest_after_window >= len(releases) - 5
+    return len(releases) >= 50  # Inconclusivo: confirmar por REST, sem falso descarte.
 
 
 def _search_params(stars: str, page: int, extra: str) -> dict[str, Any]:
@@ -617,8 +656,7 @@ def collect_until(client: GitHubClient, *, root: Path, target: int, window: Obse
                     state["funnel"]["duplicates"] += 1
                 continue
             seen.add(repository)
-            state["seen"].append(repository)
-            state["funnel"]["candidates"] += 1
+
             fresh.append((repository, branch, _release_hint(node, window)))
 
         def screen_one(item: tuple[str, str, bool]) -> tuple[str, str, str]:
@@ -626,6 +664,8 @@ def collect_until(client: GitHubClient, *, root: Path, target: int, window: Obse
             if not hint:
                 return repository, branch, "low_releases"
             try:
+                if not _has_minimum_releases(client, repository, branch, window):
+                    return repository, branch, "low_releases"
                 if _run_count(client, repository, branch) < 50:
                     return repository, branch, "low_runs"
                 return repository, branch, "measure"
@@ -640,8 +680,11 @@ def collect_until(client: GitHubClient, *, root: Path, target: int, window: Obse
         for repository, branch, status in screened:
             if state["funnel"]["eligible"] >= target:
                 break
+            state["seen"].append(repository)
+            state["funnel"]["candidates"] += 1
             if status == "error":
-                state["funnel"]["errors"] += 1
+                state["seen"].remove(repository)
+                state["funnel"]["candidates"] -= 1
                 continue
             if status == "low_runs":
                 state["funnel"]["low_runs"] += 1
@@ -692,9 +735,11 @@ def collect_until(client: GitHubClient, *, root: Path, target: int, window: Obse
                 else:
                     state["funnel"]["measured_not_eligible"] += 1
             except Exception as error:
-                state["funnel"]["errors"] += 1
-                print(f"erro {repository}: {error}", flush=True)
-        if state["funnel"]["eligible"] < target:
+                state["seen"].remove(repository)
+                seen.discard(repository)
+                state["funnel"]["candidates"] -= 1
+                print(f"pendente {repository}: {error}", flush=True)
+        if state["funnel"]["eligible"] < target and all(repo in state["seen"] for repo, _, _ in screened):
             done_ranges.add(range_key)
             state["done_ranges"] = sorted(done_ranges)
         print(
