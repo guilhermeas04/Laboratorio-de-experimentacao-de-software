@@ -14,6 +14,8 @@ from concurrent.futures import ThreadPoolExecutor
 from datetime import UTC, datetime, time as dt_time
 from pathlib import Path
 from typing import Any, Sequence
+from urllib.error import HTTPError, URLError
+from urllib.request import Request, urlopen
 
 from lab03_dora.api.github import GitHubApiError, GitHubClient
 from lab03_dora.collection.commits import collect_commits_between
@@ -68,9 +70,27 @@ def _load_state(root: Path) -> dict[str, Any]:
                 "eligible": 0,
                 "duplicates": 0,
                 "errors": 0,
+                "low_runs": 0,
+                "low_releases": 0,
+                "measured_not_eligible": 0,
+                "release_cap_skipped": 0,
             },
         }
-    return json.loads(path.read_text(encoding="utf-8"))
+    state = json.loads(path.read_text(encoding="utf-8"))
+    funnel = state["funnel"]
+    if "low_runs" not in funnel:
+        funnel["low_runs"] = funnel["candidates"] - funnel["with_workflow_runs"]
+        funnel["low_releases"] = funnel["with_workflow_runs"] - funnel["with_releases"]
+        funnel["measured_not_eligible"] = max(
+            0, funnel["with_releases"] - funnel["eligible"] - funnel.get("release_cap_skipped", 0)
+        )
+    accounted = sum(
+        int(funnel.get(key) or 0)
+        for key in ("low_runs", "low_releases", "release_cap_skipped", "measured_not_eligible", "errors", "eligible", "interrupted")
+    )
+    if funnel["candidates"] > accounted:
+        funnel["interrupted"] = int(funnel.get("interrupted") or 0) + funnel["candidates"] - accounted
+    return state
 
 
 def _save_state(root: Path, state: dict[str, Any]) -> None:
@@ -89,12 +109,15 @@ def _write_dataset(root: Path, state: dict[str, Any]) -> None:
     write_csv(
         funnel,
         [
-            {"stage": "candidates", "count": counts["candidates"], "discarded": 0, "description": "Repositorios retornados pela busca, com push em 2025."},
-            {"stage": "with_minimum_workflow_runs", "count": counts["with_workflow_runs"], "discarded": counts["candidates"] - counts["with_workflow_runs"], "description": "Pelo menos 50 workflow runs de push no default branch, dentro da janela."},
-            {"stage": "with_minimum_releases", "count": counts["with_releases"], "discarded": counts["with_workflow_runs"] - counts["with_releases"], "description": "Pelo menos 5 releases primarias dentro da janela."},
-            {"stage": "eligible_final", "count": counts["eligible"], "discarded": counts["duplicates"], "description": "Amostra final, sem repositorio duplicado."},
-            {"stage": "release_cap_skipped", "count": counts.get("release_cap_skipped", 0), "discarded": counts.get("release_cap_skipped", 0), "description": "Repositorios com mais de 60 releases primarias na janela. O compare de cada release estoura a cota da API, entao ficam fora da amostra."},
-            {"stage": "errors", "count": counts["errors"], "discarded": 0, "description": "Repositorios cuja consulta falhou e nao entraram na amostra."},
+            {"stage": "candidates", "count": counts["candidates"], "discarded": 0, "description": "Repositorios distintos retornados pela busca, nao arquivados, com push em 2025."},
+            {"stage": "excluded_low_releases", "count": counts.get("low_releases", 0), "discarded": counts.get("low_releases", 0), "description": "Menos de 5 releases primarias dentro da janela."},
+            {"stage": "excluded_low_workflow_runs", "count": counts.get("low_runs", 0), "discarded": counts.get("low_runs", 0), "description": "Menos de 50 workflow runs de push concluidos no default branch, dentro da janela."},
+            {"stage": "release_cap_skipped", "count": counts.get("release_cap_skipped", 0), "discarded": counts.get("release_cap_skipped", 0), "description": "Mais de 60 releases primarias na janela. O compare de cada release estoura a cota da API, entao o repositorio fica fora da amostra."},
+            {"stage": "measured_not_eligible", "count": counts.get("measured_not_eligible", 0), "discarded": counts.get("measured_not_eligible", 0), "description": "Passou na triagem, mas a medicao completa nao confirmou 5 releases primarias no default branch e 50 runs validos."},
+            {"stage": "errors", "count": counts["errors"], "discarded": counts["errors"], "description": "Consulta falhou; o repositorio nao entrou na amostra."},
+            {"stage": "interrupted", "count": counts.get("interrupted", 0), "discarded": counts.get("interrupted", 0), "description": "Retornado pela busca, mas nao medido: a coleta foi reiniciada no meio do lote ou o alvo de 300 ja tinha sido atingido."},
+            {"stage": "eligible_final", "count": counts["eligible"], "discarded": 0, "description": "Amostra final, sem repositorio duplicado."},
+            {"stage": "duplicates_ignored", "count": counts["duplicates"], "discarded": counts["duplicates"], "description": "Repositorio devolvido de novo por outra busca; so a primeira ocorrencia conta."},
         ],
         fieldnames=("stage", "count", "discarded", "description"),
     )
@@ -149,16 +172,7 @@ def _collect_runs_fast(
     if not isinstance(first, dict):
         return CollectionResult(runs=[], windows_at_limit=[])
     total = int(first.get("total_count") or 0)
-    if total >= 1000:
-        return collect_workflow_runs(
-            repository,
-            branch,
-            datetime.combine(window.start, dt_time.min, tzinfo=UTC),
-            datetime.combine(window.end, dt_time.max, tzinfo=UTC),
-            runs_client,
-            cache_dir=cache_dir,
-            workers=6,
-        )
+    at_limit = total >= 1000
     collected: list[dict[str, Any]] = []
     page = 1
     payload: dict[str, Any] | Any = first
@@ -175,11 +189,11 @@ def _collect_runs_fast(
             if normalized is not None:
                 collected.append(normalized)
         runs_in_page = payload.get("workflow_runs") or []
-        if page * 100 >= total or not runs_in_page or len(runs_in_page) < 100:
+        if page >= 10 or page * 100 >= total or not runs_in_page or len(runs_in_page) < 100:
             break
         page += 1
         payload = client.get(f"/repos/{repository}/actions/runs", {**params, "page": page}).payload
-    return CollectionResult(runs=collected, windows_at_limit=[])
+    return CollectionResult(runs=collected, windows_at_limit=["2025"] if at_limit else [])
 
 
 def _has_minimum_releases(client: GitHubClient, repository: str, branch: str, window: ObservationWindow) -> bool:
@@ -301,7 +315,9 @@ def _bounded_history(
                 "skipped_missing_date": 0,
             }
         try:
-            compare, _pages = collect_commits_between(client, repository, previous.tag_name, head.tag_name)
+            compare, _pages = collect_commits_between(
+                client, repository, previous.tag_name, head.tag_name, max_pages=1
+            )
         except Exception as error:
             return {
                 "repository": repository,
@@ -314,26 +330,209 @@ def _bounded_history(
             }
         return compare.to_dict()
 
+    graphql_results = _graphql_compares(client.token or "", repository, pairs)
+
+    def resolve(pair: tuple[Any, Any]) -> dict[str, Any]:
+        head, previous = pair
+        if head.tag_name and previous is not None and previous.tag_name:
+            cached = graphql_results.get((previous.tag_name, head.tag_name))
+            if cached is not None:
+                return cached
+        return compare_one(pair)
+
     with ThreadPoolExecutor(max_workers=6) as pool:
-        compares.extend(pool.map(compare_one, pairs))
+        compares.extend(pool.map(resolve, pairs))
     history.compares = compares
     return history
 
 
-def _search(client: GitHubClient, stars: str, page: int, extra: str = "") -> dict[str, Any]:
+def _graphql_compares(token: str, repository: str, pairs: list[tuple[Any, Any]]) -> dict[tuple[str, str], dict[str, Any]]:
+    """Commits entre releases pela API GraphQL, 10 compares por consulta.
+
+    Mesma regra do compare REST: commits do head que nao estao no base, os
+    100 mais antigos primeiro. Compare que falhar volta como ausente e cai no
+    REST.
+    """
+
+    owner, name = repository.split("/", 1)
+    wanted = [
+        (previous.tag_name, head.tag_name)
+        for head, previous in pairs
+        if head.tag_name and previous is not None and previous.tag_name
+    ]
+    results: dict[tuple[str, str], dict[str, Any]] = {}
+    for start in range(0, len(wanted), 10):
+        chunk = wanted[start : start + 10]
+        parts = []
+        for index, (base_tag, head_tag) in enumerate(chunk):
+            parts.append(
+                f"c{index}: ref(qualifiedName: {json.dumps('refs/tags/' + base_tag)}) {{"
+                f" compare(headRef: {json.dumps('refs/tags/' + head_tag)}) {{"
+                " aheadBy commits(first: 100) { pageInfo { hasNextPage endCursor } nodes { oid authoredDate message } } } }"
+            )
+        query = f"query {{ repository(owner: {json.dumps(owner)}, name: {json.dumps(name)}) {{ {' '.join(parts)} }} }}"
+        try:
+            data = _graphql(token, query, {})
+        except GitHubApiError:
+            continue
+        repo_data = data.get("repository") or {}
+        for index, (base_tag, head_tag) in enumerate(chunk):
+            ref = repo_data.get(f"c{index}")
+            comparison = (ref or {}).get("compare")
+            if not comparison:
+                continue
+            connection = comparison.get("commits") or {}
+            nodes = list(connection.get("nodes") or [])
+            page_info = connection.get("pageInfo") or {}
+            pages = 1
+            while page_info.get("hasNextPage") and pages < 20:
+                follow = (
+                    f"query($after: String) {{ repository(owner: {json.dumps(owner)}, name: {json.dumps(name)}) {{"
+                    f" ref(qualifiedName: {json.dumps('refs/tags/' + base_tag)}) {{"
+                    f" compare(headRef: {json.dumps('refs/tags/' + head_tag)}) {{"
+                    " commits(first: 100, after: $after) { pageInfo { hasNextPage endCursor } nodes { oid authoredDate message } } } } } }"
+                )
+                try:
+                    more = _graphql(token, follow, {"after": page_info.get("endCursor")})
+                    more_connection = (((more.get("repository") or {}).get("ref") or {}).get("compare") or {}).get("commits") or {}
+                except GitHubApiError:
+                    break
+                nodes.extend(more_connection.get("nodes") or [])
+                page_info = more_connection.get("pageInfo") or {}
+                pages += 1
+            commits = []
+            skipped = 0
+            for node in nodes:
+                sha = str((node or {}).get("oid") or "")
+                authored = str((node or {}).get("authoredDate") or "")
+                if not sha or not authored:
+                    skipped += 1
+                    continue
+                lines = str(node.get("message") or "").splitlines()
+                commits.append({"sha": sha, "authored_at": authored, "message": lines[0] if lines else ""})
+            ahead = int(comparison.get("aheadBy") or 0)
+            problem, detail = "", ""
+            if ahead > len(nodes):
+                problem = "compare_truncated"
+                detail = f"A API informou {ahead} commits, mas {len(nodes)} foram recebidos."
+            elif not commits:
+                problem = "no_new_commits"
+                detail = "O compare nao trouxe commits novos com data de autor."
+            elif skipped:
+                problem = "missing_commit_date"
+                detail = f"{skipped} commit(s) sem sha ou data de autor foram ignorados."
+            results[(base_tag, head_tag)] = {
+                "repository": repository,
+                "base_tag": base_tag,
+                "head_tag": head_tag,
+                "commits": commits,
+                "problem": problem,
+                "detail": detail,
+                "skipped_missing_date": skipped,
+            }
+    return results
+
+
+GRAPHQL_SEARCH = """
+query($q: String!, $after: String) {
+  rateLimit { remaining resetAt }
+  search(query: $q, type: REPOSITORY, first: 50, after: $after) {
+    repositoryCount
+    pageInfo { hasNextPage endCursor }
+    nodes {
+      ... on Repository {
+        nameWithOwner
+        defaultBranchRef { name }
+        releases(first: 50, orderBy: {field: CREATED_AT, direction: DESC}) {
+          nodes { publishedAt isDraft isPrerelease }
+        }
+      }
+    }
+  }
+}
+"""
+
+
+def _graphql(token: str, query: str, variables: dict[str, Any]) -> dict[str, Any]:
+    body = json.dumps({"query": query, "variables": variables}).encode("utf-8")
+    last_error: Exception | None = None
+    for attempt in range(6):
+        request = Request(
+            "https://api.github.com/graphql",
+            data=body,
+            method="POST",
+            headers={
+                "Authorization": f"Bearer {token}",
+                "Content-Type": "application/json",
+                "User-Agent": "lab03-dora-pipeline",
+            },
+        )
+        try:
+            with urlopen(request, timeout=60) as response:
+                payload = json.loads(response.read().decode("utf-8"))
+        except HTTPError as error:
+            last_error = error
+            if error.code in (403, 429):
+                reset = error.headers.get("X-RateLimit-Reset")
+                wait = max(5, int(reset) - int(time.time()) + 1) if reset and reset.isdigit() else 60
+                print(f"cota GraphQL, esperando {wait}s", flush=True)
+                time.sleep(wait)
+                continue
+            if error.code >= 500:
+                time.sleep(2**attempt)
+                continue
+            raise GitHubApiError(f"GraphQL retornou HTTP {error.code}") from error
+        except (URLError, OSError) as error:
+            last_error = error
+            time.sleep(2**attempt)
+            continue
+        if payload.get("errors") and not payload.get("data"):
+            last_error = GitHubApiError(str(payload["errors"])[:300])
+            time.sleep(2**attempt)
+            continue
+        return payload.get("data") or {}
+    raise GitHubApiError(f"GraphQL falhou: {last_error}")
+
+
+def _release_hint(node: dict[str, Any], window: ObservationWindow) -> bool:
+    """Pre-filtro barato. A contagem oficial sai depois da API REST."""
+
+    releases = ((node.get("releases") or {}).get("nodes")) or []
+    start = window.start.isoformat()
+    end = window.end.isoformat() + "T23:59:59Z"
+    in_window = 0
+    newest_after_window = 0
+    for release in releases:
+        published = str(release.get("publishedAt") or "")
+        if not published or release.get("isDraft") or release.get("isPrerelease"):
+            continue
+        if published > end:
+            newest_after_window += 1
+        elif published >= start:
+            in_window += 1
+    if in_window >= 5:
+        return True
+    return len(releases) >= 50 and in_window + newest_after_window >= len(releases) - 5
+
+
+def _search_params(stars: str, page: int, extra: str) -> dict[str, Any]:
     query = f"stars:{stars} archived:false pushed:>=2025-01-01"
     if extra:
         query = f"{query} {extra}"
-    response = client.get(
-        "/search/repositories",
-        {
-            "q": query,
-            "sort": "stars",
-            "order": "desc",
-            "per_page": 100,
-            "page": page,
-        },
-    )
+    return {"q": query, "sort": "stars", "order": "desc", "per_page": 100, "page": page}
+
+
+def _throttle_search(client: GitHubClient, stars: str, page: int, extra: str) -> None:
+    """A busca do GitHub aceita 30 pedidos por minuto. Cache nao conta."""
+
+    url = client._build_url("/search/repositories", _search_params(stars, page, extra))
+    cache_path = client._cache_path(url)
+    if cache_path is None or not cache_path.exists():
+        time.sleep(2.1)
+
+
+def _search(client: GitHubClient, stars: str, page: int, extra: str = "") -> dict[str, Any]:
+    response = client.get("/search/repositories", _search_params(stars, page, extra))
     payload = response.payload
     return payload if isinstance(payload, dict) else {}
 
@@ -342,6 +541,8 @@ def collect_until(client: GitHubClient, *, root: Path, target: int, window: Obse
     state = _load_state(root)
     seen = set(state["seen"])
     already_recorded = set(state["seen"])
+    done_ranges = set(state.get("done_ranges") or [])
+    token = client.token or ""
     ranges: list[tuple[str, str]] = [
         ("1000..2000", ""),
         ("2001..5000", ""),
@@ -373,39 +574,42 @@ def collect_until(client: GitHubClient, *, root: Path, target: int, window: Obse
             print(f"faixas iniciais esgotadas com {state['funnel']['eligible']} elegiveis; abrindo busca por linguagem", flush=True)
             continue
         stars, extra = ranges.pop(0)
-        time.sleep(2.1)
+        range_key = f"{stars}|{extra}"
+        if range_key in done_ranges:
+            continue
+        query = f"stars:{stars} archived:false pushed:>=2025-01-01 sort:stars-desc"
+        if extra:
+            query = f"{query} {extra}"
         try:
-            first = _search(client, stars, 1, extra)
-        except GitHubApiError as error:
+            first = _graphql(token, GRAPHQL_SEARCH, {"q": query, "after": None})["search"]
+        except (GitHubApiError, KeyError, TypeError) as error:
             print(f"busca falhou {stars} {extra}: {error}", flush=True)
             state["funnel"]["errors"] += 1
             _save_state(root, state)
             continue
-        total = int(first.get("total_count") or 0)
+        total = int(first.get("repositoryCount") or 0)
         print(f"faixa {stars} {extra} total={total} elegiveis={state['funnel']['eligible']}", flush=True)
         if total > 1000:
             pieces = split_star_range(stars)
             if pieces != [stars]:
                 ranges[0:0] = [(piece, extra) for piece in pieces]
                 continue
-        items = list(first.get("items") or [])
-        for page in range(2, 11):
-            if len(items) >= total or len(items) >= 1000:
-                break
-            time.sleep(2.1)
+        nodes = list(first.get("nodes") or [])
+        page_info = first.get("pageInfo") or {}
+        while page_info.get("hasNextPage") and len(nodes) < 1000:
+            time.sleep(0.5)
             try:
-                payload = _search(client, stars, page, extra)
-            except GitHubApiError:
+                page = _graphql(token, GRAPHQL_SEARCH, {"q": query, "after": page_info.get("endCursor")})["search"]
+            except (GitHubApiError, KeyError, TypeError):
                 break
-            page_items = payload.get("items") or []
-            if not page_items:
-                break
-            items.extend(page_items)
-        for item in items:
-            if state["funnel"]["eligible"] >= target:
-                break
-            repository = str(item.get("full_name") or "")
-            branch = str(item.get("default_branch") or "")
+            nodes.extend(page.get("nodes") or [])
+            page_info = page.get("pageInfo") or {}
+        fresh: list[tuple[str, str, bool]] = []
+        for node in nodes:
+            if not isinstance(node, dict):
+                continue
+            repository = str(node.get("nameWithOwner") or "")
+            branch = str((node.get("defaultBranchRef") or {}).get("name") or "")
             if not repository or not branch:
                 continue
             if repository in seen:
@@ -415,56 +619,97 @@ def collect_until(client: GitHubClient, *, root: Path, target: int, window: Obse
             seen.add(repository)
             state["seen"].append(repository)
             state["funnel"]["candidates"] += 1
+            fresh.append((repository, branch, _release_hint(node, window)))
+
+        def screen_one(item: tuple[str, str, bool]) -> tuple[str, str, str]:
+            repository, branch, hint = item
+            if not hint:
+                return repository, branch, "low_releases"
             try:
-                runs_total = _run_count(client, repository, branch)
-                if runs_total >= 50:
-                    state["funnel"]["with_workflow_runs"] += 1
-                    if _has_minimum_releases(client, repository, branch, window):
-                        state["funnel"]["with_releases"] += 1
-                        print(f"medindo {repository}", flush=True)
-                        history = _bounded_history(
-                            client,
-                            repository=repository,
-                            default_branch=branch,
-                            window=window,
-                        )
-                        if history.primary_count > MAX_PRIMARY_RELEASES:
-                            state["funnel"]["release_cap_skipped"] = state["funnel"].get("release_cap_skipped", 0) + 1
-                            print(
-                                f"acima do teto {repository}: {history.primary_count} releases na janela",
-                                flush=True,
-                            )
-                            _save_state(root, state)
-                            continue
-                        collected = _collect_runs_fast(
-                            client,
-                            repository,
-                            branch,
-                            window,
-                            runs_client,
-                            root / "data" / "raw" / "workflow_runs",
-                        )
-                        if history.primary_count >= 5 and len(collected.runs) >= 50:
-                            state["eligible"].append(_metric_row(history, collected.runs, window))
-                            state["funnel"]["eligible"] += 1
-                            print(
-                                f"elegivel {state['funnel']['eligible']}/{target}: {repository} "
-                                f"releases={history.primary_count} runs={len(collected.runs)}",
-                                flush=True,
-                            )
+                if _run_count(client, repository, branch) < 50:
+                    return repository, branch, "low_runs"
+                return repository, branch, "measure"
+            except Exception as error:
+                print(f"erro {repository}: {error}", flush=True)
+                return repository, branch, "error"
+
+        screened: list[tuple[str, str, str]] = []
+        if fresh:
+            with ThreadPoolExecutor(max_workers=8) as pool:
+                screened = list(pool.map(screen_one, fresh))
+        for repository, branch, status in screened:
+            if state["funnel"]["eligible"] >= target:
+                break
+            if status == "error":
+                state["funnel"]["errors"] += 1
+                continue
+            if status == "low_runs":
+                state["funnel"]["low_runs"] += 1
+                continue
+            if status == "low_releases":
+                state["funnel"]["low_releases"] += 1
+                continue
+            state["funnel"]["with_workflow_runs"] += 1
+            state["funnel"]["with_releases"] += 1
+            print(f"medindo {repository}", flush=True)
+            try:
+                history = _bounded_history(
+                    client,
+                    repository=repository,
+                    default_branch=branch,
+                    window=window,
+                )
+                if history.primary_count < 5:
+                    state["funnel"]["low_releases"] += 1
+                    continue
+                if history.primary_count > MAX_PRIMARY_RELEASES:
+                    state["funnel"]["release_cap_skipped"] = state["funnel"].get("release_cap_skipped", 0) + 1
+                    print(
+                        f"acima do teto {repository}: {history.primary_count} releases na janela",
+                        flush=True,
+                    )
+                    _save_state(root, state)
+                    continue
+                collected = _collect_runs_fast(
+                    client,
+                    repository,
+                    branch,
+                    window,
+                    runs_client,
+                    root / "data" / "raw" / "workflow_runs",
+                )
+                if history.primary_count >= 5 and len(collected.runs) >= 50:
+                    state["eligible"].append(_metric_row(history, collected.runs, window))
+                    state["funnel"]["eligible"] += 1
+                    print(
+                        f"elegivel {state['funnel']['eligible']}/{target}: {repository} "
+                        f"releases={history.primary_count} runs={len(collected.runs)}",
+                        flush=True,
+                    )
+                    _save_state(root, state)
+                elif len(collected.runs) < 50:
+                    state["funnel"]["low_runs"] += 1
+                else:
+                    state["funnel"]["measured_not_eligible"] += 1
             except Exception as error:
                 state["funnel"]["errors"] += 1
                 print(f"erro {repository}: {error}", flush=True)
-            if state["funnel"]["candidates"] % 25 == 0 or (
-                state["eligible"] and state["eligible"][-1]["repository"] == repository
-            ):
-                print(
-                    f"triados {state['funnel']['candidates']} "
-                    f"runs>={50}:{state['funnel']['with_workflow_runs']} "
-                    f"elegiveis={state['funnel']['eligible']}",
-                    flush=True,
-                )
-                _save_state(root, state)
+        if state["funnel"]["eligible"] < target:
+            done_ranges.add(range_key)
+            state["done_ranges"] = sorted(done_ranges)
+        print(
+            f"triados {state['funnel']['candidates']} "
+            f"novos={len(fresh)} elegiveis={state['funnel']['eligible']}",
+            flush=True,
+        )
+        _save_state(root, state)
+    funnel = state["funnel"]
+    accounted = sum(
+        int(funnel.get(key) or 0)
+        for key in ("low_runs", "low_releases", "release_cap_skipped", "measured_not_eligible", "errors", "eligible", "interrupted")
+    )
+    if funnel["candidates"] > accounted:
+        funnel["interrupted"] = int(funnel.get("interrupted") or 0) + funnel["candidates"] - accounted
     _save_state(root, state)
     return state
 
