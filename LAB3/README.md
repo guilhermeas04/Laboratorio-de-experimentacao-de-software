@@ -178,6 +178,28 @@ $env:GITHUB_TOKEN = "seu_token"
 python -m lab03_dora.pipeline.expand_sample --target 300
 ```
 
+## Sprint 3 — RQ01 e RQ02
+
+A análise usa `data/processed/datasets/s02_metrics.csv`, considera todas as
+linhas do dataset e registra ausentes separadamente por métrica. Medianas, Q1,
+Q3 e IQR, classificações DORA, tabelas e figuras SVG são gerados com:
+
+```powershell
+cd LAB3
+$env:PYTHONPATH = "src"
+python -m lab03_dora.analysis.rq01_rq02
+```
+
+Para usar outro dataset ou diretório de saída:
+
+```powershell
+python -m lab03_dora.analysis.rq01_rq02 --input data/processed/datasets/s02_metrics.csv --output reports/rq01-rq02
+```
+
+As saídas ficam em `reports/rq01-rq02/`. A análise da issue #118 não converte
+ausentes em zero e aplica os cortes DORA documentados em
+`03 - Mineração de Métricas DORA.md`.
+
 O comando retoma de `data/interim/s02_expand/state.json` se a coleta parar. Ele grava o dataset, o funil e o manifesto a cada repositório elegível.
 
 Saídas:
