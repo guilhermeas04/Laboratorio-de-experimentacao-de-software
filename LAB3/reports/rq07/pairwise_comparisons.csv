@@ -1,0 +1,4 @@
+left,right,n_compared,n_changed,changed_pct,weighted_cohen_kappa
+C1_reference,C2_commit_cfr_b,260,120,46.1538,0.394997
+C1_reference,C3_release_cfr_b,260,108,41.5385,0.453220
+C2_commit_cfr_b,C3_release_cfr_b,260,33,12.6923,0.828502

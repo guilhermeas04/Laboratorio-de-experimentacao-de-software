@@ -1,0 +1,4 @@
+variant,n_total,n_classified,n_missing
+C1_reference,300,261,39
+C2_commit_cfr_b,300,260,40
+C3_release_cfr_b,300,260,40

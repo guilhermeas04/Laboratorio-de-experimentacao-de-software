@@ -1,0 +1,66 @@
+{
+  "variants": {
+    "C1_reference": {
+      "deploy": "release_count",
+      "lead": "lead_time_by_release_days",
+      "cfr": "cfr_ci"
+    },
+    "C2_commit_cfr_b": {
+      "deploy": "release_count",
+      "lead": "lead_time_by_commit_days",
+      "cfr": "cfr_b"
+    },
+    "C3_release_cfr_b": {
+      "deploy": "release_count",
+      "lead": "lead_time_by_release_days",
+      "cfr": "cfr_b"
+    }
+  },
+  "summary": [
+    {
+      "variant": "C1_reference",
+      "n_total": "300",
+      "n_classified": "261",
+      "n_missing": "39"
+    },
+    {
+      "variant": "C2_commit_cfr_b",
+      "n_total": "300",
+      "n_classified": "260",
+      "n_missing": "40"
+    },
+    {
+      "variant": "C3_release_cfr_b",
+      "n_total": "300",
+      "n_classified": "260",
+      "n_missing": "40"
+    }
+  ],
+  "comparisons": [
+    {
+      "left": "C1_reference",
+      "right": "C2_commit_cfr_b",
+      "n_compared": "260",
+      "n_changed": "120",
+      "changed_pct": "46.1538",
+      "weighted_cohen_kappa": "0.394997"
+    },
+    {
+      "left": "C1_reference",
+      "right": "C3_release_cfr_b",
+      "n_compared": "260",
+      "n_changed": "108",
+      "changed_pct": "41.5385",
+      "weighted_cohen_kappa": "0.453220"
+    },
+    {
+      "left": "C2_commit_cfr_b",
+      "right": "C3_release_cfr_b",
+      "n_compared": "260",
+      "n_changed": "33",
+      "changed_pct": "12.6923",
+      "weighted_cohen_kappa": "0.828502"
+    }
+  ],
+  "limitation": "S02 does not contain tag-based metric columns; release-versus-tag sensitivity requires a separate tag collection."
+}
