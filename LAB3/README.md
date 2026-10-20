@@ -234,6 +234,30 @@ quatro notas DORA. Testes específicos:
 python -m pytest tests/unit/test_rq03_rq04.py
 ```
 
+## Sprint 3 — RQ05 (#120)
+
+Correlação de Spearman entre `deployment_frequency_per_week` e cada variante
+de CFR: (a) `cfr_ci` e (b) `cfr_b`. Par com valor ausente sai da conta e fica
+listado em `rq05-missing.csv`; ausente não vira zero. O resumo traz rho,
+p-valor, n e intervalo de confiança de 95% por bootstrap com semente fixa.
+
+Execute a partir de `LAB3`:
+
+```powershell
+pip install -e ".[dev]"
+$env:PYTHONPATH = "src"
+python -m lab03_dora.analysis.rq05
+```
+
+As saídas ficam em `reports/rq05/`: `rq05-spearman.csv`, `rq05-summary.json`,
+`rq05-summary.md`, `rq05-missing.csv` e um gráfico de dispersão por variante,
+com eixo X em escala logarítmica. A escolha estatística e as limitações estão
+em `rq05-summary.md`. Testes específicos:
+
+```powershell
+python -m pytest tests/unit/test_rq05.py
+```
+
 ## Versionamento dos dados
 
 O cache da API e as respostas brutas ficam locais e são regeneráveis; eles não

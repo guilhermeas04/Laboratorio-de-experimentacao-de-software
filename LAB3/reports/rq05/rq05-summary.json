@@ -1,0 +1,52 @@
+{
+  "issue": 120,
+  "repository_count": 300,
+  "method": {
+    "test": "Spearman (scipy.stats.spearmanr), bicaudal, alfa 0,05",
+    "ties": "postos medios; a frequencia tem muitos empates porque e release_count dividido por 365/7",
+    "missing": "par incompleto sai da conta; ausente nao vira zero",
+    "confidence_interval": "bootstrap percentil, 2000 reamostras, semente 120",
+    "strength": "|rho| < 0,1 desprezivel; < 0,3 fraca; < 0,5 moderada; >= 0,5 forte"
+  },
+  "correlations": [
+    {
+      "variant": "cfr_a",
+      "x_column": "deployment_frequency_per_week",
+      "y_column": "cfr_ci",
+      "n_total": 300,
+      "n_used": 300,
+      "n_missing": 0,
+      "rho": -0.06597193820044253,
+      "p_value": 0.2546453463486222,
+      "ci95_low": -0.17839093593898137,
+      "ci95_high": 0.04313980915158523,
+      "strength": "desprezivel",
+      "direction": "negativa",
+      "significant": false,
+      "note": ""
+    },
+    {
+      "variant": "cfr_b",
+      "x_column": "deployment_frequency_per_week",
+      "y_column": "cfr_b",
+      "n_total": 300,
+      "n_used": 299,
+      "n_missing": 1,
+      "rho": 0.5241298878096253,
+      "p_value": 1.6896578979377937e-22,
+      "ci95_low": 0.4341909647106542,
+      "ci95_high": 0.6054478065922668,
+      "strength": "forte",
+      "direction": "positiva",
+      "significant": true,
+      "note": ""
+    }
+  ],
+  "missing": [
+    {
+      "variant": "cfr_b",
+      "repository": "davidfowl/tally",
+      "missing_columns": "cfr_b"
+    }
+  ]
+}
