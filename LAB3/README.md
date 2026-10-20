@@ -211,6 +211,29 @@ Saídas:
 
 O alvo são 300 repositórios elegíveis: pelo menos 5 e no máximo 60 releases primárias na janela, e pelo menos 50 workflow runs válidos. O teto de 60 existe porque cada release pede um compare; acima disso o repositório entra no funil como `release_cap_skipped` e fica fora da amostra. `python -m lab03_dora.pipeline.consolidate` só remonta uma tabela já coletada. O padrão dele lê `s01_metrics.csv` e regrava `s02_metrics.csv`. Não use esse padrão depois da coleta final.
 
+## Sprint 3 — RQ03, RQ04 e DORA C1 (#119)
+
+A análise usa `data/processed/datasets/s02_metrics.csv` e considera os 300
+repositórios. CFR(a) vem de `cfr_ci`; CFR(b) vem de `cfr_b`; recuperação vem
+de `recovery_median_hours` e `recovery_censored_count`. Valores ausentes ficam
+fora da mediana/IQR e são reportados separadamente.
+
+Execute a partir de `LAB3`:
+
+```powershell
+$env:PYTHONPATH = "src"
+python -m lab03_dora.analysis.rq03_rq04
+```
+
+As tabelas, resumo e figuras são gravados em `reports/rq03-rq04/`. A
+classificação C1 combina deployment frequency por release, lead time por
+release, CFR(a) e recuperação; a categoria é a mediana inteira inferior das
+quatro notas DORA. Testes específicos:
+
+```powershell
+python -m pytest tests/unit/test_rq03_rq04.py
+```
+
 ## Versionamento dos dados
 
 O cache da API e as respostas brutas ficam locais e são regeneráveis; eles não
