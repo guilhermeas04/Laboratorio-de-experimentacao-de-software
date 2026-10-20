@@ -244,3 +244,41 @@ da execução podem ser versionados:
 - `data/processed/metrics/s01_manifest.json`
 - `reports/funnel/s01_selection_funnel.csv`
 - `data/interim/selection/s01_repository_selection.csv`
+
+## Sprint 3 — RQ06 (#121)
+
+Compara as métricas DORA das RQ01 a RQ04 entre subgrupos. São quatro fatores:
+linguagem principal, quartis de estrelas, quartis de contribuidores e quartis
+de idade. As métricas são deployment frequency, lead time por release e por
+commit, CFR(a), CFR(b) e tempo de recuperação. Cada fator e cada métrica
+passam por Kruskal-Wallis, com ε² = H / (n − 1). Os 24 p-valores são
+corrigidos por Holm. Nos fatores por quartil, o Cliff's delta entre Q4 e Q1
+mostra a direção. Ausente não vira zero.
+
+Os fatores vêm de `data/processed/datasets/s02_repository_metadata.csv`. Para
+coletar de novo, com token:
+
+```powershell
+cd LAB3
+$env:GITHUB_TOKEN = "seu_token"
+$env:PYTHONPATH = "src"
+python -m lab03_dora.collection.repository_metadata
+```
+
+A análise roda offline a partir dos dois CSVs:
+
+```powershell
+pip install -e ".[dev]"
+$env:PYTHONPATH = "src"
+python -m lab03_dora.analysis.rq06
+```
+
+As saídas ficam em `reports/rq06/`. Os grupos e tamanhos estão em
+`rq06-group-sizes.csv`, os testes com p-valor ajustado em `rq06-tests.csv` e as
+medianas por grupo em `rq06-groups.csv`. As figuras são o mapa de tamanho de
+efeito e uma figura por fator. Hipóteses, escolha estatística e limitações
+estão em `rq06-summary.md`. Testes específicos:
+
+```powershell
+python -m pytest tests/unit/test_rq06.py
+```

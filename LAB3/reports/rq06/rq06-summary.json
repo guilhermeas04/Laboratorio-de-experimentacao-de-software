@@ -1,0 +1,1524 @@
+{
+  "issue": 121,
+  "repository_count": 300,
+  "factors": [
+    {
+      "factor": "language",
+      "label": "Linguagem principal",
+      "hypothesis": "A distribuicao de cada metrica difere entre linguagens. Ecossistemas tem cadencias de release e praticas de CI diferentes."
+    },
+    {
+      "factor": "stars_quartile",
+      "label": "Popularidade (quartis de estrelas)",
+      "hypothesis": "Repositorios mais populares publicam com mais frequencia e falham menos no CI, porque tem mais revisao e automacao."
+    },
+    {
+      "factor": "contributors_quartile",
+      "label": "Contribuidores (quartis)",
+      "hypothesis": "Mais contribuidores aumentam a frequencia de deploy e tambem as falhas de CI, por haver mais mudancas concorrentes."
+    },
+    {
+      "factor": "age_quartile",
+      "label": "Idade do repositorio (quartis)",
+      "hypothesis": "Repositorios mais antigos sao mais estaveis: CFR menor e recuperacao mais rapida, mas lead time maior."
+    }
+  ],
+  "metrics": [
+    {
+      "metric": "deployment_frequency_per_week",
+      "label": "RQ01 deployment frequency",
+      "unit": "releases/semana"
+    },
+    {
+      "metric": "lead_time_by_release_days",
+      "label": "RQ02 lead time por release",
+      "unit": "dias"
+    },
+    {
+      "metric": "lead_time_by_commit_days",
+      "label": "RQ02 lead time por commit",
+      "unit": "dias"
+    },
+    {
+      "metric": "cfr_ci",
+      "label": "RQ03 CFR(a)",
+      "unit": "proporcao"
+    },
+    {
+      "metric": "cfr_b",
+      "label": "RQ03 CFR(b)",
+      "unit": "proporcao"
+    },
+    {
+      "metric": "recovery_median_hours",
+      "label": "RQ04 tempo de recuperacao",
+      "unit": "horas"
+    }
+  ],
+  "quartile_cuts": {
+    "stars_quartile": [
+      1059.0,
+      1117.5,
+      1165.25
+    ],
+    "contributors_quartile": [
+      24.0,
+      47.5,
+      95.0
+    ],
+    "age_quartile": [
+      1.8405,
+      4.7625,
+      7.735775
+    ]
+  },
+  "language_rule": "linguagens com pelo menos 20 repositorios; demais e vazias em 'Outras'",
+  "method": {
+    "test": "Kruskal-Wallis com 3+ grupos; Mann-Whitney com 2 grupos; bicaudal",
+    "correction": "Holm (statsmodels multipletests) sobre os 24 testes, alfa 0.05",
+    "effect_size": "epsilon^2 = H / (n - 1) no Kruskal-Wallis; Cliff's delta no Mann-Whitney",
+    "extreme_cliffs_delta": "Cliff's delta entre Q4 e Q1 nos fatores por quartil; positivo indica valores maiores em Q4",
+    "missing": "repositorio sem valor da metrica ou sem grupo sai daquele teste; ausente nao vira zero"
+  },
+  "group_sizes": [
+    {
+      "factor": "language",
+      "group": "Go",
+      "repositories": 42
+    },
+    {
+      "factor": "language",
+      "group": "Python",
+      "repositories": 56
+    },
+    {
+      "factor": "language",
+      "group": "Rust",
+      "repositories": 27
+    },
+    {
+      "factor": "language",
+      "group": "TypeScript",
+      "repositories": 55
+    },
+    {
+      "factor": "language",
+      "group": "Outras",
+      "repositories": 120
+    },
+    {
+      "factor": "stars_quartile",
+      "group": "Q1",
+      "repositories": 76
+    },
+    {
+      "factor": "stars_quartile",
+      "group": "Q2",
+      "repositories": 74
+    },
+    {
+      "factor": "stars_quartile",
+      "group": "Q3",
+      "repositories": 75
+    },
+    {
+      "factor": "stars_quartile",
+      "group": "Q4",
+      "repositories": 75
+    },
+    {
+      "factor": "contributors_quartile",
+      "group": "Q1",
+      "repositories": 77
+    },
+    {
+      "factor": "contributors_quartile",
+      "group": "Q2",
+      "repositories": 73
+    },
+    {
+      "factor": "contributors_quartile",
+      "group": "Q3",
+      "repositories": 76
+    },
+    {
+      "factor": "contributors_quartile",
+      "group": "Q4",
+      "repositories": 74
+    },
+    {
+      "factor": "age_quartile",
+      "group": "Q1",
+      "repositories": 75
+    },
+    {
+      "factor": "age_quartile",
+      "group": "Q2",
+      "repositories": 75
+    },
+    {
+      "factor": "age_quartile",
+      "group": "Q3",
+      "repositories": 75
+    },
+    {
+      "factor": "age_quartile",
+      "group": "Q4",
+      "repositories": 75
+    }
+  ],
+  "tests": [
+    {
+      "factor": "language",
+      "metric": "deployment_frequency_per_week",
+      "test": "Kruskal-Wallis",
+      "groups": 5,
+      "n": 300,
+      "n_missing": 0,
+      "statistic": 23.324503992144972,
+      "p_value": 0.00010905843566295218,
+      "p_holm": 0.001853993406270187,
+      "significant_holm": true,
+      "effect_size": "epsilon_squared",
+      "effect_value": 0.07800837455566881,
+      "effect_magnitude": "pequeno",
+      "extreme_cliffs_delta": null,
+      "extreme_cliffs_magnitude": "",
+      "note": ""
+    },
+    {
+      "factor": "language",
+      "metric": "lead_time_by_release_days",
+      "test": "Kruskal-Wallis",
+      "groups": 5,
+      "n": 300,
+      "n_missing": 0,
+      "statistic": 23.280906581677183,
+      "p_value": 0.0001112699818239079,
+      "p_holm": 0.001853993406270187,
+      "significant_holm": true,
+      "effect_size": "epsilon_squared",
+      "effect_value": 0.07786256381831834,
+      "effect_magnitude": "pequeno",
+      "extreme_cliffs_delta": null,
+      "extreme_cliffs_magnitude": "",
+      "note": ""
+    },
+    {
+      "factor": "language",
+      "metric": "lead_time_by_commit_days",
+      "test": "Kruskal-Wallis",
+      "groups": 5,
+      "n": 300,
+      "n_missing": 0,
+      "statistic": 17.10844518272438,
+      "p_value": 0.0018413811233203901,
+      "p_holm": 0.025779335726485463,
+      "significant_holm": true,
+      "effect_size": "epsilon_squared",
+      "effect_value": 0.05721888020978054,
+      "effect_magnitude": "pequeno",
+      "extreme_cliffs_delta": null,
+      "extreme_cliffs_magnitude": "",
+      "note": ""
+    },
+    {
+      "factor": "language",
+      "metric": "cfr_ci",
+      "test": "Kruskal-Wallis",
+      "groups": 5,
+      "n": 300,
+      "n_missing": 0,
+      "statistic": 5.195447008867258,
+      "p_value": 0.26782480661932256,
+      "p_holm": 1.0,
+      "significant_holm": false,
+      "effect_size": "epsilon_squared",
+      "effect_value": 0.017376076952733303,
+      "effect_magnitude": "pequeno",
+      "extreme_cliffs_delta": null,
+      "extreme_cliffs_magnitude": "",
+      "note": ""
+    },
+    {
+      "factor": "language",
+      "metric": "cfr_b",
+      "test": "Kruskal-Wallis",
+      "groups": 5,
+      "n": 299,
+      "n_missing": 1,
+      "statistic": 19.751051854995552,
+      "p_value": 0.0005591957369558906,
+      "p_holm": 0.008387936054338359,
+      "significant_holm": true,
+      "effect_size": "epsilon_squared",
+      "effect_value": 0.06627869749998508,
+      "effect_magnitude": "pequeno",
+      "extreme_cliffs_delta": null,
+      "extreme_cliffs_magnitude": "",
+      "note": ""
+    },
+    {
+      "factor": "language",
+      "metric": "recovery_median_hours",
+      "test": "Kruskal-Wallis",
+      "groups": 5,
+      "n": 261,
+      "n_missing": 39,
+      "statistic": 8.833072529547758,
+      "p_value": 0.06541002667795756,
+      "p_holm": 0.7849203201354907,
+      "significant_holm": false,
+      "effect_size": "epsilon_squared",
+      "effect_value": 0.03397335588287599,
+      "effect_magnitude": "pequeno",
+      "extreme_cliffs_delta": null,
+      "extreme_cliffs_magnitude": "",
+      "note": ""
+    },
+    {
+      "factor": "stars_quartile",
+      "metric": "deployment_frequency_per_week",
+      "test": "Kruskal-Wallis",
+      "groups": 4,
+      "n": 300,
+      "n_missing": 0,
+      "statistic": 1.6286057290866287,
+      "p_value": 0.652921196160426,
+      "p_holm": 1.0,
+      "significant_holm": false,
+      "effect_size": "epsilon_squared",
+      "effect_value": 0.005446841903299761,
+      "effect_magnitude": "desprezivel",
+      "extreme_cliffs_delta": -0.11280701754385969,
+      "extreme_cliffs_magnitude": "desprezivel",
+      "note": ""
+    },
+    {
+      "factor": "stars_quartile",
+      "metric": "lead_time_by_release_days",
+      "test": "Kruskal-Wallis",
+      "groups": 4,
+      "n": 300,
+      "n_missing": 0,
+      "statistic": 1.5809474864480957,
+      "p_value": 0.6637175236212232,
+      "p_holm": 1.0,
+      "significant_holm": false,
+      "effect_size": "epsilon_squared",
+      "effect_value": 0.005287449787451825,
+      "effect_magnitude": "desprezivel",
+      "extreme_cliffs_delta": 0.006315789473684275,
+      "extreme_cliffs_magnitude": "desprezivel",
+      "note": ""
+    },
+    {
+      "factor": "stars_quartile",
+      "metric": "lead_time_by_commit_days",
+      "test": "Kruskal-Wallis",
+      "groups": 4,
+      "n": 300,
+      "n_missing": 0,
+      "statistic": 0.7724571006398264,
+      "p_value": 0.8560429442152779,
+      "p_holm": 1.0,
+      "significant_holm": false,
+      "effect_size": "epsilon_squared",
+      "effect_value": 0.002583468564012797,
+      "effect_magnitude": "desprezivel",
+      "extreme_cliffs_delta": 0.03614035087719292,
+      "extreme_cliffs_magnitude": "desprezivel",
+      "note": ""
+    },
+    {
+      "factor": "stars_quartile",
+      "metric": "cfr_ci",
+      "test": "Kruskal-Wallis",
+      "groups": 4,
+      "n": 300,
+      "n_missing": 0,
+      "statistic": 2.6958220713435552,
+      "p_value": 0.44093775654911926,
+      "p_holm": 1.0,
+      "significant_holm": false,
+      "effect_size": "epsilon_squared",
+      "effect_value": 0.009016127328908212,
+      "effect_magnitude": "desprezivel",
+      "extreme_cliffs_delta": 0.008596491228070269,
+      "extreme_cliffs_magnitude": "desprezivel",
+      "note": ""
+    },
+    {
+      "factor": "stars_quartile",
+      "metric": "cfr_b",
+      "test": "Kruskal-Wallis",
+      "groups": 4,
+      "n": 299,
+      "n_missing": 1,
+      "statistic": 0.6889238602932771,
+      "p_value": 0.8758060253578623,
+      "p_holm": 1.0,
+      "significant_holm": false,
+      "effect_size": "epsilon_squared",
+      "effect_value": 0.0023118250345411985,
+      "effect_magnitude": "desprezivel",
+      "extreme_cliffs_delta": -0.0033783783783783994,
+      "extreme_cliffs_magnitude": "desprezivel",
+      "note": ""
+    },
+    {
+      "factor": "stars_quartile",
+      "metric": "recovery_median_hours",
+      "test": "Kruskal-Wallis",
+      "groups": 4,
+      "n": 261,
+      "n_missing": 39,
+      "statistic": 0.15553810336714247,
+      "p_value": 0.9844260253565811,
+      "p_holm": 1.0,
+      "significant_holm": false,
+      "effect_size": "epsilon_squared",
+      "effect_value": 0.0005982234744890094,
+      "effect_magnitude": "desprezivel",
+      "extreme_cliffs_delta": -0.018044107819113364,
+      "extreme_cliffs_magnitude": "desprezivel",
+      "note": ""
+    },
+    {
+      "factor": "contributors_quartile",
+      "metric": "deployment_frequency_per_week",
+      "test": "Kruskal-Wallis",
+      "groups": 4,
+      "n": 300,
+      "n_missing": 0,
+      "statistic": 13.132124580016894,
+      "p_value": 0.004359418289049239,
+      "p_holm": 0.0566724377576401,
+      "significant_holm": false,
+      "effect_size": "epsilon_squared",
+      "effect_value": 0.04392014909704647,
+      "effect_magnitude": "pequeno",
+      "extreme_cliffs_delta": -0.2602667602667603,
+      "extreme_cliffs_magnitude": "pequeno",
+      "note": ""
+    },
+    {
+      "factor": "contributors_quartile",
+      "metric": "lead_time_by_release_days",
+      "test": "Kruskal-Wallis",
+      "groups": 4,
+      "n": 300,
+      "n_missing": 0,
+      "statistic": 56.419217146361774,
+      "p_value": 3.4188413363951924e-12,
+      "p_holm": 7.521450940069423e-11,
+      "significant_holm": true,
+      "effect_size": "epsilon_squared",
+      "effect_value": 0.18869303393432033,
+      "effect_magnitude": "medio",
+      "extreme_cliffs_delta": 0.6161811161811162,
+      "extreme_cliffs_magnitude": "grande",
+      "note": ""
+    },
+    {
+      "factor": "contributors_quartile",
+      "metric": "lead_time_by_commit_days",
+      "test": "Kruskal-Wallis",
+      "groups": 4,
+      "n": 300,
+      "n_missing": 0,
+      "statistic": 54.869029623076244,
+      "p_value": 7.322419029376477e-12,
+      "p_holm": 1.53770799616906e-10,
+      "significant_holm": true,
+      "effect_size": "epsilon_squared",
+      "effect_value": 0.18350846027784698,
+      "effect_magnitude": "medio",
+      "extreme_cliffs_delta": 0.5984555984555984,
+      "extreme_cliffs_magnitude": "grande",
+      "note": ""
+    },
+    {
+      "factor": "contributors_quartile",
+      "metric": "cfr_ci",
+      "test": "Kruskal-Wallis",
+      "groups": 4,
+      "n": 300,
+      "n_missing": 0,
+      "statistic": 2.7558888726365605,
+      "p_value": 0.43081296389453405,
+      "p_holm": 1.0,
+      "significant_holm": false,
+      "effect_size": "epsilon_squared",
+      "effect_value": 0.009217019640924952,
+      "effect_magnitude": "desprezivel",
+      "extreme_cliffs_delta": 0.09757809757809754,
+      "extreme_cliffs_magnitude": "desprezivel",
+      "note": ""
+    },
+    {
+      "factor": "contributors_quartile",
+      "metric": "cfr_b",
+      "test": "Kruskal-Wallis",
+      "groups": 4,
+      "n": 299,
+      "n_missing": 1,
+      "statistic": 22.750623529437032,
+      "p_value": 4.5516292283122566e-05,
+      "p_holm": 0.0008192932610962062,
+      "significant_holm": true,
+      "effect_size": "epsilon_squared",
+      "effect_value": 0.07634437425985581,
+      "effect_magnitude": "pequeno",
+      "extreme_cliffs_delta": -0.3984708392603129,
+      "extreme_cliffs_magnitude": "medio",
+      "note": ""
+    },
+    {
+      "factor": "contributors_quartile",
+      "metric": "recovery_median_hours",
+      "test": "Kruskal-Wallis",
+      "groups": 4,
+      "n": 261,
+      "n_missing": 39,
+      "statistic": 1.2164404279981662,
+      "p_value": 0.7490639788087893,
+      "p_holm": 1.0,
+      "significant_holm": false,
+      "effect_size": "epsilon_squared",
+      "effect_value": 0.004678617030762178,
+      "effect_magnitude": "desprezivel",
+      "extreme_cliffs_delta": -0.062189054726368154,
+      "extreme_cliffs_magnitude": "desprezivel",
+      "note": ""
+    },
+    {
+      "factor": "age_quartile",
+      "metric": "deployment_frequency_per_week",
+      "test": "Kruskal-Wallis",
+      "groups": 4,
+      "n": 300,
+      "n_missing": 0,
+      "statistic": 31.5659639299991,
+      "p_value": 6.460181916741467e-07,
+      "p_holm": 1.2274345641808787e-05,
+      "significant_holm": true,
+      "effect_size": "epsilon_squared",
+      "effect_value": 0.10557178571906053,
+      "effect_magnitude": "medio",
+      "extreme_cliffs_delta": -0.5022222222222222,
+      "extreme_cliffs_magnitude": "grande",
+      "note": ""
+    },
+    {
+      "factor": "age_quartile",
+      "metric": "lead_time_by_release_days",
+      "test": "Kruskal-Wallis",
+      "groups": 4,
+      "n": 300,
+      "n_missing": 0,
+      "statistic": 70.4640431228592,
+      "p_value": 3.3953808670822968e-15,
+      "p_holm": 7.809375994289282e-14,
+      "significant_holm": true,
+      "effect_size": "epsilon_squared",
+      "effect_value": 0.23566569606307422,
+      "effect_magnitude": "medio",
+      "extreme_cliffs_delta": 0.7102222222222223,
+      "extreme_cliffs_magnitude": "grande",
+      "note": ""
+    },
+    {
+      "factor": "age_quartile",
+      "metric": "lead_time_by_commit_days",
+      "test": "Kruskal-Wallis",
+      "groups": 4,
+      "n": 300,
+      "n_missing": 0,
+      "statistic": 71.61699756367659,
+      "p_value": 1.922899684873103e-15,
+      "p_holm": 4.614959243695447e-14,
+      "significant_holm": true,
+      "effect_size": "epsilon_squared",
+      "effect_value": 0.23952173098219595,
+      "effect_magnitude": "medio",
+      "extreme_cliffs_delta": 0.7052444444444443,
+      "extreme_cliffs_magnitude": "grande",
+      "note": ""
+    },
+    {
+      "factor": "age_quartile",
+      "metric": "cfr_ci",
+      "test": "Kruskal-Wallis",
+      "groups": 4,
+      "n": 300,
+      "n_missing": 0,
+      "statistic": 6.930864024857566,
+      "p_value": 0.07413432353112864,
+      "p_holm": 0.815477558842415,
+      "significant_holm": false,
+      "effect_size": "epsilon_squared",
+      "effect_value": 0.02318014724032631,
+      "effect_magnitude": "pequeno",
+      "extreme_cliffs_delta": -0.0344888888888889,
+      "extreme_cliffs_magnitude": "desprezivel",
+      "note": ""
+    },
+    {
+      "factor": "age_quartile",
+      "metric": "cfr_b",
+      "test": "Kruskal-Wallis",
+      "groups": 4,
+      "n": 299,
+      "n_missing": 1,
+      "statistic": 36.687568347160926,
+      "p_value": 5.357756826183839e-08,
+      "p_holm": 1.0715513652367678e-06,
+      "significant_holm": true,
+      "effect_size": "epsilon_squared",
+      "effect_value": 0.12311264546027156,
+      "effect_magnitude": "medio",
+      "extreme_cliffs_delta": -0.48792792792792794,
+      "extreme_cliffs_magnitude": "grande",
+      "note": ""
+    },
+    {
+      "factor": "age_quartile",
+      "metric": "recovery_median_hours",
+      "test": "Kruskal-Wallis",
+      "groups": 4,
+      "n": 261,
+      "n_missing": 39,
+      "statistic": 0.5771811223290867,
+      "p_value": 0.9016357795071852,
+      "p_holm": 1.0,
+      "significant_holm": false,
+      "effect_size": "epsilon_squared",
+      "effect_value": 0.0022199273935734104,
+      "effect_magnitude": "desprezivel",
+      "extreme_cliffs_delta": 0.03634336677814942,
+      "extreme_cliffs_magnitude": "desprezivel",
+      "note": ""
+    }
+  ],
+  "groups": [
+    {
+      "factor": "language",
+      "metric": "deployment_frequency_per_week",
+      "group": "Go",
+      "n": 42,
+      "median": 0.3356164383561644,
+      "q1": 0.15821917808219177,
+      "q3": 0.6041095890410958
+    },
+    {
+      "factor": "language",
+      "metric": "deployment_frequency_per_week",
+      "group": "Python",
+      "n": 56,
+      "median": 0.23013698630136986,
+      "q1": 0.13424657534246576,
+      "q3": 0.46506849315068494
+    },
+    {
+      "factor": "language",
+      "metric": "deployment_frequency_per_week",
+      "group": "Rust",
+      "n": 27,
+      "median": 0.24931506849315066,
+      "q1": 0.13424657534246576,
+      "q3": 0.4506849315068493
+    },
+    {
+      "factor": "language",
+      "metric": "deployment_frequency_per_week",
+      "group": "TypeScript",
+      "n": 55,
+      "median": 0.5178082191780822,
+      "q1": 0.21095890410958903,
+      "q3": 0.7863013698630137
+    },
+    {
+      "factor": "language",
+      "metric": "deployment_frequency_per_week",
+      "group": "Outras",
+      "n": 120,
+      "median": 0.1917808219178082,
+      "q1": 0.13424657534246576,
+      "q3": 0.4267123287671233
+    },
+    {
+      "factor": "language",
+      "metric": "lead_time_by_release_days",
+      "group": "Go",
+      "n": 42,
+      "median": 14.103819444444444,
+      "q1": 1.8257407407407407,
+      "q3": 23.135776909722225
+    },
+    {
+      "factor": "language",
+      "metric": "lead_time_by_release_days",
+      "group": "Python",
+      "n": 56,
+      "median": 11.847702546296297,
+      "q1": 1.9870789930555555,
+      "q3": 37.899564525462964
+    },
+    {
+      "factor": "language",
+      "metric": "lead_time_by_release_days",
+      "group": "Rust",
+      "n": 27,
+      "median": 6.148703703703704,
+      "q1": 2.3115943287037037,
+      "q3": 30.19669560185185
+    },
+    {
+      "factor": "language",
+      "metric": "lead_time_by_release_days",
+      "group": "TypeScript",
+      "n": 55,
+      "median": 4.723055555555556,
+      "q1": 1.253660300925926,
+      "q3": 9.74994212962963
+    },
+    {
+      "factor": "language",
+      "metric": "lead_time_by_release_days",
+      "group": "Outras",
+      "n": 120,
+      "median": 19.236912615740742,
+      "q1": 7.143314525462962,
+      "q3": 42.05760271990741
+    },
+    {
+      "factor": "language",
+      "metric": "lead_time_by_commit_days",
+      "group": "Go",
+      "n": 42,
+      "median": 7.1625,
+      "q1": 2.026148726851852,
+      "q3": 17.392009548611114
+    },
+    {
+      "factor": "language",
+      "metric": "lead_time_by_commit_days",
+      "group": "Python",
+      "n": 56,
+      "median": 8.895870949074075,
+      "q1": 1.0463802083333333,
+      "q3": 33.51123119212963
+    },
+    {
+      "factor": "language",
+      "metric": "lead_time_by_commit_days",
+      "group": "Rust",
+      "n": 27,
+      "median": 5.764184027777778,
+      "q1": 0.8667071759259259,
+      "q3": 24.74173611111111
+    },
+    {
+      "factor": "language",
+      "metric": "lead_time_by_commit_days",
+      "group": "TypeScript",
+      "n": 55,
+      "median": 4.379126157407407,
+      "q1": 1.057271412037037,
+      "q3": 21.399733796296296
+    },
+    {
+      "factor": "language",
+      "metric": "lead_time_by_commit_days",
+      "group": "Outras",
+      "n": 120,
+      "median": 15.933206018518517,
+      "q1": 6.882614293981481,
+      "q3": 37.924308449074076
+    },
+    {
+      "factor": "language",
+      "metric": "cfr_ci",
+      "group": "Go",
+      "n": 42,
+      "median": 0.02980274102828171,
+      "q1": 0.009909224846727818,
+      "q3": 0.08150233912429034
+    },
+    {
+      "factor": "language",
+      "metric": "cfr_ci",
+      "group": "Python",
+      "n": 56,
+      "median": 0.04831932773109243,
+      "q1": 0.013247168330155882,
+      "q3": 0.11579268292682927
+    },
+    {
+      "factor": "language",
+      "metric": "cfr_ci",
+      "group": "Rust",
+      "n": 27,
+      "median": 0.06837606837606838,
+      "q1": 0.0377373417721519,
+      "q3": 0.12952514000266097
+    },
+    {
+      "factor": "language",
+      "metric": "cfr_ci",
+      "group": "TypeScript",
+      "n": 55,
+      "median": 0.05263157894736842,
+      "q1": 0.016710672595886603,
+      "q3": 0.12153035935563816
+    },
+    {
+      "factor": "language",
+      "metric": "cfr_ci",
+      "group": "Outras",
+      "n": 120,
+      "median": 0.05517503805175038,
+      "q1": 0.01394175866006852,
+      "q3": 0.125
+    },
+    {
+      "factor": "language",
+      "metric": "cfr_b",
+      "group": "Go",
+      "n": 42,
+      "median": 0.25,
+      "q1": 0.10441176470588236,
+      "q3": 0.5229166666666667
+    },
+    {
+      "factor": "language",
+      "metric": "cfr_b",
+      "group": "Python",
+      "n": 55,
+      "median": 0.3157894736842105,
+      "q1": 0.125,
+      "q3": 0.5
+    },
+    {
+      "factor": "language",
+      "metric": "cfr_b",
+      "group": "Rust",
+      "n": 27,
+      "median": 0.3,
+      "q1": 0.038461538461538464,
+      "q3": 0.5714285714285714
+    },
+    {
+      "factor": "language",
+      "metric": "cfr_b",
+      "group": "TypeScript",
+      "n": 55,
+      "median": 0.43333333333333335,
+      "q1": 0.25,
+      "q3": 0.5444664031620553
+    },
+    {
+      "factor": "language",
+      "metric": "cfr_b",
+      "group": "Outras",
+      "n": 120,
+      "median": 0.2,
+      "q1": 0.06666666666666667,
+      "q3": 0.3934782608695652
+    },
+    {
+      "factor": "language",
+      "metric": "recovery_median_hours",
+      "group": "Go",
+      "n": 36,
+      "median": 0.5411111111111111,
+      "q1": 0.06059027777777778,
+      "q3": 26.033854166666664
+    },
+    {
+      "factor": "language",
+      "metric": "recovery_median_hours",
+      "group": "Python",
+      "n": 47,
+      "median": 0.30374999999999996,
+      "q1": 0.09229166666666666,
+      "q3": 1.5527777777777776
+    },
+    {
+      "factor": "language",
+      "metric": "recovery_median_hours",
+      "group": "Rust",
+      "n": 27,
+      "median": 0.33972222222222226,
+      "q1": 0.08763888888888888,
+      "q3": 1.1135416666666667
+    },
+    {
+      "factor": "language",
+      "metric": "recovery_median_hours",
+      "group": "TypeScript",
+      "n": 48,
+      "median": 0.1757638888888889,
+      "q1": 0.051319444444444445,
+      "q3": 0.8788888888888888
+    },
+    {
+      "factor": "language",
+      "metric": "recovery_median_hours",
+      "group": "Outras",
+      "n": 103,
+      "median": 0.7236111111111111,
+      "q1": 0.1325,
+      "q3": 15.883611111111112
+    },
+    {
+      "factor": "stars_quartile",
+      "metric": "deployment_frequency_per_week",
+      "group": "Q1",
+      "n": 76,
+      "median": 0.24931506849315066,
+      "q1": 0.16780821917808217,
+      "q3": 0.584931506849315
+    },
+    {
+      "factor": "stars_quartile",
+      "metric": "deployment_frequency_per_week",
+      "group": "Q2",
+      "n": 74,
+      "median": 0.27808219178082194,
+      "q1": 0.15342465753424656,
+      "q3": 0.513013698630137
+    },
+    {
+      "factor": "stars_quartile",
+      "metric": "deployment_frequency_per_week",
+      "group": "Q3",
+      "n": 75,
+      "median": 0.24931506849315066,
+      "q1": 0.13424657534246576,
+      "q3": 0.4794520547945205
+    },
+    {
+      "factor": "stars_quartile",
+      "metric": "deployment_frequency_per_week",
+      "group": "Q4",
+      "n": 75,
+      "median": 0.23013698630136986,
+      "q1": 0.13424657534246576,
+      "q3": 0.5273972602739726
+    },
+    {
+      "factor": "stars_quartile",
+      "metric": "lead_time_by_release_days",
+      "group": "Q1",
+      "n": 76,
+      "median": 11.692254050925927,
+      "q1": 2.06423755787037,
+      "q3": 29.446964699074073
+    },
+    {
+      "factor": "stars_quartile",
+      "metric": "lead_time_by_release_days",
+      "group": "Q2",
+      "n": 74,
+      "median": 14.103819444444444,
+      "q1": 3.3209780092592593,
+      "q3": 39.51578703703704
+    },
+    {
+      "factor": "stars_quartile",
+      "metric": "lead_time_by_release_days",
+      "group": "Q3",
+      "n": 75,
+      "median": 12.440289351851852,
+      "q1": 1.797997685185185,
+      "q3": 32.13015625
+    },
+    {
+      "factor": "stars_quartile",
+      "metric": "lead_time_by_release_days",
+      "group": "Q4",
+      "n": 75,
+      "median": 9.835810185185185,
+      "q1": 2.538078703703704,
+      "q3": 33.383593749999996
+    },
+    {
+      "factor": "stars_quartile",
+      "metric": "lead_time_by_commit_days",
+      "group": "Q1",
+      "n": 76,
+      "median": 10.255318287037037,
+      "q1": 2.9775462962962966,
+      "q3": 23.347793692129628
+    },
+    {
+      "factor": "stars_quartile",
+      "metric": "lead_time_by_commit_days",
+      "group": "Q2",
+      "n": 74,
+      "median": 10.712777777777777,
+      "q1": 2.142906539351852,
+      "q3": 32.64804976851852
+    },
+    {
+      "factor": "stars_quartile",
+      "metric": "lead_time_by_commit_days",
+      "group": "Q3",
+      "n": 75,
+      "median": 8.38498263888889,
+      "q1": 2.5188541666666664,
+      "q3": 24.879247685185184
+    },
+    {
+      "factor": "stars_quartile",
+      "metric": "lead_time_by_commit_days",
+      "group": "Q4",
+      "n": 75,
+      "median": 11.984484953703703,
+      "q1": 1.9920428240740742,
+      "q3": 33.731015625000005
+    },
+    {
+      "factor": "stars_quartile",
+      "metric": "cfr_ci",
+      "group": "Q1",
+      "n": 76,
+      "median": 0.045792958563291894,
+      "q1": 0.01394175866006852,
+      "q3": 0.1361079865016873
+    },
+    {
+      "factor": "stars_quartile",
+      "metric": "cfr_ci",
+      "group": "Q2",
+      "n": 74,
+      "median": 0.03752133105802048,
+      "q1": 0.01162020905923345,
+      "q3": 0.08520311761927256
+    },
+    {
+      "factor": "stars_quartile",
+      "metric": "cfr_ci",
+      "group": "Q3",
+      "n": 75,
+      "median": 0.058823529411764705,
+      "q1": 0.017275331185105623,
+      "q3": 0.10937761069340016
+    },
+    {
+      "factor": "stars_quartile",
+      "metric": "cfr_ci",
+      "group": "Q4",
+      "n": 75,
+      "median": 0.05263157894736842,
+      "q1": 0.01988935721812434,
+      "q3": 0.12272426348891095
+    },
+    {
+      "factor": "stars_quartile",
+      "metric": "cfr_b",
+      "group": "Q1",
+      "n": 76,
+      "median": 0.2554347826086957,
+      "q1": 0.07692307692307693,
+      "q3": 0.5033783783783784
+    },
+    {
+      "factor": "stars_quartile",
+      "metric": "cfr_b",
+      "group": "Q2",
+      "n": 74,
+      "median": 0.3157894736842105,
+      "q1": 0.14285714285714285,
+      "q3": 0.5
+    },
+    {
+      "factor": "stars_quartile",
+      "metric": "cfr_b",
+      "group": "Q3",
+      "n": 75,
+      "median": 0.26666666666666666,
+      "q1": 0.1,
+      "q3": 0.4
+    },
+    {
+      "factor": "stars_quartile",
+      "metric": "cfr_b",
+      "group": "Q4",
+      "n": 74,
+      "median": 0.3038461538461539,
+      "q1": 0.10625000000000001,
+      "q3": 0.4486111111111111
+    },
+    {
+      "factor": "stars_quartile",
+      "metric": "recovery_median_hours",
+      "group": "Q1",
+      "n": 67,
+      "median": 0.4091666666666667,
+      "q1": 0.07930555555555555,
+      "q3": 10.721180555555556
+    },
+    {
+      "factor": "stars_quartile",
+      "metric": "recovery_median_hours",
+      "group": "Q2",
+      "n": 63,
+      "median": 0.4063888888888889,
+      "q1": 0.11319444444444444,
+      "q3": 2.486458333333333
+    },
+    {
+      "factor": "stars_quartile",
+      "metric": "recovery_median_hours",
+      "group": "Q3",
+      "n": 64,
+      "median": 0.45513888888888887,
+      "q1": 0.08260416666666666,
+      "q3": 3.2436805555555557
+    },
+    {
+      "factor": "stars_quartile",
+      "metric": "recovery_median_hours",
+      "group": "Q4",
+      "n": 67,
+      "median": 0.2825,
+      "q1": 0.04972222222222222,
+      "q3": 15.155833333333334
+    },
+    {
+      "factor": "contributors_quartile",
+      "metric": "deployment_frequency_per_week",
+      "group": "Q1",
+      "n": 77,
+      "median": 0.44109589041095887,
+      "q1": 0.15342465753424656,
+      "q3": 0.6520547945205479
+    },
+    {
+      "factor": "contributors_quartile",
+      "metric": "deployment_frequency_per_week",
+      "group": "Q2",
+      "n": 73,
+      "median": 0.2876712328767123,
+      "q1": 0.17260273972602738,
+      "q3": 0.4986301369863013
+    },
+    {
+      "factor": "contributors_quartile",
+      "metric": "deployment_frequency_per_week",
+      "group": "Q3",
+      "n": 76,
+      "median": 0.20136986301369864,
+      "q1": 0.13424657534246576,
+      "q3": 0.42191780821917807
+    },
+    {
+      "factor": "contributors_quartile",
+      "metric": "deployment_frequency_per_week",
+      "group": "Q4",
+      "n": 74,
+      "median": 0.20136986301369864,
+      "q1": 0.13424657534246576,
+      "q3": 0.4506849315068493
+    },
+    {
+      "factor": "contributors_quartile",
+      "metric": "lead_time_by_release_days",
+      "group": "Q1",
+      "n": 77,
+      "median": 3.8789814814814814,
+      "q1": 0.6874247685185185,
+      "q3": 14.182164351851851
+    },
+    {
+      "factor": "contributors_quartile",
+      "metric": "lead_time_by_release_days",
+      "group": "Q2",
+      "n": 73,
+      "median": 7.529131944444444,
+      "q1": 1.9639872685185185,
+      "q3": 21.12071759259259
+    },
+    {
+      "factor": "contributors_quartile",
+      "metric": "lead_time_by_release_days",
+      "group": "Q3",
+      "n": 76,
+      "median": 18.391293402777777,
+      "q1": 5.955732060185185,
+      "q3": 38.86941840277778
+    },
+    {
+      "factor": "contributors_quartile",
+      "metric": "lead_time_by_release_days",
+      "group": "Q4",
+      "n": 74,
+      "median": 29.78189236111111,
+      "q1": 9.604469039351851,
+      "q3": 91.14114583333333
+    },
+    {
+      "factor": "contributors_quartile",
+      "metric": "lead_time_by_commit_days",
+      "group": "Q1",
+      "n": 77,
+      "median": 2.2464930555555553,
+      "q1": 0.3394328703703704,
+      "q3": 10.354629629629631
+    },
+    {
+      "factor": "contributors_quartile",
+      "metric": "lead_time_by_commit_days",
+      "group": "Q2",
+      "n": 73,
+      "median": 8.71228587962963,
+      "q1": 2.0069444444444446,
+      "q3": 18.90079861111111
+    },
+    {
+      "factor": "contributors_quartile",
+      "metric": "lead_time_by_commit_days",
+      "group": "Q3",
+      "n": 76,
+      "median": 16.722445023148147,
+      "q1": 6.236537905092593,
+      "q3": 34.72620225694445
+    },
+    {
+      "factor": "contributors_quartile",
+      "metric": "lead_time_by_commit_days",
+      "group": "Q4",
+      "n": 74,
+      "median": 26.102934027777778,
+      "q1": 7.060153356481482,
+      "q3": 81.09238570601852
+    },
+    {
+      "factor": "contributors_quartile",
+      "metric": "cfr_ci",
+      "group": "Q1",
+      "n": 77,
+      "median": 0.045454545454545456,
+      "q1": 0.008955223880597015,
+      "q3": 0.10526315789473684
+    },
+    {
+      "factor": "contributors_quartile",
+      "metric": "cfr_ci",
+      "group": "Q2",
+      "n": 73,
+      "median": 0.04310344827586207,
+      "q1": 0.013513513513513514,
+      "q3": 0.09933774834437085
+    },
+    {
+      "factor": "contributors_quartile",
+      "metric": "cfr_ci",
+      "group": "Q3",
+      "n": 76,
+      "median": 0.06410519827409081,
+      "q1": 0.017729721858162226,
+      "q3": 0.11879800307219662
+    },
+    {
+      "factor": "contributors_quartile",
+      "metric": "cfr_ci",
+      "group": "Q4",
+      "n": 74,
+      "median": 0.04889979016616572,
+      "q1": 0.017622180451127817,
+      "q3": 0.1342948717948718
+    },
+    {
+      "factor": "contributors_quartile",
+      "metric": "cfr_b",
+      "group": "Q1",
+      "n": 76,
+      "median": 0.40454545454545454,
+      "q1": 0.25,
+      "q3": 0.6047619047619047
+    },
+    {
+      "factor": "contributors_quartile",
+      "metric": "cfr_b",
+      "group": "Q2",
+      "n": 73,
+      "median": 0.2692307692307692,
+      "q1": 0.1282051282051282,
+      "q3": 0.45
+    },
+    {
+      "factor": "contributors_quartile",
+      "metric": "cfr_b",
+      "group": "Q3",
+      "n": 76,
+      "median": 0.20606060606060606,
+      "q1": 0.06136363636363636,
+      "q3": 0.4097593582887701
+    },
+    {
+      "factor": "contributors_quartile",
+      "metric": "cfr_b",
+      "group": "Q4",
+      "n": 74,
+      "median": 0.2,
+      "q1": 0.0,
+      "q3": 0.4
+    },
+    {
+      "factor": "contributors_quartile",
+      "metric": "recovery_median_hours",
+      "group": "Q1",
+      "n": 60,
+      "median": 0.4377083333333333,
+      "q1": 0.14930555555555558,
+      "q3": 7.9669791666666665
+    },
+    {
+      "factor": "contributors_quartile",
+      "metric": "recovery_median_hours",
+      "group": "Q2",
+      "n": 66,
+      "median": 0.5351388888888888,
+      "q1": 0.05402777777777778,
+      "q3": 11.809375
+    },
+    {
+      "factor": "contributors_quartile",
+      "metric": "recovery_median_hours",
+      "group": "Q3",
+      "n": 68,
+      "median": 0.3020138888888889,
+      "q1": 0.0534375,
+      "q3": 2.7284375
+    },
+    {
+      "factor": "contributors_quartile",
+      "metric": "recovery_median_hours",
+      "group": "Q4",
+      "n": 67,
+      "median": 0.4519444444444444,
+      "q1": 0.090625,
+      "q3": 4.242916666666667
+    },
+    {
+      "factor": "age_quartile",
+      "metric": "deployment_frequency_per_week",
+      "group": "Q1",
+      "n": 75,
+      "median": 0.44109589041095887,
+      "q1": 0.2876712328767123,
+      "q3": 0.6520547945205479
+    },
+    {
+      "factor": "age_quartile",
+      "metric": "deployment_frequency_per_week",
+      "group": "Q2",
+      "n": 75,
+      "median": 0.2684931506849315,
+      "q1": 0.14383561643835616,
+      "q3": 0.5753424657534246
+    },
+    {
+      "factor": "age_quartile",
+      "metric": "deployment_frequency_per_week",
+      "group": "Q3",
+      "n": 75,
+      "median": 0.1917808219178082,
+      "q1": 0.13424657534246576,
+      "q3": 0.41232876712328764
+    },
+    {
+      "factor": "age_quartile",
+      "metric": "deployment_frequency_per_week",
+      "group": "Q4",
+      "n": 75,
+      "median": 0.1917808219178082,
+      "q1": 0.12465753424657534,
+      "q3": 0.2684931506849315
+    },
+    {
+      "factor": "age_quartile",
+      "metric": "lead_time_by_release_days",
+      "group": "Q1",
+      "n": 75,
+      "median": 1.8009490740740741,
+      "q1": 0.5612210648148148,
+      "q3": 7.308304398148148
+    },
+    {
+      "factor": "age_quartile",
+      "metric": "lead_time_by_release_days",
+      "group": "Q2",
+      "n": 75,
+      "median": 9.909872685185185,
+      "q1": 4.002786458333333,
+      "q3": 30.208998842592592
+    },
+    {
+      "factor": "age_quartile",
+      "metric": "lead_time_by_release_days",
+      "group": "Q3",
+      "n": 75,
+      "median": 18.453732638888887,
+      "q1": 4.884508101851852,
+      "q3": 47.04927662037037
+    },
+    {
+      "factor": "age_quartile",
+      "metric": "lead_time_by_release_days",
+      "group": "Q4",
+      "n": 75,
+      "median": 25.959652777777777,
+      "q1": 9.94240162037037,
+      "q3": 63.84025752314815
+    },
+    {
+      "factor": "age_quartile",
+      "metric": "lead_time_by_commit_days",
+      "group": "Q1",
+      "n": 75,
+      "median": 1.7372974537037038,
+      "q1": 0.12831597222222224,
+      "q3": 7.9265335648148145
+    },
+    {
+      "factor": "age_quartile",
+      "metric": "lead_time_by_commit_days",
+      "group": "Q2",
+      "n": 75,
+      "median": 11.819716435185185,
+      "q1": 3.6450520833333337,
+      "q3": 25.881626157407407
+    },
+    {
+      "factor": "age_quartile",
+      "metric": "lead_time_by_commit_days",
+      "group": "Q3",
+      "n": 75,
+      "median": 17.90336226851852,
+      "q1": 6.217251157407407,
+      "q3": 36.21536168981481
+    },
+    {
+      "factor": "age_quartile",
+      "metric": "lead_time_by_commit_days",
+      "group": "Q4",
+      "n": 75,
+      "median": 19.396221064814814,
+      "q1": 7.737777777777778,
+      "q3": 67.52995949074074
+    },
+    {
+      "factor": "age_quartile",
+      "metric": "cfr_ci",
+      "group": "Q1",
+      "n": 75,
+      "median": 0.06269592476489028,
+      "q1": 0.017392619479733817,
+      "q3": 0.14903846153846154
+    },
+    {
+      "factor": "age_quartile",
+      "metric": "cfr_ci",
+      "group": "Q2",
+      "n": 75,
+      "median": 0.0375,
+      "q1": 0.013057720433554385,
+      "q3": 0.0802263251935676
+    },
+    {
+      "factor": "age_quartile",
+      "metric": "cfr_ci",
+      "group": "Q3",
+      "n": 75,
+      "median": 0.06111111111111111,
+      "q1": 0.010946574330931807,
+      "q3": 0.10853494623655914
+    },
+    {
+      "factor": "age_quartile",
+      "metric": "cfr_ci",
+      "group": "Q4",
+      "n": 75,
+      "median": 0.05263157894736842,
+      "q1": 0.01770050125313283,
+      "q3": 0.14389233954451347
+    },
+    {
+      "factor": "age_quartile",
+      "metric": "cfr_b",
+      "group": "Q1",
+      "n": 74,
+      "median": 0.4606060606060606,
+      "q1": 0.25416666666666665,
+      "q3": 0.7176339285714286
+    },
+    {
+      "factor": "age_quartile",
+      "metric": "cfr_b",
+      "group": "Q2",
+      "n": 75,
+      "median": 0.26666666666666666,
+      "q1": 0.09722222222222221,
+      "q3": 0.44505494505494503
+    },
+    {
+      "factor": "age_quartile",
+      "metric": "cfr_b",
+      "group": "Q3",
+      "n": 75,
+      "median": 0.2,
+      "q1": 0.09166666666666667,
+      "q3": 0.4
+    },
+    {
+      "factor": "age_quartile",
+      "metric": "cfr_b",
+      "group": "Q4",
+      "n": 75,
+      "median": 0.2,
+      "q1": 0.0,
+      "q3": 0.4
+    },
+    {
+      "factor": "age_quartile",
+      "metric": "recovery_median_hours",
+      "group": "Q1",
+      "n": 65,
+      "median": 0.34444444444444444,
+      "q1": 0.07916666666666666,
+      "q3": 3.4230555555555555
+    },
+    {
+      "factor": "age_quartile",
+      "metric": "recovery_median_hours",
+      "group": "Q2",
+      "n": 62,
+      "median": 0.4079166666666667,
+      "q1": 0.05965277777777778,
+      "q3": 3.0030555555555556
+    },
+    {
+      "factor": "age_quartile",
+      "metric": "recovery_median_hours",
+      "group": "Q3",
+      "n": 65,
+      "median": 0.4519444444444444,
+      "q1": 0.059722222222222225,
+      "q3": 7.015972222222222
+    },
+    {
+      "factor": "age_quartile",
+      "metric": "recovery_median_hours",
+      "group": "Q4",
+      "n": 69,
+      "median": 0.3688888888888889,
+      "q1": 0.105,
+      "q3": 12.350138888888889
+    }
+  ]
+}
