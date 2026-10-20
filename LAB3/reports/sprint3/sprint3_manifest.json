@@ -1,0 +1,65 @@
+{
+  "generated_at_utc": "2026-10-20T16:42:09.629475+00:00",
+  "input": "data\\processed\\datasets\\s02_metrics.csv",
+  "repository_count": 300,
+  "unique_repository_count": 300,
+  "analyses": [
+    {
+      "command": [
+        "C:\\Users\\guilh\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+        "-m",
+        "lab03_dora.analysis.rq01_rq02",
+        "--input",
+        "C:\\Users\\guilh\\OneDrive\\Documentos\\GitHub\\pmg-es-2026-1-ti5-6904100-fpstats\\Laboratorio-de-experimentacao-de-software\\LAB3\\data\\processed\\datasets\\s02_metrics.csv"
+      ],
+      "returncode": 0,
+      "stdout": "RQ01/RQ02: 300 repositorios; saidas em C:\\Users\\guilh\\OneDrive\\Documentos\\GitHub\\pmg-es-2026-1-ti5-6904100-fpstats\\Laboratorio-de-experimentacao-de-software\\LAB3\\reports\\rq01-rq02\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "C:\\Users\\guilh\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+        "-m",
+        "lab03_dora.analysis.rq03_rq04",
+        "--input",
+        "C:\\Users\\guilh\\OneDrive\\Documentos\\GitHub\\pmg-es-2026-1-ti5-6904100-fpstats\\Laboratorio-de-experimentacao-de-software\\LAB3\\data\\processed\\datasets\\s02_metrics.csv"
+      ],
+      "returncode": 0,
+      "stdout": "RQ03/RQ04/C1: 300 repositorios; saidas em C:\\Users\\guilh\\OneDrive\\Documentos\\GitHub\\pmg-es-2026-1-ti5-6904100-fpstats\\Laboratorio-de-experimentacao-de-software\\LAB3\\reports\\rq03-rq04\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "C:\\Users\\guilh\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+        "-m",
+        "lab03_dora.analysis.rq05",
+        "--input",
+        "C:\\Users\\guilh\\OneDrive\\Documentos\\GitHub\\pmg-es-2026-1-ti5-6904100-fpstats\\Laboratorio-de-experimentacao-de-software\\LAB3\\data\\processed\\datasets\\s02_metrics.csv"
+      ],
+      "returncode": 0,
+      "stdout": "RQ05 cfr_a: rho=-0.066 p=0.2546 n=300\nRQ05 cfr_b: rho=0.524 p=< 0.0001 n=299\nSaidas em C:\\Users\\guilh\\OneDrive\\Documentos\\GitHub\\pmg-es-2026-1-ti5-6904100-fpstats\\Laboratorio-de-experimentacao-de-software\\LAB3\\reports\\rq05\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "C:\\Users\\guilh\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+        "-m",
+        "lab03_dora.analysis.rq06"
+      ],
+      "returncode": 0,
+      "stdout": "RQ06: 300 repositorios, 24 testes, 11 significativos apos Holm\nSaidas em C:\\Users\\guilh\\OneDrive\\Documentos\\GitHub\\pmg-es-2026-1-ti5-6904100-fpstats\\Laboratorio-de-experimentacao-de-software\\LAB3\\reports\\rq06\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "C:\\Users\\guilh\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+        "scripts/rq07_sensitivity.py",
+        "--input",
+        "C:\\Users\\guilh\\OneDrive\\Documentos\\GitHub\\pmg-es-2026-1-ti5-6904100-fpstats\\Laboratorio-de-experimentacao-de-software\\LAB3\\data\\processed\\datasets\\s02_metrics.csv"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ]
+}
