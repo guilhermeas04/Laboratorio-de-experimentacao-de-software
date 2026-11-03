@@ -27,8 +27,13 @@ registrar uma pergunta em uma frase. A proposta deve declarar:
 - se o teste será unicaudal ou bicaudal;
 - qual teste se espera que tenha melhor desempenho e por quê.
 
-A escolha do par ainda está em aberto. A implementação deverá preservar essa
-decisão em um arquivo de configuração e nesta proposta quando ela for definida.
+Foi escolhido o par P1: t de Welch versus Mann-Whitney, no cenário de tempo até
+o merge de pull requests de autoria de bot versus autoria humana. A pergunta é:
+"o tempo de merge difere entre PRs de autoria automatizada e PRs de autoria
+humana?" H0 afirma que as distribuições são iguais; H1 afirma que diferem. O
+teste será bicaudal. O tempo de merge é assimétrico e pode conter outliers, por
+isso Mann-Whitney é esperado como alternativa mais robusta, enquanto Welch
+permanece útil para comparar médias sob heterocedasticidade.
 
 ## 4. Dados reais
 
@@ -44,6 +49,10 @@ comparado. O repositório deverá registrar:
 
 Os dados originais ficarão em `data/raw/`. Limpeza e transformações deverão ser
 gravadas em `data/interim/`, sem sobrescrever os dados brutos.
+
+A coleta da S01 está documentada em
+[`coleta-lab04s01.md`](coleta-lab04s01.md), com 30 observações por grupo, e é
+reexecutável por `src/lab04_hypothesis/collect_real_data.py`.
 
 ## 5. Simulação
 

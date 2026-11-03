@@ -68,6 +68,23 @@ O comando deverá gerar os resultados, as figuras e os artefatos consumidos pelo
 dashboard. O comando definitivo deve ser atualizado quando a implementação da
 aplicação for concluída.
 
+### LAB04S01 — coleta dos dados reais
+
+Para reexecutar a coleta dos 30 PRs por grupo:
+
+```powershell
+$env:PYTHONPATH = "LAB4/src"
+python LAB4/src/lab04_hypothesis/collect_real_data.py
+```
+
+O comando usa `GITHUB_TOKEN` quando aceito pela API e faz fallback para a API
+pública em caso de token rejeitado. Os dados brutos e o metadata são gravados
+em `LAB4/data/raw/`. Os testes do coletor rodam com:
+
+```powershell
+python -m pytest LAB4/tests
+```
+
 ## Dashboard
 
 O dashboard final deverá conter, nesta ordem:
