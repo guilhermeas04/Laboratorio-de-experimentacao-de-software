@@ -121,14 +121,14 @@ def write_outputs(rows: list[dict[str, Any]], output: Path, metadata_path: Path,
         "collected_at_utc": datetime.now(timezone.utc).isoformat(),
         "source": "GitHub REST API GET /repos/{owner}/{repo}/pulls?state=closed&sort=updated",
         "authentication": "token when accepted; anonymous fallback on HTTP 401",
-        "source_repository_list": str(source),
+        "source_repository_list": source.relative_to(ROOT.parent).as_posix() if source.resolve().is_relative_to(ROOT.parent.resolve()) else source.name,
         "groups": {"bot": OBSERVATIONS_PER_GROUP, "human": OBSERVATIONS_PER_GROUP},
         "unit": "hours between pull request created_at and merged_at",
         "inclusion": ["public repository in S02 dataset", "closed pull request with merged_at", "valid non-negative created_at to merged_at duration", "author classified as bot or human"],
         "exclusion": ["unmerged pull requests", "missing timestamps", "negative durations", "observations after the first 30 per group"],
         "bot_rule": "user.type == Bot or login ends with [bot]; all other authors are human",
         "limitations": ["GitHub author metadata is an operational proxy for automation", "sample is convenience-based and limited to repositories reachable during collection", "only recent closed PR pages were inspected"],
-        "raw_file": str(output.relative_to(ROOT)),
+        "raw_file": output.relative_to(ROOT).as_posix(),
     }
     metadata_path.write_text(json.dumps(metadata, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
@@ -138,7 +138,13 @@ def main() -> int:
     parser.add_argument("--repositories", type=Path, default=DEFAULT_REPOSITORIES)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument("--metadata", type=Path, default=DEFAULT_METADATA)
+    parser.add_argument("--force", action="store_true", help="permite substituir os arquivos de saída existentes")
     args = parser.parse_args()
+    if not args.force:
+        existing = [path for path in (args.output, args.metadata) if path.exists()]
+        if existing:
+            names = ", ".join(str(path) for path in existing)
+            raise FileExistsError(f"saídas já existentes: {names}; use --force para substituir")
     token = os.environ.get("GITHUB_TOKEN")
     rows = collect(read_repositories(args.repositories), token)
     write_outputs(rows, args.output, args.metadata, args.repositories)
