@@ -35,6 +35,12 @@ teste será bicaudal. O tempo de merge é assimétrico e pode conter outliers, p
 isso Mann-Whitney é esperado como alternativa mais robusta, enquanto Welch
 permanece útil para comparar médias sob heterocedasticidade.
 
+## Parâmetros reprodutíveis da simulação
+
+Os parâmetros estão em config/simulation.json. Será usada uma distribuição lognormal para os dois grupos, pois os tempos são positivos e assimétricos. A amostra real apresentou medianas de 0,314028 h para bots e 0,6533335 h para humanos; esses valores definem as medianas simuladas. As dispersões são os desvios-padrão de log(duration_hours) observados em cada grupo: 3,0549111889 para bots e 1,6995675807 para humanos.
+
+Serão usados alpha = 0,05, semente 42, 10.000 repetições e 30 observações por grupo. Os efeitos planejados são 0,00 h, 0,25 h, 0,50 h, 1,00 h e 2,00 h. Para Q3, serão avaliadas amostras pequenas de 8 observações por grupo e uma condição com 5% de probabilidade de outlier multiplicado por 20.
+
 ## 4. Dados reais
 
 Será coletada uma amostra pequena, aproximadamente 30 observações por grupo
