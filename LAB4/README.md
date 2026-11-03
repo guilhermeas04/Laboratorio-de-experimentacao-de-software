@@ -77,6 +77,8 @@ $env:PYTHONPATH = "LAB4/src"
 python LAB4/src/lab04_hypothesis/collect_real_data.py
 ```
 
+A coleta não sobrescreve dados brutos existentes. Para reprocessar explicitamente e substituir as saídas, use `--force`.
+
 O comando usa `GITHUB_TOKEN` quando aceito pela API e faz fallback para a API
 pública em caso de token rejeitado. Os dados brutos e o metadata são gravados
 em `LAB4/data/raw/`. Os testes do coletor rodam com:
