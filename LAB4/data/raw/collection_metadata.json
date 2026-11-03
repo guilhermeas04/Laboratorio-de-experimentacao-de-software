@@ -3,7 +3,7 @@
   "collected_at_utc": "2026-11-03T18:45:50.322153+00:00",
   "source": "GitHub REST API GET /repos/{owner}/{repo}/pulls?state=closed&sort=updated",
   "authentication": "token when accepted; anonymous fallback on HTTP 401",
-  "source_repository_list": "C:\\Users\\Amanda Bicalho\\Desktop\\Laboratorio-de-experimentacao-de-software\\LAB3\\data\\processed\\datasets\\s02_metrics.csv",
+  "source_repository_list": "LAB3/data/processed/datasets/s02_metrics.csv",
   "groups": {
     "bot": 30,
     "human": 30
@@ -27,5 +27,5 @@
     "sample is convenience-based and limited to repositories reachable during collection",
     "only recent closed PR pages were inspected"
   ],
-  "raw_file": "data\\raw\\pr_merge_time.csv"
+  "raw_file": "data/raw/pr_merge_time.csv"
 }
