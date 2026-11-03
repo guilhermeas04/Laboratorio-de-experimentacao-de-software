@@ -1,0 +1,22 @@
+[
+  {
+    "test_name": "welch_t",
+    "statistic": -0.33217053161609444,
+    "p_value": 0.74113387145668,
+    "effect_size": -0.08576606246999988,
+    "effect_size_name": "cohens_d",
+    "alternative": "two-sided",
+    "alpha": 0.05,
+    "reject_null": false
+  },
+  {
+    "test_name": "mann_whitney",
+    "statistic": 370.0,
+    "p_value": 0.23984999119107964,
+    "effect_size": 0.1777777777777778,
+    "effect_size_name": "rank_biserial",
+    "alternative": "two-sided",
+    "alpha": 0.05,
+    "reject_null": false
+  }
+]

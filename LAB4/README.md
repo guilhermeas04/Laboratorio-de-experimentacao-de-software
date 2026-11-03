@@ -61,12 +61,14 @@ Na raiz do repositório:
 
 ```powershell
 python -m pip install -r .\LAB4\requirements.txt
-python .\LAB4\src\lab04_hypothesis\pipeline.py
+$env:PYTHONPATH = "LAB4/src"
+python -m lab04_hypothesis.pipeline
 ```
 
-O comando deverá gerar os resultados, as figuras e os artefatos consumidos pelo
-dashboard. O comando definitivo deve ser atualizado quando a implementação da
-aplicação for concluída.
+O comando gera a amostra simulada de exemplo, aplica Welch e Mann-Whitney,
+grava as tabelas em `reports/tables/`, as figuras G1/G2 em `reports/figures/`
+e atualiza `dashboard/index.html`. Use `--null-replications` para controlar
+quantas repeticoes alimentam o G2 (padrao: ate 2000).
 
 ### LAB04S01 — coleta dos dados reais
 
