@@ -1,0 +1,21 @@
+{
+  "scenario": "P1",
+  "question": "O tempo de merge difere entre PRs de autoria automatizada e PRs de autoria humana?",
+  "tests": ["welch_t", "mann_whitney"],
+  "alternative": "two-sided",
+  "alpha": 0.05,
+  "random_seed": 42,
+  "replications": 10000,
+  "sample_sizes": {"bot": 30, "human": 30},
+  "effect_sizes_hours": [0.0, 0.25, 0.5, 1.0, 2.0],
+  "baseline_distribution": "lognormal",
+  "parameters": {
+    "bot": {"mu_log": -1.1582731251, "sigma_log": 3.0549111889, "median_hours": 0.314028},
+    "human": {"mu_log": -0.4256675603, "sigma_log": 1.6995675807, "median_hours": 0.6533335}
+  },
+  "violations": [
+    {"name": "small_sample", "sample_sizes": {"bot": 8, "human": 8}},
+    {"name": "extreme_outlier", "outlier_probability": 0.05, "outlier_multiplier": 20.0}
+  ],
+  "parameter_source": "LAB4/data/raw/pr_merge_time.csv; mediana e desvio-padrao de log(duration_hours) por grupo"
+}
