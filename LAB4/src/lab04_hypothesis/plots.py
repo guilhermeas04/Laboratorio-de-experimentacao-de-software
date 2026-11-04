@@ -70,7 +70,16 @@ def plot_g2(
     axis.hist(values, bins=40, density=True, color=COLOR_WELCH, alpha=0.55, edgecolor="white", label="Welch sob H0")
     xs = np.linspace(values.min(), values.max(), 300)
     kde = stats.gaussian_kde(values)
-    axis.plot(xs, kde(xs), color="black", linewidth=1.5, label="Densidade estimada")
+    density = kde(xs)
+    axis.plot(xs, density, color="black", linewidth=1.5, label="Densidade estimada")
+
+    # Para um teste bicaudal, o p-valor e a area nas duas caudas tao
+    # extremas quanto a estatistica observada.
+    extreme = np.abs(xs) >= abs(example_statistic)
+    axis.fill_between(
+        xs, 0, density, where=extreme, color="#9467bd", alpha=0.35,
+        label="Area do p-valor",
+    )
 
     ymin, ymax = axis.get_ylim()
     axis.axvspan(values.min(), critical_low, color=COLOR_MW, alpha=0.15, label="Regiao de rejeicao")
