@@ -1,0 +1,3 @@
+test_name,statistic,p_value,effect_size,effect_size_name,alternative,alpha,reject_null
+welch_t,-0.33217053161609444,0.74113387145668,-0.08576606246999988,cohens_d,two-sided,0.05,False
+mann_whitney,370.0,0.23984999119107964,0.1777777777777778,rank_biserial,two-sided,0.05,False

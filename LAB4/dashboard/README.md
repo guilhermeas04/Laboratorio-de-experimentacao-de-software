@@ -1,5 +1,5 @@
 # Dashboard
 
-Aplicação final do laboratório. Ela deverá consumir os resultados processados e
-apresentar as seções, gráficos e textos definidos no README do LAB4.
+A pagina `index.html` e gerada pelo pipeline da S01 e ja inclui o cenario, G1,
+G2 e a tabela do exemplo simulado. G3/G4 entram na S02.
 

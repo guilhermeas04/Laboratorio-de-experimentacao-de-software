@@ -1,0 +1,8 @@
+{
+  "replications": 200,
+  "alpha": 0.05,
+  "critical_low": -1.5525442607707742,
+  "critical_high": 1.8744017293106754,
+  "example_statistic": -0.2509389937315937,
+  "example_p_value": 0.8029844499100516
+}

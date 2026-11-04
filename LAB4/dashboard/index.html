@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <title>LAB04 — Dashboard S01</title>
+  <style>
+    body { font-family: Georgia, serif; margin: 2rem auto; max-width: 960px; color: #222; }
+    h1, h2 { font-family: Helvetica, Arial, sans-serif; }
+    img { max-width: 100%; height: auto; border: 1px solid #ddd; }
+    table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
+    th, td { border: 1px solid #ccc; padding: 0.4rem 0.6rem; text-align: left; }
+    th { background: #f3f3f3; }
+  </style>
+</head>
+<body>
+  <h1>LAB04S01 — Testes, simulacao e graficos G1/G2</h1>
+  <h2>1. Cenario</h2>
+  <p>P1: tempo ate o merge de PRs de bot versus humanos. H0: distribuicoes iguais.
+  H1: distribuicoes diferem. Testes bicaudais: Welch e Mann-Whitney.</p>
+  <h2>2. Os dados — G1</h2>
+  <p>Os histogramas comparam a amostra real (30 por grupo) com uma amostra
+  simulada calibrada nas medianas e dispersoes observadas.</p>
+  <img src="../reports/figures/g1_histograms.png" alt="Grafico G1" />
+  <h2>3. Como os testes funcionam — G2</h2>
+  <p>A distribuicao da estatistica t de Welch sob H0 foi obtida por simulacao
+  com semente fixa. A faixa sombreada marca a regiao de rejeicao para alpha=0,05
+  e a linha tracejada mostra um exemplo com seu p-valor.</p>
+  <img src="../reports/figures/g2_null_distribution.png" alt="Grafico G2" />
+  <h2>4. Exemplo simulado</h2>
+  <table>
+    <thead><tr><th>Teste</th><th>Estatistica</th><th>p-valor</th><th>Efeito</th><th>Conclusao</th></tr></thead>
+    <tbody>
+      <tr><td>welch_t</td><td>-0.3322</td><td>0.7411</td><td>-0.0858</td><td>nao rejeita H0</td></tr>
+<tr><td>mann_whitney</td><td>370.0000</td><td>0.2398</td><td>0.1778</td><td>nao rejeita H0</td></tr>
+    </tbody>
+  </table>
+</body>
+</html>
