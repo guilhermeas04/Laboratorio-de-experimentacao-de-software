@@ -89,6 +89,24 @@ em `LAB4/data/raw/`. Os testes do coletor rodam com:
 python -m pytest LAB4/tests
 ```
 
+## Sprint 2 — Q1 e Q2
+
+Execute as simulações de erro tipo I e poder:
+
+```powershell
+$env:PYTHONPATH = "LAB4/src"
+python -m lab04_hypothesis.simulation_runner
+```
+
+Para uma execução rápida de validação, reduza as repetições:
+
+```powershell
+python -m lab04_hypothesis.simulation_runner --replications 100
+```
+
+As saídas ficam em `LAB4/data/processed/q1_results.csv`,
+`LAB4/data/processed/q2_results.csv` e `q1_q2_summary.json`.
+
 ## Dashboard
 
 O dashboard final deverá conter, nesta ordem:
