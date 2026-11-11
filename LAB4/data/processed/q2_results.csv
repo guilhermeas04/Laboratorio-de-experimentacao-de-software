@@ -1,0 +1,11 @@
+question,situation,test_name,effect_hours,replications,rejections,power,alpha
+Q2,ideal,welch_t,0.0,10000,264,0.0264,0.05
+Q2,ideal,mann_whitney,0.0,10000,503,0.0503,0.05
+Q2,ideal,welch_t,0.25,10000,327,0.0327,0.05
+Q2,ideal,mann_whitney,0.25,10000,2709,0.2709,0.05
+Q2,ideal,welch_t,0.5,10000,506,0.0506,0.05
+Q2,ideal,mann_whitney,0.5,10000,5814,0.5814,0.05
+Q2,ideal,welch_t,1.0,10000,1411,0.1411,0.05
+Q2,ideal,mann_whitney,1.0,10000,8936,0.8936,0.05
+Q2,ideal,welch_t,2.0,10000,3816,0.3816,0.05
+Q2,ideal,mann_whitney,2.0,10000,9935,0.9935,0.05

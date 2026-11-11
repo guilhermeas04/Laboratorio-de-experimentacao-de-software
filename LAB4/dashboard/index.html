@@ -1,38 +1,35 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="utf-8" />
-  <title>LAB04 — Dashboard S01</title>
-  <style>
-    body { font-family: Georgia, serif; margin: 2rem auto; max-width: 960px; color: #222; }
-    h1, h2 { font-family: Helvetica, Arial, sans-serif; }
-    img { max-width: 100%; height: auto; border: 1px solid #ddd; }
-    table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
-    th, td { border: 1px solid #ccc; padding: 0.4rem 0.6rem; text-align: left; }
-    th { background: #f3f3f3; }
-  </style>
-</head>
-<body>
-  <h1>LAB04S01 — Testes, simulacao e graficos G1/G2</h1>
-  <h2>1. Cenario</h2>
-  <p>P1: tempo ate o merge de PRs de bot versus humanos. H0: distribuicoes iguais.
-  H1: distribuicoes diferem. Testes bicaudais: Welch e Mann-Whitney.</p>
-  <h2>2. Os dados — G1</h2>
-  <p>Os histogramas comparam a amostra real (30 por grupo) com uma amostra
-  simulada calibrada nas medianas e dispersoes observadas.</p>
-  <img src="../reports/figures/g1_histograms.png" alt="Grafico G1" />
-  <h2>3. Como os testes funcionam — G2</h2>
-  <p>A distribuicao da estatistica t de Welch sob H0 foi obtida por simulacao
-  com semente fixa. A faixa sombreada marca a regiao de rejeicao para alpha=0,05
-  e a linha tracejada mostra um exemplo com seu p-valor.</p>
-  <img src="../reports/figures/g2_null_distribution.png" alt="Grafico G2" />
-  <h2>4. Exemplo simulado</h2>
-  <table>
-    <thead><tr><th>Teste</th><th>Estatistica</th><th>p-valor</th><th>Efeito</th><th>Conclusao</th></tr></thead>
-    <tbody>
-      <tr><td>welch_t</td><td>-0.3322</td><td>0.7411</td><td>-0.0858</td><td>nao rejeita H0</td></tr>
-<tr><td>mann_whitney</td><td>370.0000</td><td>0.2398</td><td>0.1778</td><td>nao rejeita H0</td></tr>
-    </tbody>
-  </table>
-</body>
-</html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LAB04 — Dashboard final</title>
+<style>
+:root { --ink:#23313b; --paper:#f7f4ef; --blue:#176b87; --green:#4f9d69; --orange:#e0a458; --red:#c94c4c; }
+* { box-sizing:border-box; } body { margin:0; color:var(--ink); background:var(--paper); font:16px/1.6 Georgia,serif; } main { max-width:1100px; margin:auto; padding:2rem 1.25rem 5rem; }
+h1,h2,h3,th { font-family:Arial,sans-serif; } h1 { font-size:clamp(2rem,5vw,4rem); line-height:1.05; margin:.4rem 0 1rem; } h2 { margin-top:3rem; border-top:4px solid var(--blue); padding-top:1rem; }
+.eyebrow { color:var(--blue); font:700 .8rem Arial,sans-serif; letter-spacing:.12em; text-transform:uppercase; } .links { display:flex; flex-wrap:wrap; gap:.7rem; margin:1.2rem 0 2rem; } .links a { color:white; background:var(--blue); padding:.45rem .75rem; text-decoration:none; border-radius:4px; font-family:Arial,sans-serif; }
+.grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:1rem; } .fact { background:white; border-left:5px solid var(--orange); padding:1rem; } figure { margin:1.25rem 0; background:white; padding:1rem; } figure img { display:block; width:100%; max-height:650px; object-fit:contain; } figcaption { margin-top:.8rem; } table { border-collapse:collapse; width:100%; background:white; margin:1rem 0 1.5rem; font-family:Arial,sans-serif; font-size:.9rem; } th,td { border-bottom:1px solid #d5dadd; padding:.55rem; text-align:left; } th { background:#dfecef; } .note { border-left:4px solid var(--green); padding:.2rem 1rem; background:#edf5ee; } code { background:#e9e5dd; padding:.1rem .25rem; }
+@media(max-width:600px) { main { padding:.9rem; } table { font-size:.76rem; } th,td { padding:.35rem; } }
+</style></head><body><main>
+<div class="eyebrow">Laboratório de Experimentação de Software</div><h1>LAB04 — Testes de hipótese por dentro</h1>
+<p>Dashboard final: comparação entre t de Welch e Mann-Whitney para o tempo até o merge de pull requests.</p>
+<div class="links"><a href="https://github.com/guilhermeas04/Laboratorio-de-experimentacao-de-software/tree/main/LAB4">Repositório</a><a href="https://github.com/users/guilhermeas04/projects/3">GitHub Projects</a><a href="https://github.com/guilhermeas04/Laboratorio-de-experimentacao-de-software/blob/main/LAB4/dashboard/index.html">Dashboard no GitHub</a></div>
+<div class="grid"><div class="fact"><b>Equipe</b><br>Amanda Bicalho Silva<br>Guilherme de Almeida Santos<br>Pedro Rodrigues Duarte</div><div class="fact"><b>Amostra</b><br>30 bots + 30 humanos<br>Unidade: horas</div><div class="fact"><b>Reprodução</b><br>Semente 42<br>10.000 repetições</div></div>
+<h2>1. Cenário</h2><p><b>Pergunta:</b> o tempo de merge difere entre PRs de autoria automatizada e PRs de autoria humana?</p><p><b>H₀:</b> as distribuições são iguais. <b>H₁:</b> elas diferem. A análise é bicaudal. Os dados reais vêm da API REST pública do GitHub e foram filtrados para PRs mesclados com timestamps válidos. Os testes são t de Welch e Mann-Whitney.</p>
+<h2>2. Os dados — G1</h2><p>Os dados reais têm 30 observações em cada grupo e foram modelados por distribuições lognormais calibradas com as medianas e a dispersão logarítmica observadas. A assimetria e as caudas longas representam tempos de merge muito prolongados; por isso, o cenário simulado preserva outliers em vez de substituí-los por médias. O parâmetro de efeito é deslocado em horas para avaliar a capacidade de detecção.</p>
+<figure><img src="../reports/figures/g1_histograms.png" alt="G1 histogramas dos dados reais e simulados"><figcaption>G1 — Histogramas dos tempos de merge, em horas.</figcaption></figure>
+<h2>3. Como os testes funcionam — G2</h2><p>Welch compara médias permitindo variâncias diferentes; Mann-Whitney compara a posição relativa dos postos e é menos sensível a valores extremos. A região de rejeição contém resultados pouco compatíveis com H₀ para α=0,05. O p-valor mede a compatibilidade dos dados com H₀; ele não é a probabilidade de H₀ ser verdadeira nem mede o tamanho ou a importância prática do efeito.</p>
+<figure><img src="../reports/figures/g2_null_distribution.png" alt="G2 distribuição nula da estatística"><figcaption>G2 — Distribuição nula da estatística de Welch, região crítica e exemplo.</figcaption></figure>
+<h2>4. Erro tipo I — G3</h2><p>O Mann-Whitney teve erro tipo I de 4,56% na situação ideal, 4,95% na amostra pequena, 4,88% na presença de outliers e foi conservador na situação ideal e adequado nas demais. O t de Welch teve erro tipo I de 2,28% na situação ideal, 1,16% na amostra pequena, 1,65% na presença de outliers e foi conservador em todas as situações. O desvio do Welch vem da assimetria lognormal e das caudas longas, que inflam a variância amostral e encolhem a estatística t, enquanto o Mann-Whitney usa postos e quase não sente valores extremos.</p><figure><img src="../reports/figures/g3_type_i_error.png" alt="G3 erro tipo I"><figcaption>G3 — Taxas de rejeição quando H₀ é verdadeira; a referência é 5%.</figcaption></figure><table><tr><th>Teste</th><th>Erro tipo I ideal</th><th>Repetições</th></tr><tr><td>welch_t</td><td>2.28%</td><td>10000</td></tr>
+<tr><td>mann_whitney</td><td>4.56%</td><td>10000</td></tr></table>
+<h2>5. Poder — G4</h2><p>Na situação ideal, o Mann-Whitney teve maior poder, chegando a 99,4% contra 38,2% do t de Welch no efeito de 2,00 h. A diferença cresceu com o efeito, de 23,8% em 0,25 h para 61,2% em 2,00 h. A vantagem não mudou de lado em nenhuma situação: a diferença média foi maior na presença de outliers (56,7%) e menor na amostra pequena (21,4%), onde os dois testes perdem poder.</p><figure><img src="../reports/figures/g4_power.png" alt="G4 curvas de poder"><figcaption>G4 — Poder em função do efeito e sob violações de pressupostos.</figcaption></figure><table><tr><th>Teste</th><th>Efeito (h)</th><th>Poder ideal</th></tr><tr><td>mann_whitney</td><td>0.00</td><td>5.03%</td></tr>
+<tr><td>mann_whitney</td><td>0.25</td><td>27.09%</td></tr>
+<tr><td>mann_whitney</td><td>0.50</td><td>58.14%</td></tr>
+<tr><td>mann_whitney</td><td>1.00</td><td>89.36%</td></tr>
+<tr><td>mann_whitney</td><td>2.00</td><td>99.35%</td></tr></table><p class="note">No efeito de 2 horas sob violações, resultados adicionais: <tr><td>small_sample</td><td>welch_t</td><td>28.03%</td></tr>
+<tr><td>small_sample</td><td>mann_whitney</td><td>61.03%</td></tr>
+<tr><td>extreme_outlier</td><td>welch_t</td><td>19.38%</td></tr>
+<tr><td>extreme_outlier</td><td>mann_whitney</td><td>98.47%</td></tr>.</p>
+<h2>6. Dados reais</h2><p>Os resultados abaixo foram calculados diretamente sobre as 60 observações brutas, sem usar os resultados simulados.</p><table><tr><th>Teste</th><th>Estatística</th><th>p-valor</th><th>Tamanho do efeito</th><th>Nome do efeito</th><th>Decisão sobre H₀</th><th>Conclusão</th></tr><tr><td>welch_t</td><td>1.1383</td><td>0.2643</td><td>0.2939</td><td>cohens_d</td><td>nao rejeita H0</td><td>Não há evidência suficiente de diferença</td></tr>
+<tr><td>mann_whitney</td><td>482.0000</td><td>0.6414</td><td>-0.0711</td><td>rank_biserial</td><td>nao rejeita H0</td><td>Não há evidência suficiente de diferença</td></tr></table>
+<h2>7. Conclusão</h2><p>Antes da simulação, esperávamos que Mann-Whitney fosse mais robusto para a assimetria e os outliers, enquanto Welch poderia ser competitivo em dados aproximadamente simétricos. Os resultados confirmaram essa expectativa: Mann-Whitney ficou próximo de 5% no erro tipo I e apresentou maior poder nos efeitos avaliados, enquanto Welch foi conservador neste cenário lognormal. Recomendamos Mann-Whitney para este tipo de tempo de merge; a escolha pode mudar quando a pergunta for explicitamente sobre médias e os resíduos forem aproximadamente simétricos. A principal limitação é a amostra de conveniência de PRs públicos e o uso de autoria de bot como proxy de automação.</p>
+<h3>Roteiro oral</h3><ol><li><b>Cenário:</b> comparamos tempo de merge de bots e humanos em PRs públicos.</li><li><b>Hipóteses:</b> H₀ diz distribuições iguais; H₁ diz diferença.</li><li><b>Coleta:</b> 30 observações por grupo, usando created_at e merged_at.</li><li><b>Distribuição:</b> tempos são assimétricos e têm caudas longas.</li><li><b>Welch:</b> compara médias sem exigir variâncias iguais.</li><li><b>Mann-Whitney:</b> compara postos e posição relativa.</li><li><b>p-valor:</b> compatibilidade com H₀, não probabilidade de H₀.</li><li><b>Erro tipo I:</b> rejeitar H₀ quando ela é verdadeira.</li><li><b>Erro tipo II:</b> não detectar um efeito que existe.</li><li><b>Poder:</b> probabilidade de detectar um efeito real.</li><li><b>Pressupostos:</b> assimetria prejudica Welch neste cenário.</li><li><b>Efeito:</b> relatamos Cohen d e rank-biserial.</li><li><b>Amostra:</b> 60 PRs, suficiente para demonstração, não para generalização ampla.</li><li><b>Recomendação:</b> Mann-Whitney para caudas longas e outliers.</li><li><b>Limitação:</b> amostra de conveniência e proxy de autoria automatizada.</li></ol>
+</main></body></html>
