@@ -1,0 +1,3 @@
+question,situation,test_name,replications,rejections,rejection_rate,alpha
+Q1,ideal,welch_t,10000,228,0.0228,0.05
+Q1,ideal,mann_whitney,10000,456,0.0456,0.05

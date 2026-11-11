@@ -1,0 +1,124 @@
+{
+  "q1": [
+    {
+      "question": "Q1",
+      "situation": "ideal",
+      "test_name": "welch_t",
+      "replications": 10000,
+      "rejections": 228,
+      "rejection_rate": 0.0228,
+      "alpha": 0.05
+    },
+    {
+      "question": "Q1",
+      "situation": "ideal",
+      "test_name": "mann_whitney",
+      "replications": 10000,
+      "rejections": 456,
+      "rejection_rate": 0.0456,
+      "alpha": 0.05
+    }
+  ],
+  "q2": [
+    {
+      "question": "Q2",
+      "situation": "ideal",
+      "test_name": "welch_t",
+      "effect_hours": 0.0,
+      "replications": 10000,
+      "rejections": 264,
+      "power": 0.0264,
+      "alpha": 0.05
+    },
+    {
+      "question": "Q2",
+      "situation": "ideal",
+      "test_name": "mann_whitney",
+      "effect_hours": 0.0,
+      "replications": 10000,
+      "rejections": 503,
+      "power": 0.0503,
+      "alpha": 0.05
+    },
+    {
+      "question": "Q2",
+      "situation": "ideal",
+      "test_name": "welch_t",
+      "effect_hours": 0.25,
+      "replications": 10000,
+      "rejections": 327,
+      "power": 0.0327,
+      "alpha": 0.05
+    },
+    {
+      "question": "Q2",
+      "situation": "ideal",
+      "test_name": "mann_whitney",
+      "effect_hours": 0.25,
+      "replications": 10000,
+      "rejections": 2709,
+      "power": 0.2709,
+      "alpha": 0.05
+    },
+    {
+      "question": "Q2",
+      "situation": "ideal",
+      "test_name": "welch_t",
+      "effect_hours": 0.5,
+      "replications": 10000,
+      "rejections": 506,
+      "power": 0.0506,
+      "alpha": 0.05
+    },
+    {
+      "question": "Q2",
+      "situation": "ideal",
+      "test_name": "mann_whitney",
+      "effect_hours": 0.5,
+      "replications": 10000,
+      "rejections": 5814,
+      "power": 0.5814,
+      "alpha": 0.05
+    },
+    {
+      "question": "Q2",
+      "situation": "ideal",
+      "test_name": "welch_t",
+      "effect_hours": 1.0,
+      "replications": 10000,
+      "rejections": 1411,
+      "power": 0.1411,
+      "alpha": 0.05
+    },
+    {
+      "question": "Q2",
+      "situation": "ideal",
+      "test_name": "mann_whitney",
+      "effect_hours": 1.0,
+      "replications": 10000,
+      "rejections": 8936,
+      "power": 0.8936,
+      "alpha": 0.05
+    },
+    {
+      "question": "Q2",
+      "situation": "ideal",
+      "test_name": "welch_t",
+      "effect_hours": 2.0,
+      "replications": 10000,
+      "rejections": 3816,
+      "power": 0.3816,
+      "alpha": 0.05
+    },
+    {
+      "question": "Q2",
+      "situation": "ideal",
+      "test_name": "mann_whitney",
+      "effect_hours": 2.0,
+      "replications": 10000,
+      "rejections": 9935,
+      "power": 0.9935,
+      "alpha": 0.05
+    }
+  ]
+}

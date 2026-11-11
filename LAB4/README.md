@@ -129,6 +129,23 @@ Q3 nas situações `small_sample` e `extreme_outlier` e grava:
 A escolha das situações e a interpretação estão em
 [`docs/q3-violacao-pressupostos.md`](docs/q3-violacao-pressupostos.md).
 
+## Dashboard final — issue #136
+
+Para gerar o dashboard autocontido com as sete seções exigidas, execute na
+raiz do repositório:
+
+```powershell
+python -m pip install -r .\LAB4\requirements.txt
+$env:PYTHONPATH = "LAB4/src"
+python -m lab04_hypothesis.dashboard
+```
+
+Esse comando recalcula os artefatos das simulações, gera G1, G2, G3 e G4,
+calcula Welch e Mann-Whitney sobre os dados reais e atualiza
+`LAB4/dashboard/index.html`. Depois que os CSVs de Q1/Q2 e os artefatos de Q3
+já existirem, `python -m lab04_hypothesis.dashboard --skip-compute` apenas
+reconstrói o HTML. A semente fixa é 42 e Q1/Q2 usam 10.000 repetições.
+
 ## Dashboard
 
 O dashboard final deverá conter, nesta ordem:
