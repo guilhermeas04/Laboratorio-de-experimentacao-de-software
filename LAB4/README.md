@@ -107,6 +107,28 @@ python -m lab04_hypothesis.simulation_runner --replications 100
 As saídas ficam em `LAB4/data/processed/q1_results.csv`,
 `LAB4/data/processed/q2_results.csv` e `q1_q2_summary.json`.
 
+## Sprint 2 — Q3, G3 e G4
+
+Execute a violação de pressupostos e gere os gráficos de erro tipo I e poder:
+
+```powershell
+$env:PYTHONPATH = "LAB4/src"
+python -m lab04_hypothesis.s02_report
+```
+
+Use `--replications 100` para uma validação rápida. O comando reaproveita os
+resultados de Q1/Q2 quando já existem com o mesmo número de repetições, roda a
+Q3 nas situações `small_sample` e `extreme_outlier` e grava:
+
+- `reports/figures/g3_type_i_error.png` e `reports/figures/g4_power.png`;
+- `reports/tables/g3_type_i_error.csv`, `reports/tables/g4_power.csv` e
+  `reports/tables/g3_g4_interpretation.json` (textos para o dashboard);
+- `data/processed/q3_type_i_results.csv`, `q3_power_results.csv` e
+  `q3_summary.json`.
+
+A escolha das situações e a interpretação estão em
+[`docs/q3-violacao-pressupostos.md`](docs/q3-violacao-pressupostos.md).
+
 ## Dashboard
 
 O dashboard final deverá conter, nesta ordem:

@@ -1,0 +1,254 @@
+{
+  "type_i": [
+    {
+      "question": "Q3",
+      "situation": "small_sample",
+      "test_name": "welch_t",
+      "replications": 10000,
+      "rejections": 116,
+      "rejection_rate": 0.0116,
+      "alpha": 0.05
+    },
+    {
+      "question": "Q3",
+      "situation": "small_sample",
+      "test_name": "mann_whitney",
+      "replications": 10000,
+      "rejections": 495,
+      "rejection_rate": 0.0495,
+      "alpha": 0.05
+    },
+    {
+      "question": "Q3",
+      "situation": "extreme_outlier",
+      "test_name": "welch_t",
+      "replications": 10000,
+      "rejections": 165,
+      "rejection_rate": 0.0165,
+      "alpha": 0.05
+    },
+    {
+      "question": "Q3",
+      "situation": "extreme_outlier",
+      "test_name": "mann_whitney",
+      "replications": 10000,
+      "rejections": 488,
+      "rejection_rate": 0.0488,
+      "alpha": 0.05
+    }
+  ],
+  "power": [
+    {
+      "question": "Q3",
+      "situation": "small_sample",
+      "test_name": "welch_t",
+      "effect_hours": 0.0,
+      "replications": 10000,
+      "rejections": 106,
+      "power": 0.0106,
+      "alpha": 0.05
+    },
+    {
+      "question": "Q3",
+      "situation": "small_sample",
+      "test_name": "mann_whitney",
+      "effect_hours": 0.0,
+      "replications": 10000,
+      "rejections": 475,
+      "power": 0.0475,
+      "alpha": 0.05
+    },
+    {
+      "question": "Q3",
+      "situation": "small_sample",
+      "test_name": "welch_t",
+      "effect_hours": 0.25,
+      "replications": 10000,
+      "rejections": 181,
+      "power": 0.0181,
+      "alpha": 0.05
+    },
+    {
+      "question": "Q3",
+      "situation": "small_sample",
+      "test_name": "mann_whitney",
+      "effect_hours": 0.25,
+      "replications": 10000,
+      "rejections": 1098,
+      "power": 0.1098,
+      "alpha": 0.05
+    },
+    {
+      "question": "Q3",
+      "situation": "small_sample",
+      "test_name": "welch_t",
+      "effect_hours": 0.5,
+      "replications": 10000,
+      "rejections": 358,
+      "power": 0.0358,
+      "alpha": 0.05
+    },
+    {
+      "question": "Q3",
+      "situation": "small_sample",
+      "test_name": "mann_whitney",
+      "effect_hours": 0.5,
+      "replications": 10000,
+      "rejections": 1946,
+      "power": 0.1946,
+      "alpha": 0.05
+    },
+    {
+      "question": "Q3",
+      "situation": "small_sample",
+      "test_name": "welch_t",
+      "effect_hours": 1.0,
+      "replications": 10000,
+      "rejections": 1064,
+      "power": 0.1064,
+      "alpha": 0.05
+    },
+    {
+      "question": "Q3",
+      "situation": "small_sample",
+      "test_name": "mann_whitney",
+      "effect_hours": 1.0,
+      "replications": 10000,
+      "rejections": 3813,
+      "power": 0.3813,
+      "alpha": 0.05
+    },
+    {
+      "question": "Q3",
+      "situation": "small_sample",
+      "test_name": "welch_t",
+      "effect_hours": 2.0,
+      "replications": 10000,
+      "rejections": 2803,
+      "power": 0.2803,
+      "alpha": 0.05
+    },
+    {
+      "question": "Q3",
+      "situation": "small_sample",
+      "test_name": "mann_whitney",
+      "effect_hours": 2.0,
+      "replications": 10000,
+      "rejections": 6103,
+      "power": 0.6103,
+      "alpha": 0.05
+    },
+    {
+      "question": "Q3",
+      "situation": "extreme_outlier",
+      "test_name": "welch_t",
+      "effect_hours": 0.0,
+      "replications": 10000,
+      "rejections": 156,
+      "power": 0.0156,
+      "alpha": 0.05
+    },
+    {
+      "question": "Q3",
+      "situation": "extreme_outlier",
+      "test_name": "mann_whitney",
+      "effect_hours": 0.0,
+      "replications": 10000,
+      "rejections": 466,
+      "power": 0.0466,
+      "alpha": 0.05
+    },
+    {
+      "question": "Q3",
+      "situation": "extreme_outlier",
+      "test_name": "welch_t",
+      "effect_hours": 0.25,
+      "replications": 10000,
+      "rejections": 218,
+      "power": 0.0218,
+      "alpha": 0.05
+    },
+    {
+      "question": "Q3",
+      "situation": "extreme_outlier",
+      "test_name": "mann_whitney",
+      "effect_hours": 0.25,
+      "replications": 10000,
+      "rejections": 2363,
+      "power": 0.2363,
+      "alpha": 0.05
+    },
+    {
+      "question": "Q3",
+      "situation": "extreme_outlier",
+      "test_name": "welch_t",
+      "effect_hours": 0.5,
+      "replications": 10000,
+      "rejections": 381,
+      "power": 0.0381,
+      "alpha": 0.05
+    },
+    {
+      "question": "Q3",
+      "situation": "extreme_outlier",
+      "test_name": "mann_whitney",
+      "effect_hours": 0.5,
+      "replications": 10000,
+      "rejections": 5312,
+      "power": 0.5312,
+      "alpha": 0.05
+    },
+    {
+      "question": "Q3",
+      "situation": "extreme_outlier",
+      "test_name": "welch_t",
+      "effect_hours": 1.0,
+      "replications": 10000,
+      "rejections": 826,
+      "power": 0.0826,
+      "alpha": 0.05
+    },
+    {
+      "question": "Q3",
+      "situation": "extreme_outlier",
+      "test_name": "mann_whitney",
+      "effect_hours": 1.0,
+      "replications": 10000,
+      "rejections": 8503,
+      "power": 0.8503,
+      "alpha": 0.05
+    },
+    {
+      "question": "Q3",
+      "situation": "extreme_outlier",
+      "test_name": "welch_t",
+      "effect_hours": 2.0,
+      "replications": 10000,
+      "rejections": 1938,
+      "power": 0.1938,
+      "alpha": 0.05
+    },
+    {
+      "question": "Q3",
+      "situation": "extreme_outlier",
+      "test_name": "mann_whitney",
+      "effect_hours": 2.0,
+      "replications": 10000,
+      "rejections": 9847,
+      "power": 0.9847,
+      "alpha": 0.05
+    }
+  ],
+  "interpretation": {
+    "g3": "O Mann-Whitney teve erro tipo I de 4,56% na situação ideal, 4,95% na amostra pequena, 4,88% na presença de outliers e foi conservador na situação ideal e adequado nas demais. O t de Welch teve erro tipo I de 2,28% na situação ideal, 1,16% na amostra pequena, 1,65% na presença de outliers e foi conservador em todas as situações. O desvio do Welch vem da assimetria lognormal e das caudas longas, que inflam a variância amostral e encolhem a estatística t, enquanto o Mann-Whitney usa postos e quase não sente valores extremos.",
+    "g4": "Na situação ideal, o Mann-Whitney teve maior poder, chegando a 99,4% contra 38,2% do t de Welch no efeito de 2,00 h. A diferença cresceu com o efeito, de 23,8% em 0,25 h para 61,2% em 2,00 h. A vantagem não mudou de lado em nenhuma situação: a diferença média foi maior na presença de outliers (56,7%) e menor na amostra pequena (21,4%), onde os dois testes perdem poder.",
+    "q3_situations": [
+      "small_sample",
+      "extreme_outlier"
+    ],
+    "replications": 10000,
+    "alpha": 0.05,
+    "random_seed": 42,
+    "q1_q2_reused": true
+  }
+}
