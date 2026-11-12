@@ -24,10 +24,10 @@ h1,h2,h3,th { font-family:Arial,sans-serif; } h1 { font-size:clamp(2rem,5vw,4rem
 <tr><td>mann_whitney</td><td>0.25</td><td>27.09%</td></tr>
 <tr><td>mann_whitney</td><td>0.50</td><td>58.14%</td></tr>
 <tr><td>mann_whitney</td><td>1.00</td><td>89.36%</td></tr>
-<tr><td>mann_whitney</td><td>2.00</td><td>99.35%</td></tr></table><p class="note">No efeito de 2 horas sob violações, resultados adicionais: <tr><td>small_sample</td><td>welch_t</td><td>28.03%</td></tr>
+<tr><td>mann_whitney</td><td>2.00</td><td>99.35%</td></tr></table><div class="note"><p>No efeito de 2 horas sob violações, resultados adicionais:</p><table><tr><th>Situação</th><th>Teste</th><th>Poder</th></tr><tr><td>small_sample</td><td>welch_t</td><td>28.03%</td></tr>
 <tr><td>small_sample</td><td>mann_whitney</td><td>61.03%</td></tr>
 <tr><td>extreme_outlier</td><td>welch_t</td><td>19.38%</td></tr>
-<tr><td>extreme_outlier</td><td>mann_whitney</td><td>98.47%</td></tr>.</p>
+<tr><td>extreme_outlier</td><td>mann_whitney</td><td>98.47%</td></tr></table></div>
 <h2>6. Dados reais</h2><p>Os resultados abaixo foram calculados diretamente sobre as 60 observações brutas, sem usar os resultados simulados.</p><table><tr><th>Teste</th><th>Estatística</th><th>p-valor</th><th>Tamanho do efeito</th><th>Nome do efeito</th><th>Decisão sobre H₀</th><th>Conclusão</th></tr><tr><td>welch_t</td><td>1.1383</td><td>0.2643</td><td>0.2939</td><td>cohens_d</td><td>nao rejeita H0</td><td>Não há evidência suficiente de diferença</td></tr>
 <tr><td>mann_whitney</td><td>482.0000</td><td>0.6414</td><td>-0.0711</td><td>rank_biserial</td><td>nao rejeita H0</td><td>Não há evidência suficiente de diferença</td></tr></table>
 <h2>7. Conclusão</h2><p>Antes da simulação, esperávamos que Mann-Whitney fosse mais robusto para a assimetria e os outliers, enquanto Welch poderia ser competitivo em dados aproximadamente simétricos. Os resultados confirmaram essa expectativa: Mann-Whitney ficou próximo de 5% no erro tipo I e apresentou maior poder nos efeitos avaliados, enquanto Welch foi conservador neste cenário lognormal. Recomendamos Mann-Whitney para este tipo de tempo de merge; a escolha pode mudar quando a pergunta for explicitamente sobre médias e os resíduos forem aproximadamente simétricos. A principal limitação é a amostra de conveniência de PRs públicos e o uso de autoria de bot como proxy de automação.</p>
