@@ -54,3 +54,15 @@ python -m lab05_real_software.analysis --metrics .\LAB5\data\interim\pilot_metri
 
 As tabelas saem em `reports/tables/`. Ausentes permanecem vazios e entram em
 `n_missing`; nunca viram zero silenciosamente.
+
+
+## Estimativa inicial de impacto (#145)
+
+```powershell
+$env:PYTHONPATH = "LAB5/src"
+python -m lab05_real_software.impact --metrics .\LAB5\data\interim\pilot_metrics.csv
+```
+
+Gera `reports/figures/pilot_latency_comparison.png` e a estimativa em
+`reports/tables/pilot_impact_estimate.json`. O impacto é tratado como
+estimativa sob premissas explícitas (volume de consultas e custo horário).

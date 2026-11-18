@@ -1,0 +1,21 @@
+{
+  "kind": "estimate",
+  "metric": "query_latency_ms",
+  "unit": "ms",
+  "baseline_version": "15",
+  "treatment_version": "17",
+  "n_baseline": 4,
+  "n_treatment": 5,
+  "mean_baseline_ms": 18.049999999999997,
+  "mean_treatment_ms": 13.88,
+  "mean_difference_ms": 4.169999999999996,
+  "relative_improvement": 0.23102493074792227,
+  "assumptions": {
+    "queries_per_day": 1000000,
+    "working_days_per_year": 250,
+    "engineer_hourly_cost_usd": 80.0
+  },
+  "estimated_hours_saved_per_year": 289.5833333333331,
+  "estimated_cost_saving_usd_per_year": 23166.666666666646,
+  "caveat": "Estimativa inicial do piloto: extrapolação linear da diferença média de latência sob carga hipotética. Não é medição de produção nem garante generalização."
+}
