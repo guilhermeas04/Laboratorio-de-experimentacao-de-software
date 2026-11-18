@@ -68,3 +68,19 @@ do cliente. Os registros com rótulo `pilot-local` correspondem à verificação
 inicial do coletor. O piloto com PostgreSQL valida a instrumentação de
 latência para uma consulta. Throughput, CPU e memória ficam para a próxima
 etapa de instrumentação.
+
+## Análise e impacto do piloto
+
+```powershell
+python -m pip install -r LAB5/requirements.txt
+$env:PYTHONPATH = (Resolve-Path LAB5/src).Path
+python -m lab05_real_software.pilot_metrics
+python -m lab05_real_software.analysis --metrics LAB5/data/interim/pilot_metrics.csv --tables-dir LAB5/reports/tables
+python -m lab05_real_software.impact --metrics LAB5/data/interim/pilot_metrics.csv --tables-dir LAB5/reports/tables --figures-dir LAB5/reports/figures
+```
+
+O efeito pareado usa a média das diferenças por bloco dividida pelo desvio
+padrão dessas diferenças (Cohen's d_z). Com menos de dois pares completos
+ou desvio zero, o tamanho de efeito fica vazio. A projeção anual soma a
+diferença de tempo de execução no servidor sob o volume hipotético de consultas.
+Os dois blocos do piloto servem para verificar a instrumentação e o fluxo de análise.

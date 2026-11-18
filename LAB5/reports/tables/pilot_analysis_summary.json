@@ -1,0 +1,18 @@
+{
+  "software": "PostgreSQL",
+  "versions": [
+    "15",
+    "17"
+  ],
+  "metrics": [
+    "query_latency_ms",
+    "throughput_queries_per_second",
+    "cpu_percent",
+    "memory_mb",
+    "duration_ms"
+  ],
+  "n_rows": 4,
+  "missing_policy": "ausentes permanecem NaN e entram em n_missing; nunca viram zero",
+  "descriptive_table": "LAB5\\reports\\tables\\pilot_descriptive_stats.csv",
+  "effect_size_table": "LAB5\\reports\\tables\\pilot_effect_sizes.csv"
+}

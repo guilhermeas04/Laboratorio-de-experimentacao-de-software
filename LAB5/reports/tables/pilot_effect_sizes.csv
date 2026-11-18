@@ -1,0 +1,6 @@
+metric,unit,baseline_version,treatment_version,n_baseline,n_treatment,n_pairs,mean_difference,mean_baseline,mean_treatment,cohens_d,effect_size_name,direction_hint,notes
+query_latency_ms,ms,15,17,2,2,2,0.036500000000000005,0.4615,0.425,0.2593909297819999,cohens_dz,favoravel_17,pares completos; d_z usa o desvio das diferenças
+throughput_queries_per_second,queries/s,15,17,0,0,0,,,,,cohens_dz,indefinido,pares completos; d_z usa o desvio das diferenças
+cpu_percent,%,15,17,0,0,0,,,,,cohens_dz,indefinido,pares completos; d_z usa o desvio das diferenças
+memory_mb,MB,15,17,0,0,0,,,,,cohens_dz,indefinido,pares completos; d_z usa o desvio das diferenças
+duration_ms,ms,15,17,2,2,2,5.985499999999988,145.84949999999998,139.864,0.8060923033600742,cohens_dz,favoravel_17,pares completos; d_z usa o desvio das diferenças

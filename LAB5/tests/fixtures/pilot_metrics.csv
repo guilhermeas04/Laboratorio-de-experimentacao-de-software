@@ -1,0 +1,11 @@
+software_version,repetition,query_latency_ms,throughput_queries_per_second,cpu_percent,memory_mb,source
+15,1,18.4,54.3,31.2,128.0,fixture-pilot
+15,2,17.1,58.5,29.8,126.5,fixture-pilot
+15,3,,55.0,30.5,127.0,fixture-pilot
+15,4,19.8,52.1,33.0,130.2,fixture-pilot
+15,5,16.9,59.4,28.7,125.8,fixture-pilot
+17,1,14.2,68.0,27.5,120.4,fixture-pilot
+17,2,13.5,71.2,26.1,118.9,fixture-pilot
+17,3,15.0,,28.0,121.0,fixture-pilot
+17,4,12.8,74.5,25.4,117.6,fixture-pilot
+17,5,13.9,69.8,26.8,119.5,fixture-pilot

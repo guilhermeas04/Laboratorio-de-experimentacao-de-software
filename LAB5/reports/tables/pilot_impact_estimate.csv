@@ -1,0 +1,16 @@
+field,value
+kind,estimate
+metric,query_latency_ms
+unit,ms
+baseline_version,15
+treatment_version,17
+n_baseline,2
+n_treatment,2
+n_pairs,2
+mean_baseline_ms,0.4615
+mean_treatment_ms,0.425
+mean_difference_ms,0.03650000000000003
+relative_improvement,0.07908992416034676
+assumptions,"{""queries_per_day"": 1000000, ""working_days_per_year"": 250}"
+estimated_hours_saved_per_year,2.534722222222224
+caveat,Estimativa inicial do piloto: extrapolação linear da diferença média de latência sob carga hipotética. As horas representam tempo acumulado de execução das consultas no servidor. A projeção depende da carga e da diferença de latência se manterem.

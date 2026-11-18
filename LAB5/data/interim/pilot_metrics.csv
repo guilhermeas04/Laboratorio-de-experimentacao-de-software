@@ -1,0 +1,5 @@
+software_version,block,query_latency_ms,throughput_queries_per_second,cpu_percent,memory_mb,duration_ms,source
+15.20,1,0.421,,,,142.515,pilot-15.20-r001-20261118T211155769101Z.json
+17.12,1,0.484,,,,131.279,pilot-17.12-r001-20261118T211158104185Z.json
+15.20,2,0.502,,,,149.184,pilot-15.20-r002-20261118T211202982824Z.json
+17.12,2,0.366,,,,148.449,pilot-17.12-r002-20261118T211200503954Z.json
