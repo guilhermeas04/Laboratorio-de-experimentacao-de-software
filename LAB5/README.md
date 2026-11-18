@@ -42,3 +42,29 @@ O software escolhido deve ser real, estar em operação e ter alto impacto,
 sempre com evidências e fontes. A coleta deve respeitar os termos de uso,
 `robots.txt`, o limite de uma requisição por segundo para medições externas e
 as regras de ética descritas no enunciado.
+
+## Piloto PostgreSQL
+
+Prepare as imagens oficiais antes da coleta. Execute a partir da raiz do
+repositório, em PowerShell.
+
+```powershell
+docker pull postgres:15.20
+docker pull postgres:17.12
+$env:PYTHONPATH = (Resolve-Path LAB5/src).Path
+python -m lab05_real_software.postgres_pilot --blocks 2
+python -m pytest -q LAB5/tests
+```
+
+Cada rodada cria um contêiner descartável sem rede, com 1 CPU e 512 MB de
+memória. O roteiro carrega 100 mil pedidos sintéticos, aquece uma consulta de
+soma por cliente e repete a consulta com `EXPLAIN ANALYZE`. As versões rodam
+em sequência e a ordem é invertida a cada bloco.
+
+Os JSONs ficam em `LAB5/data/raw/` por padrão. O campo `stdout` contém a
+versão confirmada pelo servidor e o plano em JSON, com o tempo de execução
+no servidor em `Execution Time` (ms). `duration_ms` inclui a inicialização
+do cliente. Os registros com rótulo `pilot-local` correspondem à verificação
+inicial do coletor. O piloto com PostgreSQL valida a instrumentação de
+latência para uma consulta. Throughput, CPU e memória ficam para a próxima
+etapa de instrumentação.

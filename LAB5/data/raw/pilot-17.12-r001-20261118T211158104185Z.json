@@ -1,0 +1,36 @@
+{
+  "schema_version": "lab05-pilot-v1",
+  "collected_at": "2026-11-18T21:11:57.972+00:00",
+  "ended_at": "2026-11-18T21:11:58.104+00:00",
+  "status": "success",
+  "error": null,
+  "software": "PostgreSQL",
+  "software_version": "17.12",
+  "repetition": 1,
+  "command": [
+    "docker",
+    "exec",
+    "877175fc7972c3fe6705f08e31809ffbb3d4260307ad2d0a0a95934fb2cdf23f",
+    "psql",
+    "-X",
+    "-qAt",
+    "-v",
+    "ON_ERROR_STOP=1",
+    "-U",
+    "postgres",
+    "-d",
+    "postgres",
+    "-c",
+    "\nSELECT current_setting('server_version');\nEXPLAIN (ANALYZE, BUFFERS, FORMAT JSON) \nSELECT sum(amount) FROM orders WHERE customer_id = 42;\n\n"
+  ],
+  "returncode": 0,
+  "duration_ms": 131.279,
+  "stdout": "17.12 (Debian 17.12-1.pgdg13+1)\n[\n  {\n    \"Plan\": {\n      \"Node Type\": \"Aggregate\",\n      \"Strategy\": \"Plain\",\n      \"Partial Mode\": \"Simple\",\n      \"Parallel Aware\": false,\n      \"Async Capable\": false,\n      \"Startup Cost\": 266.46,\n      \"Total Cost\": 266.47,\n      \"Plan Rows\": 1,\n      \"Plan Width\": 8,\n      \"Actual Startup Time\": 0.463,\n      \"Actual Total Time\": 0.463,\n      \"Actual Rows\": 1,\n      \"Actual Loops\": 1,\n      \"Shared Hit Blocks\": 102,\n      \"Shared Read Blocks\": 0,\n      \"Shared Dirtied Blocks\": 0,\n      \"Shared Written Blocks\": 0,\n      \"Local Hit Blocks\": 0,\n      \"Local Read Blocks\": 0,\n      \"Local Dirtied Blocks\": 0,\n      \"Local Written Blocks\": 0,\n      \"Temp Read Blocks\": 0,\n      \"Temp Written Blocks\": 0,\n      \"Plans\": [\n        {\n          \"Node Type\": \"Bitmap Heap Scan\",\n          \"Parent Relationship\": \"Outer\",\n          \"Parallel Aware\": false,\n          \"Async Capable\": false,\n          \"Relation Name\": \"orders\",\n          \"Alias\": \"orders\",\n          \"Startup Cost\": 5.07,\n          \"Total Cost\": 266.21,\n          \"Plan Rows\": 100,\n          \"Plan Width\": 4,\n          \"Actual Startup Time\": 0.026,\n          \"Actual Total Time\": 0.450,\n          \"Actual Rows\": 100,\n          \"Actual Loops\": 1,\n          \"Recheck Cond\": \"(customer_id = 42)\",\n          \"Rows Removed by Index Recheck\": 0,\n          \"Exact Heap Blocks\": 100,\n          \"Lossy Heap Blocks\": 0,\n          \"Shared Hit Blocks\": 102,\n          \"Shared Read Blocks\": 0,\n          \"Shared Dirtied Blocks\": 0,\n          \"Shared Written Blocks\": 0,\n          \"Local Hit Blocks\": 0,\n          \"Local Read Blocks\": 0,\n          \"Local Dirtied Blocks\": 0,\n          \"Local Written Blocks\": 0,\n          \"Temp Read Blocks\": 0,\n          \"Temp Written Blocks\": 0,\n          \"Plans\": [\n            {\n              \"Node Type\": \"Bitmap Index Scan\",\n              \"Parent Relationship\": \"Outer\",\n              \"Parallel Aware\": false,\n              \"Async Capable\": false,\n              \"Index Name\": \"orders_customer_id_idx\",\n              \"Startup Cost\": 0.00,\n              \"Total Cost\": 5.04,\n              \"Plan Rows\": 100,\n              \"Plan Width\": 0,\n              \"Actual Startup Time\": 0.010,\n              \"Actual Total Time\": 0.010,\n              \"Actual Rows\": 100,\n              \"Actual Loops\": 1,\n              \"Index Cond\": \"(customer_id = 42)\",\n              \"Shared Hit Blocks\": 2,\n              \"Shared Read Blocks\": 0,\n              \"Shared Dirtied Blocks\": 0,\n              \"Shared Written Blocks\": 0,\n              \"Local Hit Blocks\": 0,\n              \"Local Read Blocks\": 0,\n              \"Local Dirtied Blocks\": 0,\n              \"Local Written Blocks\": 0,\n              \"Temp Read Blocks\": 0,\n              \"Temp Written Blocks\": 0\n            }\n          ]\n        }\n      ]\n    },\n    \"Planning\": {\n      \"Shared Hit Blocks\": 67,\n      \"Shared Read Blocks\": 0,\n      \"Shared Dirtied Blocks\": 0,\n      \"Shared Written Blocks\": 0,\n      \"Local Hit Blocks\": 0,\n      \"Local Read Blocks\": 0,\n      \"Local Dirtied Blocks\": 0,\n      \"Local Written Blocks\": 0,\n      \"Temp Read Blocks\": 0,\n      \"Temp Written Blocks\": 0\n    },\n    \"Planning Time\": 0.180,\n    \"Triggers\": [\n    ],\n    \"Execution Time\": 0.484\n  }\n]\n",
+  "stderr": "",
+  "metadata": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python_version": "3.12.10",
+    "execution_mode": "local",
+    "timeout_seconds": 30.0
+  }
+}
