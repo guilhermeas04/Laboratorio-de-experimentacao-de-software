@@ -1,0 +1,15 @@
+{
+  "schema_version": "lab05-pilot-v1",
+  "status": "success",
+  "software": "PostgreSQL",
+  "software_version": "fixture-15",
+  "repetition": 1,
+  "command": ["python", "-c", "print('ok')"],
+  "returncode": 0,
+  "duration_ms": 10.0,
+  "stdout": "ok\n",
+  "stderr": "",
+  "metadata": {
+    "execution_mode": "local"
+  }
+}
