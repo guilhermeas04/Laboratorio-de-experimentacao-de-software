@@ -1,0 +1,27 @@
+{
+  "study_scope": "PostgreSQL executado em ambiente local controlado",
+  "external_requests": {
+    "allowed": false,
+    "max_per_second": 0,
+    "load_testing_third_party_systems": false,
+    "respect_terms_of_use_and_robots_txt": true
+  },
+  "participants": {
+    "involved": false,
+    "consent_required": false,
+    "real_accounts_or_data_allowed": false
+  },
+  "data_protection": {
+    "collect_personal_data": false,
+    "collect_credentials": false,
+    "store_secrets_in_repository": false,
+    "anonymize_identifiers": true
+  },
+  "operational_safeguards": [
+    "Executar somente instâncias locais e descartáveis do PostgreSQL.",
+    "Não executar testes de carga ou estresse em serviços de terceiros.",
+    "Usar dados sintéticos ou públicos sem informações pessoais.",
+    "Registrar versão, configuração, hardware e data de cada execução.",
+    "Interromper a coleta quando houver comportamento inesperado ou risco ao ambiente."
+  ]
+}
