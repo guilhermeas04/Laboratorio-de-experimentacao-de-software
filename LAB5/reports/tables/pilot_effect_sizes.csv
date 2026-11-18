@@ -1,0 +1,5 @@
+metric,unit,baseline_version,treatment_version,n_baseline,n_treatment,mean_baseline,mean_treatment,cohens_d,effect_size_name,direction_hint,notes
+query_latency_ms,ms,15,17,4,5,18.049999999999997,13.88,3.752090228416038,cohens_d,favoravel_17,casos ausentes excluídos; zero nunca substituiu missing
+throughput_queries_per_second,queries/s,15,17,5,4,55.86,70.875,-5.187026220983949,cohens_d,favoravel_17,casos ausentes excluídos; zero nunca substituiu missing
+cpu_percent,%,15,17,5,5,30.639999999999997,26.76,2.858044970365505,cohens_d,favoravel_17,casos ausentes excluídos; zero nunca substituiu missing
+memory_mb,MB,15,17,5,5,127.5,119.47999999999999,5.244519217807951,cohens_d,favoravel_17,casos ausentes excluídos; zero nunca substituiu missing

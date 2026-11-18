@@ -42,3 +42,15 @@ O software escolhido deve ser real, estar em operação e ter alto impacto,
 sempre com evidências e fontes. A coleta deve respeitar os termos de uso,
 `robots.txt`, o limite de uma requisição por segundo para medições externas e
 as regras de ética descritas no enunciado.
+
+
+## Análise descritiva do piloto (#144)
+
+```powershell
+python -m pip install -r .\LAB5\requirements.txt
+$env:PYTHONPATH = "LAB5/src"
+python -m lab05_real_software.analysis --metrics .\LAB5\data\interim\pilot_metrics.csv
+```
+
+As tabelas saem em `reports/tables/`. Ausentes permanecem vazios e entram em
+`n_missing`; nunca viram zero silenciosamente.

@@ -1,4 +1,6 @@
 # Código do experimento
 
-Pacote reservado para coleta, validação, análise estatística, visualizações e
-estimativa do impacto do software estudado.
+Pacote do LAB05 para coleta, validação, análise e impacto.
+
+- `config_loader.py` — configuração do estudo
+- `analysis.py` — análise descritiva e tamanho de efeito do piloto (#144)

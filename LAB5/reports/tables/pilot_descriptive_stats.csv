@@ -1,0 +1,9 @@
+software_version,metric,unit,n,n_observed,n_missing,mean,median,std,min,max,iqr,scale,notes
+15,query_latency_ms,ms,5,4,1,18.049999999999997,17.75,1.3428824718989127,16.9,19.8,1.6999999999999993,ratio,média/mediana/desvio em escala razão; missing explícito
+15,throughput_queries_per_second,queries/s,5,5,0,55.86,55.0,3.033644672666856,52.1,59.4,4.200000000000003,ratio,média/mediana/desvio em escala razão; missing explícito
+15,cpu_percent,%,5,5,0,30.639999999999997,30.5,1.6102794788483148,28.7,33.0,1.3999999999999986,ratio,média/mediana/desvio em escala razão; missing explícito
+15,memory_mb,MB,5,5,0,127.5,127.0,1.7088007490635024,125.8,130.2,1.5,ratio,média/mediana/desvio em escala razão; missing explícito
+17,query_latency_ms,ms,5,5,0,13.88,13.9,0.8167006795638164,12.8,15.0,0.6999999999999993,ratio,média/mediana/desvio em escala razão; missing explícito
+17,throughput_queries_per_second,queries/s,5,4,1,70.875,70.5,2.748787611535918,68.0,74.5,2.6750000000000114,ratio,média/mediana/desvio em escala razão; missing explícito
+17,cpu_percent,%,5,5,0,26.76,26.8,1.0454664030948104,25.4,28.0,1.3999999999999986,ratio,média/mediana/desvio em escala razão; missing explícito
+17,memory_mb,MB,5,5,0,119.47999999999999,119.5,1.325518766370362,117.6,121.0,1.5,ratio,média/mediana/desvio em escala razão; missing explícito
