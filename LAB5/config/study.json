@@ -1,0 +1,64 @@
+{
+  "software": {
+    "name": "PostgreSQL",
+    "versions": ["15", "17"],
+    "execution_mode": "local_production_like",
+    "description": "Sistema gerenciador de banco de dados objeto-relacional usado em ambientes de produção."
+  },
+  "study": {
+    "title": "Desempenho do PostgreSQL 15 versus PostgreSQL 17",
+    "objective": "Comparar o desempenho de consultas representativas entre PostgreSQL 15 e PostgreSQL 17 em um ambiente local controlado.",
+    "research_question": "A versão PostgreSQL 17 apresenta desempenho superior à versão PostgreSQL 15 em consultas representativas?",
+    "goal": {
+      "analyze": "o tempo de execução e o consumo de recursos de consultas representativas",
+      "for_purpose": "comparar o desempenho entre versões",
+      "with_respect_to": "tempo de resposta, throughput e uso de CPU/memória",
+      "from_viewpoint_of": "equipes que mantêm bancos PostgreSQL em produção",
+      "in_context_of": "execuções repetidas em ambiente local controlado"
+    },
+    "metrics": [
+      {
+        "name": "query_latency_ms",
+        "description": "Tempo de execução da consulta, em milissegundos",
+        "scale": "ratio",
+        "type": "direct"
+      },
+      {
+        "name": "throughput_queries_per_second",
+        "description": "Quantidade de execuções concluídas por segundo",
+        "scale": "ratio",
+        "type": "derived"
+      },
+      {
+        "name": "cpu_percent",
+        "description": "Percentual de CPU utilizado durante a execução",
+        "scale": "ratio",
+        "type": "direct"
+      },
+      {
+        "name": "memory_mb",
+        "description": "Memória utilizada durante a execução, em megabytes",
+        "scale": "ratio",
+        "type": "direct"
+      }
+    ]
+  },
+  "evidence": [
+    {
+      "criterion": "real",
+      "claim": "PostgreSQL é um sistema gerenciador de banco de dados utilizado por organizações e disponibilizado oficialmente.",
+      "sources": ["https://www.postgresql.org/about/"]
+    },
+    {
+      "criterion": "in_operation",
+      "claim": "As versões 15 e 17 fazem parte das versões suportadas pela política oficial de versionamento do PostgreSQL.",
+      "sources": ["https://www.postgresql.org/support/versioning/"]
+    },
+    {
+      "criterion": "high_impact",
+      "claim": "PostgreSQL aparece entre os sistemas de banco de dados mais utilizados por desenvolvedores e organizações.",
+      "sources": ["https://survey.stackoverflow.co/2025/technology/"]
+    }
+  ],
+  "sources_accessed_on": "2026-11-18"
+}
