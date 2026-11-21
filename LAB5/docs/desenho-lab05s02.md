@@ -60,5 +60,30 @@ python -m pytest -q LAB5/tests
 ```
 
 O comando mede um bloco de verificação e registra quatro rodadas em uma
-pasta com identificador único. A execução da campanha completa e seu
-manifesto fazem parte da issue #151.
+pasta com identificador único.
+
+## Campanha completa
+
+Com as duas imagens locais e a mesma configuração da instrumentação, use
+um identificador novo para iniciar as 96 rodadas (24 blocos × 2 versões ×
+2 cenários).
+
+```powershell
+$env:PYTHONPATH = (Resolve-Path LAB5/src).Path
+python -m lab05_real_software.postgres_campaign --campaign-id lab05s02-reproducao-01
+```
+
+Se a execução parar, use o mesmo comando com `--resume`. A retomada
+conserva os JSONs já gravados, pula blocos aceitos e repete o bloco
+incompleto em uma nova tentativa. O orquestrador interrompe a campanha
+se detectar alteração na configuração, no ambiente Docker ou nas imagens.
+
+O [diretório bruto da Sprint 2](../data/raw/s02/) contém uma pasta por
+campanha com os JSONs originais em `rounds/` e `manifest.json`. O manifesto
+registra o plano, o ambiente, as imagens, os horários, as tentativas, os
+desvios e os totais. `recorded = successful + failed` conta todas as
+tentativas com registro. `planned = accepted_rounds + pending_rounds` conta
+os espaços do plano. Para a análise, usar somente as tentativas com
+`status: accepted`, que contêm as duas versões em ambos os cenários.
+Use `--verify` com o identificador de uma campanha para reconciliar o
+manifesto com os arquivos existentes, sem iniciar contêineres.
