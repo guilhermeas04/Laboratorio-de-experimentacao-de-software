@@ -1,0 +1,1264 @@
+{
+  "schema_version": "lab05-s02-campaign-v1",
+  "campaign_id": "lab05s02-20261121-01",
+  "started_at": "2026-11-21T21:04:00.465641+00:00",
+  "configuration": {
+    "versions": [
+      "15.20",
+      "17.12"
+    ],
+    "seed": 150,
+    "dataset_rows": 100000,
+    "blocks": 24,
+    "cpus": 1,
+    "memory_mb": 512,
+    "shared_buffers_mb": 128,
+    "clients": 4,
+    "jobs": 1,
+    "warmup_seconds": 5,
+    "server_latency_repetitions": 5,
+    "measurement_seconds": 15,
+    "sample_interval_seconds": 1,
+    "primary": {
+      "scenario": "customer_total",
+      "metric": "query_latency_ms",
+      "minimum_relative_reduction": 0.1,
+      "alpha": 0.05,
+      "alternative": "two-sided"
+    },
+    "queries": {
+      "customer_total": "SELECT sum(amount) FROM orders WHERE customer_id = 42;",
+      "range_summary": "SELECT customer_id, count(*), sum(amount) FROM orders WHERE id BETWEEN 10001 AND 20000 GROUP BY customer_id;"
+    }
+  },
+  "environment": {
+    "ServerVersion": "28.0.1",
+    "OSType": "linux",
+    "Architecture": "x86_64",
+    "CgroupVersion": "1",
+    "NCPU": "12",
+    "MemTotal": "8295464960",
+    "daemon_fingerprint": "c00a2471e59bb831585bdbf33971b1bbff18cdd8f275c4861b0473a8b51dd745",
+    "collector_platform": "Windows",
+    "images": {
+      "15.20": "sha256:2663a9f0fde52de94f5dad3603a1942359f49472f1017c1a6d64f66bfedacb40",
+      "17.12": "sha256:0d938e975177bef9f1f61f3f9dbcf2e0aa0a139568f66d3415ed8892eb97f6ac"
+    }
+  },
+  "planned_rounds": [
+    {
+      "block": 1,
+      "position": 1,
+      "software_version": "15.20",
+      "scenario": "customer_total"
+    },
+    {
+      "block": 1,
+      "position": 1,
+      "software_version": "15.20",
+      "scenario": "range_summary"
+    },
+    {
+      "block": 1,
+      "position": 2,
+      "software_version": "17.12",
+      "scenario": "customer_total"
+    },
+    {
+      "block": 1,
+      "position": 2,
+      "software_version": "17.12",
+      "scenario": "range_summary"
+    },
+    {
+      "block": 2,
+      "position": 1,
+      "software_version": "15.20",
+      "scenario": "customer_total"
+    },
+    {
+      "block": 2,
+      "position": 1,
+      "software_version": "15.20",
+      "scenario": "range_summary"
+    },
+    {
+      "block": 2,
+      "position": 2,
+      "software_version": "17.12",
+      "scenario": "customer_total"
+    },
+    {
+      "block": 2,
+      "position": 2,
+      "software_version": "17.12",
+      "scenario": "range_summary"
+    },
+    {
+      "block": 3,
+      "position": 1,
+      "software_version": "17.12",
+      "scenario": "customer_total"
+    },
+    {
+      "block": 3,
+      "position": 1,
+      "software_version": "17.12",
+      "scenario": "range_summary"
+    },
+    {
+      "block": 3,
+      "position": 2,
+      "software_version": "15.20",
+      "scenario": "customer_total"
+    },
+    {
+      "block": 3,
+      "position": 2,
+      "software_version": "15.20",
+      "scenario": "range_summary"
+    },
+    {
+      "block": 4,
+      "position": 1,
+      "software_version": "17.12",
+      "scenario": "customer_total"
+    },
+    {
+      "block": 4,
+      "position": 1,
+      "software_version": "17.12",
+      "scenario": "range_summary"
+    },
+    {
+      "block": 4,
+      "position": 2,
+      "software_version": "15.20",
+      "scenario": "customer_total"
+    },
+    {
+      "block": 4,
+      "position": 2,
+      "software_version": "15.20",
+      "scenario": "range_summary"
+    },
+    {
+      "block": 5,
+      "position": 1,
+      "software_version": "17.12",
+      "scenario": "customer_total"
+    },
+    {
+      "block": 5,
+      "position": 1,
+      "software_version": "17.12",
+      "scenario": "range_summary"
+    },
+    {
+      "block": 5,
+      "position": 2,
+      "software_version": "15.20",
+      "scenario": "customer_total"
+    },
+    {
+      "block": 5,
+      "position": 2,
+      "software_version": "15.20",
+      "scenario": "range_summary"
+    },
+    {
+      "block": 6,
+      "position": 1,
+      "software_version": "15.20",
+      "scenario": "customer_total"
+    },
+    {
+      "block": 6,
+      "position": 1,
+      "software_version": "15.20",
+      "scenario": "range_summary"
+    },
+    {
+      "block": 6,
+      "position": 2,
+      "software_version": "17.12",
+      "scenario": "customer_total"
+    },
+    {
+      "block": 6,
+      "position": 2,
+      "software_version": "17.12",
+      "scenario": "range_summary"
+    },
+    {
+      "block": 7,
+      "position": 1,
+      "software_version": "15.20",
+      "scenario": "customer_total"
+    },
+    {
+      "block": 7,
+      "position": 1,
+      "software_version": "15.20",
+      "scenario": "range_summary"
+    },
+    {
+      "block": 7,
+      "position": 2,
+      "software_version": "17.12",
+      "scenario": "customer_total"
+    },
+    {
+      "block": 7,
+      "position": 2,
+      "software_version": "17.12",
+      "scenario": "range_summary"
+    },
+    {
+      "block": 8,
+      "position": 1,
+      "software_version": "17.12",
+      "scenario": "customer_total"
+    },
+    {
+      "block": 8,
+      "position": 1,
+      "software_version": "17.12",
+      "scenario": "range_summary"
+    },
+    {
+      "block": 8,
+      "position": 2,
+      "software_version": "15.20",
+      "scenario": "customer_total"
+    },
+    {
+      "block": 8,
+      "position": 2,
+      "software_version": "15.20",
+      "scenario": "range_summary"
+    },
+    {
+      "block": 9,
+      "position": 1,
+      "software_version": "15.20",
+      "scenario": "customer_total"
+    },
+    {
+      "block": 9,
+      "position": 1,
+      "software_version": "15.20",
+      "scenario": "range_summary"
+    },
+    {
+      "block": 9,
+      "position": 2,
+      "software_version": "17.12",
+      "scenario": "customer_total"
+    },
+    {
+      "block": 9,
+      "position": 2,
+      "software_version": "17.12",
+      "scenario": "range_summary"
+    },
+    {
+      "block": 10,
+      "position": 1,
+      "software_version": "15.20",
+      "scenario": "customer_total"
+    },
+    {
+      "block": 10,
+      "position": 1,
+      "software_version": "15.20",
+      "scenario": "range_summary"
+    },
+    {
+      "block": 10,
+      "position": 2,
+      "software_version": "17.12",
+      "scenario": "customer_total"
+    },
+    {
+      "block": 10,
+      "position": 2,
+      "software_version": "17.12",
+      "scenario": "range_summary"
+    },
+    {
+      "block": 11,
+      "position": 1,
+      "software_version": "15.20",
+      "scenario": "customer_total"
+    },
+    {
+      "block": 11,
+      "position": 1,
+      "software_version": "15.20",
+      "scenario": "range_summary"
+    },
+    {
+      "block": 11,
+      "position": 2,
+      "software_version": "17.12",
+      "scenario": "customer_total"
+    },
+    {
+      "block": 11,
+      "position": 2,
+      "software_version": "17.12",
+      "scenario": "range_summary"
+    },
+    {
+      "block": 12,
+      "position": 1,
+      "software_version": "17.12",
+      "scenario": "customer_total"
+    },
+    {
+      "block": 12,
+      "position": 1,
+      "software_version": "17.12",
+      "scenario": "range_summary"
+    },
+    {
+      "block": 12,
+      "position": 2,
+      "software_version": "15.20",
+      "scenario": "customer_total"
+    },
+    {
+      "block": 12,
+      "position": 2,
+      "software_version": "15.20",
+      "scenario": "range_summary"
+    },
+    {
+      "block": 13,
+      "position": 1,
+      "software_version": "17.12",
+      "scenario": "customer_total"
+    },
+    {
+      "block": 13,
+      "position": 1,
+      "software_version": "17.12",
+      "scenario": "range_summary"
+    },
+    {
+      "block": 13,
+      "position": 2,
+      "software_version": "15.20",
+      "scenario": "customer_total"
+    },
+    {
+      "block": 13,
+      "position": 2,
+      "software_version": "15.20",
+      "scenario": "range_summary"
+    },
+    {
+      "block": 14,
+      "position": 1,
+      "software_version": "15.20",
+      "scenario": "customer_total"
+    },
+    {
+      "block": 14,
+      "position": 1,
+      "software_version": "15.20",
+      "scenario": "range_summary"
+    },
+    {
+      "block": 14,
+      "position": 2,
+      "software_version": "17.12",
+      "scenario": "customer_total"
+    },
+    {
+      "block": 14,
+      "position": 2,
+      "software_version": "17.12",
+      "scenario": "range_summary"
+    },
+    {
+      "block": 15,
+      "position": 1,
+      "software_version": "17.12",
+      "scenario": "customer_total"
+    },
+    {
+      "block": 15,
+      "position": 1,
+      "software_version": "17.12",
+      "scenario": "range_summary"
+    },
+    {
+      "block": 15,
+      "position": 2,
+      "software_version": "15.20",
+      "scenario": "customer_total"
+    },
+    {
+      "block": 15,
+      "position": 2,
+      "software_version": "15.20",
+      "scenario": "range_summary"
+    },
+    {
+      "block": 16,
+      "position": 1,
+      "software_version": "17.12",
+      "scenario": "customer_total"
+    },
+    {
+      "block": 16,
+      "position": 1,
+      "software_version": "17.12",
+      "scenario": "range_summary"
+    },
+    {
+      "block": 16,
+      "position": 2,
+      "software_version": "15.20",
+      "scenario": "customer_total"
+    },
+    {
+      "block": 16,
+      "position": 2,
+      "software_version": "15.20",
+      "scenario": "range_summary"
+    },
+    {
+      "block": 17,
+      "position": 1,
+      "software_version": "17.12",
+      "scenario": "customer_total"
+    },
+    {
+      "block": 17,
+      "position": 1,
+      "software_version": "17.12",
+      "scenario": "range_summary"
+    },
+    {
+      "block": 17,
+      "position": 2,
+      "software_version": "15.20",
+      "scenario": "customer_total"
+    },
+    {
+      "block": 17,
+      "position": 2,
+      "software_version": "15.20",
+      "scenario": "range_summary"
+    },
+    {
+      "block": 18,
+      "position": 1,
+      "software_version": "15.20",
+      "scenario": "customer_total"
+    },
+    {
+      "block": 18,
+      "position": 1,
+      "software_version": "15.20",
+      "scenario": "range_summary"
+    },
+    {
+      "block": 18,
+      "position": 2,
+      "software_version": "17.12",
+      "scenario": "customer_total"
+    },
+    {
+      "block": 18,
+      "position": 2,
+      "software_version": "17.12",
+      "scenario": "range_summary"
+    },
+    {
+      "block": 19,
+      "position": 1,
+      "software_version": "17.12",
+      "scenario": "customer_total"
+    },
+    {
+      "block": 19,
+      "position": 1,
+      "software_version": "17.12",
+      "scenario": "range_summary"
+    },
+    {
+      "block": 19,
+      "position": 2,
+      "software_version": "15.20",
+      "scenario": "customer_total"
+    },
+    {
+      "block": 19,
+      "position": 2,
+      "software_version": "15.20",
+      "scenario": "range_summary"
+    },
+    {
+      "block": 20,
+      "position": 1,
+      "software_version": "17.12",
+      "scenario": "customer_total"
+    },
+    {
+      "block": 20,
+      "position": 1,
+      "software_version": "17.12",
+      "scenario": "range_summary"
+    },
+    {
+      "block": 20,
+      "position": 2,
+      "software_version": "15.20",
+      "scenario": "customer_total"
+    },
+    {
+      "block": 20,
+      "position": 2,
+      "software_version": "15.20",
+      "scenario": "range_summary"
+    },
+    {
+      "block": 21,
+      "position": 1,
+      "software_version": "17.12",
+      "scenario": "customer_total"
+    },
+    {
+      "block": 21,
+      "position": 1,
+      "software_version": "17.12",
+      "scenario": "range_summary"
+    },
+    {
+      "block": 21,
+      "position": 2,
+      "software_version": "15.20",
+      "scenario": "customer_total"
+    },
+    {
+      "block": 21,
+      "position": 2,
+      "software_version": "15.20",
+      "scenario": "range_summary"
+    },
+    {
+      "block": 22,
+      "position": 1,
+      "software_version": "15.20",
+      "scenario": "customer_total"
+    },
+    {
+      "block": 22,
+      "position": 1,
+      "software_version": "15.20",
+      "scenario": "range_summary"
+    },
+    {
+      "block": 22,
+      "position": 2,
+      "software_version": "17.12",
+      "scenario": "customer_total"
+    },
+    {
+      "block": 22,
+      "position": 2,
+      "software_version": "17.12",
+      "scenario": "range_summary"
+    },
+    {
+      "block": 23,
+      "position": 1,
+      "software_version": "15.20",
+      "scenario": "customer_total"
+    },
+    {
+      "block": 23,
+      "position": 1,
+      "software_version": "15.20",
+      "scenario": "range_summary"
+    },
+    {
+      "block": 23,
+      "position": 2,
+      "software_version": "17.12",
+      "scenario": "customer_total"
+    },
+    {
+      "block": 23,
+      "position": 2,
+      "software_version": "17.12",
+      "scenario": "range_summary"
+    },
+    {
+      "block": 24,
+      "position": 1,
+      "software_version": "15.20",
+      "scenario": "customer_total"
+    },
+    {
+      "block": 24,
+      "position": 1,
+      "software_version": "15.20",
+      "scenario": "range_summary"
+    },
+    {
+      "block": 24,
+      "position": 2,
+      "software_version": "17.12",
+      "scenario": "customer_total"
+    },
+    {
+      "block": 24,
+      "position": 2,
+      "software_version": "17.12",
+      "scenario": "range_summary"
+    }
+  ],
+  "attempts": [
+    {
+      "execution_id": "lab05s02-20261121-01-b001-a01",
+      "block": 1,
+      "attempt": 1,
+      "started_at": "2026-11-21T21:04:01.411531+00:00",
+      "status": "accepted",
+      "records": [
+        {
+          "file": "rounds/lab05s02-20261121-01-b001-a01-b001-p1-customer_total.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b001-a01-b001-p1-range_summary.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b001-a01-b001-p2-customer_total.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b001-a01-b001-p2-range_summary.json",
+          "status": "success"
+        }
+      ],
+      "ended_at": "2026-11-21T21:05:39.976365+00:00"
+    },
+    {
+      "execution_id": "lab05s02-20261121-01-b002-a01",
+      "block": 2,
+      "attempt": 1,
+      "started_at": "2026-11-21T21:05:40.452661+00:00",
+      "status": "accepted",
+      "records": [
+        {
+          "file": "rounds/lab05s02-20261121-01-b002-a01-b002-p1-customer_total.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b002-a01-b002-p1-range_summary.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b002-a01-b002-p2-customer_total.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b002-a01-b002-p2-range_summary.json",
+          "status": "success"
+        }
+      ],
+      "ended_at": "2026-11-21T21:07:17.741702+00:00"
+    },
+    {
+      "execution_id": "lab05s02-20261121-01-b003-a01",
+      "block": 3,
+      "attempt": 1,
+      "started_at": "2026-11-21T21:07:18.240254+00:00",
+      "status": "accepted",
+      "records": [
+        {
+          "file": "rounds/lab05s02-20261121-01-b003-a01-b003-p1-customer_total.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b003-a01-b003-p1-range_summary.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b003-a01-b003-p2-customer_total.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b003-a01-b003-p2-range_summary.json",
+          "status": "success"
+        }
+      ],
+      "ended_at": "2026-11-21T21:08:56.540917+00:00"
+    },
+    {
+      "execution_id": "lab05s02-20261121-01-b004-a01",
+      "block": 4,
+      "attempt": 1,
+      "started_at": "2026-11-21T21:08:57.108494+00:00",
+      "status": "accepted",
+      "records": [
+        {
+          "file": "rounds/lab05s02-20261121-01-b004-a01-b004-p1-customer_total.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b004-a01-b004-p1-range_summary.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b004-a01-b004-p2-customer_total.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b004-a01-b004-p2-range_summary.json",
+          "status": "success"
+        }
+      ],
+      "ended_at": "2026-11-21T21:10:36.077235+00:00"
+    },
+    {
+      "execution_id": "lab05s02-20261121-01-b005-a01",
+      "block": 5,
+      "attempt": 1,
+      "started_at": "2026-11-21T21:10:36.650328+00:00",
+      "status": "accepted",
+      "records": [
+        {
+          "file": "rounds/lab05s02-20261121-01-b005-a01-b005-p1-customer_total.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b005-a01-b005-p1-range_summary.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b005-a01-b005-p2-customer_total.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b005-a01-b005-p2-range_summary.json",
+          "status": "success"
+        }
+      ],
+      "ended_at": "2026-11-21T21:12:16.764442+00:00"
+    },
+    {
+      "execution_id": "lab05s02-20261121-01-b006-a01",
+      "block": 6,
+      "attempt": 1,
+      "started_at": "2026-11-21T21:12:17.262937+00:00",
+      "status": "accepted",
+      "records": [
+        {
+          "file": "rounds/lab05s02-20261121-01-b006-a01-b006-p1-customer_total.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b006-a01-b006-p1-range_summary.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b006-a01-b006-p2-customer_total.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b006-a01-b006-p2-range_summary.json",
+          "status": "success"
+        }
+      ],
+      "ended_at": "2026-11-21T21:13:56.533942+00:00"
+    },
+    {
+      "execution_id": "lab05s02-20261121-01-b007-a01",
+      "block": 7,
+      "attempt": 1,
+      "started_at": "2026-11-21T21:13:57.046437+00:00",
+      "status": "accepted",
+      "records": [
+        {
+          "file": "rounds/lab05s02-20261121-01-b007-a01-b007-p1-customer_total.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b007-a01-b007-p1-range_summary.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b007-a01-b007-p2-customer_total.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b007-a01-b007-p2-range_summary.json",
+          "status": "success"
+        }
+      ],
+      "ended_at": "2026-11-21T21:15:35.850453+00:00"
+    },
+    {
+      "execution_id": "lab05s02-20261121-01-b008-a01",
+      "block": 8,
+      "attempt": 1,
+      "started_at": "2026-11-21T21:15:36.376930+00:00",
+      "status": "accepted",
+      "records": [
+        {
+          "file": "rounds/lab05s02-20261121-01-b008-a01-b008-p1-customer_total.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b008-a01-b008-p1-range_summary.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b008-a01-b008-p2-customer_total.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b008-a01-b008-p2-range_summary.json",
+          "status": "success"
+        }
+      ],
+      "ended_at": "2026-11-21T21:17:15.741861+00:00"
+    },
+    {
+      "execution_id": "lab05s02-20261121-01-b009-a01",
+      "block": 9,
+      "attempt": 1,
+      "started_at": "2026-11-21T21:17:16.264953+00:00",
+      "status": "accepted",
+      "records": [
+        {
+          "file": "rounds/lab05s02-20261121-01-b009-a01-b009-p1-customer_total.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b009-a01-b009-p1-range_summary.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b009-a01-b009-p2-customer_total.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b009-a01-b009-p2-range_summary.json",
+          "status": "success"
+        }
+      ],
+      "ended_at": "2026-11-21T21:18:55.070399+00:00"
+    },
+    {
+      "execution_id": "lab05s02-20261121-01-b010-a01",
+      "block": 10,
+      "attempt": 1,
+      "started_at": "2026-11-21T21:18:55.592933+00:00",
+      "status": "accepted",
+      "records": [
+        {
+          "file": "rounds/lab05s02-20261121-01-b010-a01-b010-p1-customer_total.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b010-a01-b010-p1-range_summary.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b010-a01-b010-p2-customer_total.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b010-a01-b010-p2-range_summary.json",
+          "status": "success"
+        }
+      ],
+      "ended_at": "2026-11-21T21:20:32.900021+00:00"
+    },
+    {
+      "execution_id": "lab05s02-20261121-01-b011-a01",
+      "block": 11,
+      "attempt": 1,
+      "started_at": "2026-11-21T21:20:33.422855+00:00",
+      "status": "accepted",
+      "records": [
+        {
+          "file": "rounds/lab05s02-20261121-01-b011-a01-b011-p1-customer_total.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b011-a01-b011-p1-range_summary.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b011-a01-b011-p2-customer_total.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b011-a01-b011-p2-range_summary.json",
+          "status": "success"
+        }
+      ],
+      "ended_at": "2026-11-21T21:22:09.904338+00:00"
+    },
+    {
+      "execution_id": "lab05s02-20261121-01-b012-a01",
+      "block": 12,
+      "attempt": 1,
+      "started_at": "2026-11-21T21:22:10.412180+00:00",
+      "status": "accepted",
+      "records": [
+        {
+          "file": "rounds/lab05s02-20261121-01-b012-a01-b012-p1-customer_total.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b012-a01-b012-p1-range_summary.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b012-a01-b012-p2-customer_total.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b012-a01-b012-p2-range_summary.json",
+          "status": "success"
+        }
+      ],
+      "ended_at": "2026-11-21T21:23:51.671217+00:00"
+    },
+    {
+      "execution_id": "lab05s02-20261121-01-b013-a01",
+      "block": 13,
+      "attempt": 1,
+      "started_at": "2026-11-21T21:23:52.144795+00:00",
+      "status": "accepted",
+      "records": [
+        {
+          "file": "rounds/lab05s02-20261121-01-b013-a01-b013-p1-customer_total.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b013-a01-b013-p1-range_summary.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b013-a01-b013-p2-customer_total.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b013-a01-b013-p2-range_summary.json",
+          "status": "success"
+        }
+      ],
+      "ended_at": "2026-11-21T21:25:28.740560+00:00"
+    },
+    {
+      "execution_id": "lab05s02-20261121-01-b014-a01",
+      "block": 14,
+      "attempt": 1,
+      "started_at": "2026-11-21T21:25:29.302502+00:00",
+      "status": "accepted",
+      "records": [
+        {
+          "file": "rounds/lab05s02-20261121-01-b014-a01-b014-p1-customer_total.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b014-a01-b014-p1-range_summary.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b014-a01-b014-p2-customer_total.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b014-a01-b014-p2-range_summary.json",
+          "status": "success"
+        }
+      ],
+      "ended_at": "2026-11-21T21:27:06.292073+00:00"
+    },
+    {
+      "execution_id": "lab05s02-20261121-01-b015-a01",
+      "block": 15,
+      "attempt": 1,
+      "started_at": "2026-11-21T21:27:06.808735+00:00",
+      "status": "accepted",
+      "records": [
+        {
+          "file": "rounds/lab05s02-20261121-01-b015-a01-b015-p1-customer_total.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b015-a01-b015-p1-range_summary.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b015-a01-b015-p2-customer_total.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b015-a01-b015-p2-range_summary.json",
+          "status": "success"
+        }
+      ],
+      "ended_at": "2026-11-21T21:28:43.420500+00:00"
+    },
+    {
+      "execution_id": "lab05s02-20261121-01-b016-a01",
+      "block": 16,
+      "attempt": 1,
+      "started_at": "2026-11-21T21:28:43.975754+00:00",
+      "status": "accepted",
+      "records": [
+        {
+          "file": "rounds/lab05s02-20261121-01-b016-a01-b016-p1-customer_total.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b016-a01-b016-p1-range_summary.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b016-a01-b016-p2-customer_total.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b016-a01-b016-p2-range_summary.json",
+          "status": "success"
+        }
+      ],
+      "ended_at": "2026-11-21T21:30:20.689669+00:00"
+    },
+    {
+      "execution_id": "lab05s02-20261121-01-b017-a01",
+      "block": 17,
+      "attempt": 1,
+      "started_at": "2026-11-21T21:30:21.273832+00:00",
+      "status": "accepted",
+      "records": [
+        {
+          "file": "rounds/lab05s02-20261121-01-b017-a01-b017-p1-customer_total.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b017-a01-b017-p1-range_summary.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b017-a01-b017-p2-customer_total.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b017-a01-b017-p2-range_summary.json",
+          "status": "success"
+        }
+      ],
+      "ended_at": "2026-11-21T21:31:58.723571+00:00"
+    },
+    {
+      "execution_id": "lab05s02-20261121-01-b018-a01",
+      "block": 18,
+      "attempt": 1,
+      "started_at": "2026-11-21T21:31:59.318775+00:00",
+      "status": "accepted",
+      "records": [
+        {
+          "file": "rounds/lab05s02-20261121-01-b018-a01-b018-p1-customer_total.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b018-a01-b018-p1-range_summary.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b018-a01-b018-p2-customer_total.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b018-a01-b018-p2-range_summary.json",
+          "status": "success"
+        }
+      ],
+      "ended_at": "2026-11-21T21:33:36.021188+00:00"
+    },
+    {
+      "execution_id": "lab05s02-20261121-01-b019-a01",
+      "block": 19,
+      "attempt": 1,
+      "started_at": "2026-11-21T21:33:36.587948+00:00",
+      "status": "accepted",
+      "records": [
+        {
+          "file": "rounds/lab05s02-20261121-01-b019-a01-b019-p1-customer_total.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b019-a01-b019-p1-range_summary.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b019-a01-b019-p2-customer_total.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b019-a01-b019-p2-range_summary.json",
+          "status": "success"
+        }
+      ],
+      "ended_at": "2026-11-21T21:35:13.430739+00:00"
+    },
+    {
+      "execution_id": "lab05s02-20261121-01-b020-a01",
+      "block": 20,
+      "attempt": 1,
+      "started_at": "2026-11-21T21:35:14.032464+00:00",
+      "status": "accepted",
+      "records": [
+        {
+          "file": "rounds/lab05s02-20261121-01-b020-a01-b020-p1-customer_total.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b020-a01-b020-p1-range_summary.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b020-a01-b020-p2-customer_total.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b020-a01-b020-p2-range_summary.json",
+          "status": "success"
+        }
+      ],
+      "ended_at": "2026-11-21T21:36:50.588481+00:00"
+    },
+    {
+      "execution_id": "lab05s02-20261121-01-b021-a01",
+      "block": 21,
+      "attempt": 1,
+      "started_at": "2026-11-21T21:36:51.095844+00:00",
+      "status": "accepted",
+      "records": [
+        {
+          "file": "rounds/lab05s02-20261121-01-b021-a01-b021-p1-customer_total.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b021-a01-b021-p1-range_summary.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b021-a01-b021-p2-customer_total.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b021-a01-b021-p2-range_summary.json",
+          "status": "success"
+        }
+      ],
+      "ended_at": "2026-11-21T21:38:28.362549+00:00"
+    },
+    {
+      "execution_id": "lab05s02-20261121-01-b022-a01",
+      "block": 22,
+      "attempt": 1,
+      "started_at": "2026-11-21T21:38:28.848267+00:00",
+      "status": "accepted",
+      "records": [
+        {
+          "file": "rounds/lab05s02-20261121-01-b022-a01-b022-p1-customer_total.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b022-a01-b022-p1-range_summary.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b022-a01-b022-p2-customer_total.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b022-a01-b022-p2-range_summary.json",
+          "status": "success"
+        }
+      ],
+      "ended_at": "2026-11-21T21:40:05.642883+00:00"
+    },
+    {
+      "execution_id": "lab05s02-20261121-01-b023-a01",
+      "block": 23,
+      "attempt": 1,
+      "started_at": "2026-11-21T21:40:06.220945+00:00",
+      "status": "accepted",
+      "records": [
+        {
+          "file": "rounds/lab05s02-20261121-01-b023-a01-b023-p1-customer_total.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b023-a01-b023-p1-range_summary.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b023-a01-b023-p2-customer_total.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b023-a01-b023-p2-range_summary.json",
+          "status": "success"
+        }
+      ],
+      "ended_at": "2026-11-21T21:41:43.245803+00:00"
+    },
+    {
+      "execution_id": "lab05s02-20261121-01-b024-a01",
+      "block": 24,
+      "attempt": 1,
+      "started_at": "2026-11-21T21:41:43.773507+00:00",
+      "status": "accepted",
+      "records": [
+        {
+          "file": "rounds/lab05s02-20261121-01-b024-a01-b024-p1-customer_total.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b024-a01-b024-p1-range_summary.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b024-a01-b024-p2-customer_total.json",
+          "status": "success"
+        },
+        {
+          "file": "rounds/lab05s02-20261121-01-b024-a01-b024-p2-range_summary.json",
+          "status": "success"
+        }
+      ],
+      "ended_at": "2026-11-21T21:43:20.026407+00:00"
+    }
+  ],
+  "deviations": [],
+  "status": "complete",
+  "ended_at": "2026-11-21T21:43:20.120613+00:00",
+  "counts": {
+    "planned": 96,
+    "recorded": 96,
+    "successful": 96,
+    "failed": 0,
+    "accepted_blocks": 24,
+    "accepted_rounds": 96,
+    "pending_rounds": 0
+  }
+}
