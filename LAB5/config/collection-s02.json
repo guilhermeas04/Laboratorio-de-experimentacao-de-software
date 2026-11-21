@@ -1,0 +1,26 @@
+{
+  "versions": ["15.20", "17.12"],
+  "seed": 150,
+  "dataset_rows": 100000,
+  "blocks": 24,
+  "cpus": 1,
+  "memory_mb": 512,
+  "shared_buffers_mb": 128,
+  "clients": 4,
+  "jobs": 1,
+  "warmup_seconds": 5,
+  "server_latency_repetitions": 5,
+  "measurement_seconds": 15,
+  "sample_interval_seconds": 1,
+  "primary": {
+    "scenario": "customer_total",
+    "metric": "query_latency_ms",
+    "minimum_relative_reduction": 0.1,
+    "alpha": 0.05,
+    "alternative": "two-sided"
+  },
+  "queries": {
+    "customer_total": "SELECT sum(amount) FROM orders WHERE customer_id = 42;",
+    "range_summary": "SELECT customer_id, count(*), sum(amount) FROM orders WHERE id BETWEEN 10001 AND 20000 GROUP BY customer_id;"
+  }
+}

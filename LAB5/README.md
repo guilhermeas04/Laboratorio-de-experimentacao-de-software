@@ -84,3 +84,9 @@ padrão dessas diferenças (Cohen's d_z). Com menos de dois pares completos
 ou desvio zero, o tamanho de efeito fica vazio. A projeção anual soma a
 diferença de tempo de execução no servidor sob o volume hipotético de consultas.
 Os dois blocos do piloto servem para verificar a instrumentação e o fluxo de análise.
+
+## Coleta completa
+
+O [desenho da Sprint 2](docs/desenho-lab05s02.md) fixa a configuração,
+as métricas e o plano de análise. Ele inclui o comando de verificação da
+instrumentação com PostgreSQL 15.20 e 17.12.
