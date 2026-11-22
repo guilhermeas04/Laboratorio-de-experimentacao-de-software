@@ -128,7 +128,8 @@ def measure(container: str, query: str, config: dict, record: dict) -> None:
 
 
 def run_round(config: dict, destination: Path, *, block: int, position: int,
-              version: str, scenario: str, execution_id: str) -> dict:
+              version: str, scenario: str, execution_id: str,
+              campaign_id: str | None = None) -> dict:
     round_id = f"{execution_id}-b{block:03d}-p{position}-{scenario}"
     record = {
         "schema_version": "lab05-s02-round-v1",
@@ -143,6 +144,10 @@ def run_round(config: dict, destination: Path, *, block: int, position: int,
         "collected_at": datetime.now(timezone.utc).isoformat(),
         "status": "error",
     }
+    labels = []
+    if campaign_id is not None:
+        record["campaign_id"] = campaign_id
+        labels = ["--label", f"lab05s02.campaign={campaign_id}"]
     container = None
     try:
         image = f"postgres:{version}"
@@ -154,6 +159,7 @@ def run_round(config: dict, destination: Path, *, block: int, position: int,
         record["environment"].update(environment)
         container = docker(
             "run", "--detach", "--rm", "--pull=never", "--network=none",
+            *labels,
             f"--cpus={config['cpus']}", f"--memory={config['memory_mb']}m",
             "--shm-size=128m", "--tmpfs", "/var/lib/postgresql/data:rw,size=256m",
             "-e", "POSTGRES_HOST_AUTH_METHOD=trust", image,
