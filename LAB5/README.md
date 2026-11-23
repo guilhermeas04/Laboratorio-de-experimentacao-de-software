@@ -90,3 +90,15 @@ Os dois blocos do piloto servem para verificar a instrumentação e o fluxo de a
 O [desenho da Sprint 2](docs/desenho-lab05s02.md) fixa a configuração,
 as métricas e o plano de análise. Ele inclui o comando de verificação da
 instrumentação com PostgreSQL 15.20 e 17.12.
+
+## Validação da coleta completa
+
+A campanha completa é validada e transformada sem alterar os JSONs brutos:
+
+```powershell
+$env:PYTHONPATH = (Resolve-Path LAB5/src).Path
+python -m lab05_real_software.s02_dataset LAB5/data/raw/s02/lab05s02-20261121-01 --output-dir LAB5/data/processed
+python -m pytest -q LAB5/tests/test_s02_dataset.py LAB5/tests/test_validator.py LAB5/tests/test_postgres_campaign.py
+```
+
+O comando gera em `LAB5/data/processed/` um CSV versionado por campanha, um relatório JSON e um relatório Markdown com rastreabilidade até os arquivos brutos, ausências por métrica, falhas e exclusões. O contrato atualizado está em `LAB5/docs/data-dictionary-lab05s02.md`; ausência não é preenchida por imputação.

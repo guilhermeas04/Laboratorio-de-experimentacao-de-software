@@ -1,0 +1,23 @@
+{
+  "campaign_id": "lab05s02-20261121-01",
+  "raw_directory": "LAB5\\data\\raw\\s02\\lab05s02-20261121-01",
+  "dataset": "lab05s02-20261121-01_validated.csv",
+  "counts": {
+    "planned_rounds": 96,
+    "validated_rounds": 96,
+    "excluded_rounds": 0,
+    "accepted_blocks": 24
+  },
+  "missing_by_metric": {
+    "query_latency_ms": 0,
+    "throughput_queries_per_second": 0,
+    "cpu_percent": 0,
+    "memory_mb": 0,
+    "client_latency_ms": 0,
+    "resource_window_seconds": 0
+  },
+  "failures": [],
+  "incomplete_pairs": [],
+  "raw_preserved": true,
+  "imputation": "none"
+}
