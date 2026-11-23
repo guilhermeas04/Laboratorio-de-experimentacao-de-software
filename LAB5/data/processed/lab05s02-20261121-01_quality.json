@@ -1,6 +1,6 @@
 {
   "campaign_id": "lab05s02-20261121-01",
-  "raw_directory": "LAB5\\data\\raw\\s02\\lab05s02-20261121-01",
+  "raw_directory": "LAB5/data/raw/s02/lab05s02-20261121-01",
   "dataset": "lab05s02-20261121-01_validated.csv",
   "counts": {
     "planned_rounds": 96,

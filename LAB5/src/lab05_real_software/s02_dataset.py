@@ -7,7 +7,7 @@ import csv
 import json
 import math
 from datetime import datetime
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import Any
 
 
@@ -71,22 +71,44 @@ def validate_campaign(campaign_dir: str | Path) -> tuple[dict, list[dict], list[
     config = manifest["configuration"]
     ranges = metric_ranges(config)
     planned = manifest["planned_rounds"]
-    planned_keys = {
-        (item["block"], item["scenario"], item["software_version"])
+    planned_positions = {
+        (item["block"], item["scenario"], item["software_version"]): item["position"]
         for item in planned
     }
-    accepted_attempts = {attempt["block"] for attempt in manifest["attempts"] if attempt["status"] == "accepted"}
+    if len(planned_positions) != len(planned):
+        raise CampaignValidationError("duplicate planned block/scenario/version")
 
     rows: list[dict] = []
     failures: list[dict] = []
-    duplicate_keys: set[tuple] = set()
+    seen_keys: set[tuple] = set()
+    tracked: set[str] = set()
+    recorded_statuses: list[str] = []
+    accepted_blocks: set[int] = set()
+    accepted_rounds = 0
+    if (directory / "rounds").is_symlink():
+        raise CampaignValidationError("rounds/ must be a directory inside the campaign")
 
     for attempt in manifest["attempts"]:
-        if attempt["status"] != "accepted":
-            continue
+        accepted = attempt["status"] == "accepted"
+        if accepted:
+            if attempt["block"] in accepted_blocks:
+                raise CampaignValidationError("multiple accepted attempts for the same block")
+            accepted_blocks.add(attempt["block"])
+        elif not attempt["records"]:
+            failures.append({"source": attempt["execution_id"], "classification": "attempt",
+                             "reason": attempt.get("deviation") or f"attempt {attempt['status']} without raw records"})
         for entry in attempt["records"]:
             relative = entry["file"]
             path = directory / relative
+            if (PurePosixPath(relative).as_posix() != relative
+                    or Path(relative).parts != ("rounds", path.name)
+                    or path.suffix != ".json" or path.is_symlink()):
+                raise CampaignValidationError("manifest record must be a JSON file directly under rounds/")
+            if relative in tracked:
+                failures.append({"source": relative, "reason": "duplicate raw reference in manifest",
+                                 "classification": "manifest"})
+                continue
+            tracked.add(relative)
             if not path.is_file():
                 failures.append({"source": relative, "reason": "missing raw record", "classification": "missing"})
                 continue
@@ -96,7 +118,31 @@ def validate_campaign(campaign_dir: str | Path) -> tuple[dict, list[dict], list[
                 failures.append({"source": relative, "reason": f"invalid JSON: {exc.msg}", "classification": "invalid"})
                 continue
 
+            if not isinstance(record, dict):
+                failures.append({"source": relative, "reason": "raw record must be a JSON object", "classification": "invalid"})
+                continue
             reasons: list[str] = []
+            status = record.get("status")
+            configured_version = record.get("software_version")
+            images = manifest["environment"].get("images", {})
+            image_matches = (isinstance(configured_version, str) and configured_version in images
+                             and record.get("image_id") == images[configured_version])
+            # The collector records image drift as a manifest failure even if the query ran.
+            reconciled_status = "error" if status == "success" and not image_matches else status
+            recorded_statuses.append(reconciled_status if reconciled_status in ("success", "error") else "invalid")
+            if reconciled_status not in ("success", "error") or reconciled_status != entry.get("status"):
+                failures.append({"source": relative, "reason": "raw status differs from manifest or is invalid",
+                                 "classification": "manifest"})
+                reasons.append("invalid manifest status")
+            if not accepted:
+                failures.append({
+                    "source": relative, "classification": "attempt",
+                    "reason": record.get("error") or record.get("cleanup_error") or entry.get("reason")
+                    or attempt.get("deviation") or f"round from {attempt['status']} attempt",
+                })
+                continue
+            if reconciled_status == entry.get("status") == "success":
+                accepted_rounds += 1
             if record.get("schema_version") != "lab05-s02-round-v1":
                 reasons.append("unsupported round schema_version")
             if record.get("campaign_id") != manifest["campaign_id"]:
@@ -108,12 +154,15 @@ def validate_campaign(campaign_dir: str | Path) -> tuple[dict, list[dict], list[
             if record.get("status") != "success":
                 reasons.append(record.get("error") or "round status is not success")
 
-            key = (record.get("block"), record.get("scenario"), record.get("software_version"))
-            if key not in planned_keys:
+            block, scenario, version = (record.get(field) for field in ("block", "scenario", "software_version"))
+            key = (block, scenario, version)
+            valid_key = type(block) is int and isinstance(scenario, str) and isinstance(version, str)
+            if not valid_key or key not in planned_positions or block != attempt["block"]:
                 reasons.append("record does not belong to the planned campaign")
+            elif type(record.get("position")) is not int or record["position"] != planned_positions[key]:
+                reasons.append("position differs from the planned order")
 
-            if key in {(r["block"], r["scenario"], r["software_version"]) for r in rows}:
-                duplicate_keys.add(key)
+            if valid_key and key in seen_keys:
                 reasons.append("duplicate block/scenario/version record")
 
             try:
@@ -125,15 +174,14 @@ def validate_campaign(campaign_dir: str | Path) -> tuple[dict, list[dict], list[
                 reasons.append(str(exc))
 
             server_version = record.get("server_version")
-            configured_version = record.get("software_version")
             if not isinstance(server_version, str) or not isinstance(configured_version, str):
                 reasons.append("server_version or software_version has invalid type")
-            elif not server_version.startswith(configured_version):
+            elif server_version.split()[:1] != [configured_version]:
                 reasons.append("server version differs from configured version")
 
             if record.get("round_id") != path.stem:
                 reasons.append("round_id differs from raw filename")
-            if record.get("image_id") != manifest["environment"].get("images", {}).get(configured_version):
+            if not image_matches:
                 reasons.append("PostgreSQL image differs from manifest")
 
             metrics = record.get("metrics")
@@ -148,11 +196,6 @@ def validate_campaign(campaign_dir: str | Path) -> tuple[dict, list[dict], list[
                 low, high = ranges[metric]
                 if float(value) < low or float(value) > high:
                     reasons.append(f"{metric} outside [{low:g}, {high:g}] range")
-
-            if not isinstance(record.get("position"), int) or isinstance(record.get("position"), bool):
-                reasons.append("position must be an integer")
-            if not isinstance(record.get("block"), int) or isinstance(record.get("block"), bool):
-                reasons.append("block must be an integer")
 
             if reasons:
                 failures.append({
@@ -175,7 +218,29 @@ def validate_campaign(campaign_dir: str | Path) -> tuple[dict, list[dict], list[
                 "source": relative,
                 **{metric: metrics[metric] for metric in METRIC_NAMES},
             })
+            seen_keys.add(key)
 
+    actual = {path.relative_to(directory).as_posix() for path in (directory / "rounds").glob("*.json")}
+    for relative in sorted(actual - tracked):
+        failures.append({"source": relative, "reason": "raw file is not tracked in the manifest",
+                         "classification": "manifest"})
+    # A complete campaign has an accepted attempt for every planned block and slot.
+    expected = {
+        "planned": len(planned), "recorded": len(tracked & actual),
+        "successful": recorded_statuses.count("success"), "failed": recorded_statuses.count("error"),
+        "accepted_blocks": len(accepted_blocks), "accepted_rounds": accepted_rounds,
+        "pending_rounds": len(planned) - accepted_rounds,
+    }
+    counts = manifest.get("counts", {})
+    if not isinstance(counts, dict):
+        raise CampaignValidationError("counts must be a JSON object")
+    for field, value in expected.items():
+        if type(counts.get(field)) is not int or counts[field] != value:
+            failures.append({"source": "manifest.json", "reason": f"counts.{field} differs from reconciled value {value}",
+                             "classification": "manifest"})
+    if expected["pending_rounds"]:
+        failures.append({"source": "manifest.json", "reason": "complete campaign has pending rounds",
+                         "classification": "manifest"})
     rows.sort(key=lambda row: (row["block"], row["scenario"], row["software_version"]))
     return manifest, rows, failures
 
@@ -200,11 +265,12 @@ def write_processed_dataset(campaign_dir: str | Path, output_dir: str | Path | N
         writer.writeheader()
         writer.writerows(rows)
 
-    missing_by_metric = {metric: sum(row[metric] is None for row in rows) for metric in METRIC_NAMES}
+    planned = manifest["planned_rounds"]
+    missing_by_metric = {metric: len(planned) - sum(row[metric] is not None for row in rows) for metric in METRIC_NAMES}
     # Pairs require both versions for the same block and scenario, per metric.
-    pairs: dict[tuple[int, str], dict[str, set[str]]] = {}
+    pairs = {(item["block"], item["scenario"]): {metric: set() for metric in METRIC_NAMES} for item in planned}
     for row in rows:
-        pair = pairs.setdefault((row["block"], row["scenario"]), {metric: set() for metric in METRIC_NAMES})
+        pair = pairs[(row["block"], row["scenario"])]
         for metric in METRIC_NAMES:
             if row[metric] is not None:
                 pair[metric].add(row["software_version"])
@@ -224,13 +290,13 @@ def write_processed_dataset(campaign_dir: str | Path, output_dir: str | Path | N
 
     report = {
         "campaign_id": manifest["campaign_id"],
-        "raw_directory": str(campaign_dir.relative_to(LAB_ROOT)).replace("\\", "/") if campaign_dir.is_relative_to(LAB_ROOT) else str(campaign_dir),
+        "raw_directory": campaign_dir.as_posix(),
         "dataset": dataset_path.name,
         "counts": {
             "planned_rounds": len(manifest["planned_rounds"]),
             "validated_rounds": len(rows),
-            "excluded_rounds": len(failures),
-            "accepted_blocks": len({row["block"] for row in rows}),
+            "excluded_rounds": len(planned) - len(rows),
+            "accepted_blocks": len({item["block"] for item in planned} - {item["block"] for item in incomplete}),
         },
         "missing_by_metric": missing_by_metric,
         "failures": failures,
@@ -252,7 +318,7 @@ def write_processed_dataset(campaign_dir: str | Path, output_dir: str | Path | N
         f"- Brutos preservados: **{report['raw_preserved']}**",
         "- Imputação: **nenhuma**", "",
         "## Ausentes por métrica", "",
-        "| Métrica | Ausentes no dataset |", "|---|---:|",
+        "| Métrica | Rodadas planejadas sem valor validado |", "|---|---:|",
     ]
     markdown.extend(f"| `{metric}` | {count} |" for metric, count in missing_by_metric.items())
     markdown.extend(["", "## Exclusões e falhas", ""])
@@ -283,7 +349,7 @@ def main() -> int:
     args = parser.parse_args()
     report = write_processed_dataset(args.campaign, args.output_dir)
     print(json.dumps(report["counts"], ensure_ascii=False))
-    return 0
+    return int(any(item["classification"] == "manifest" for item in report["failures"]))
 
 
 if __name__ == "__main__":

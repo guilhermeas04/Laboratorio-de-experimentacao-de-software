@@ -32,6 +32,13 @@ Este dicionário atualiza o contrato da coleta completa PostgreSQL. Os arquivos 
 - A versão reportada pelo servidor deve corresponder à versão configurada.
 - Métricas devem existir, ser numéricas e finitas, e respeitar suas unidades/faixas.
 - A chave de duplicidade é `(block, scenario, software_version)`.
-- Pares completos exigem as duas versões no mesmo bloco e cenário para cada métrica.
-- Ausências permanecem vazias. Não há imputação silenciosa.
-- Registros inválidos, duplicados e falhos são registrados no relatório de qualidade e excluídos do CSV.
+- A posição deve coincidir com a ordem planejada e a versão do servidor
+  deve corresponder exatamente à versão configurada.
+- Os totais e estados do manifesto são reconciliados com os arquivos brutos.
+  Divergências aparecem no relatório e a CLI retorna código 1.
+- Pares incompletos são calculados a partir do plano, inclusive quando
+  faltam as duas versões. A contagem por métrica indica quantas rodadas
+  planejadas ficaram sem valor validado, incluindo rodadas excluídas.
+- Somente rodadas validadas de tentativas aceitas entram no CSV. O relatório
+  registra falhas de tentativas anteriores e os motivos das exclusões.
+  Nenhum valor é imputado.

@@ -44,6 +44,8 @@ def make_campaign(tmp_path, statuses=None):
         "configuration": CONFIG,
         "environment": {"images": images},
         "planned_rounds": planned,
+        "counts": {"planned": 2, "recorded": 2, "successful": 2, "failed": 0,
+                   "accepted_blocks": 1, "accepted_rounds": 2, "pending_rounds": 0},
         "attempts": [{
             "execution_id": "test-campaign-b001-a01",
             "block": 1,
@@ -137,3 +139,70 @@ def test_campaign_must_be_complete(tmp_path):
 
     with pytest.raises(CampaignValidationError, match="not complete"):
         validate_campaign(campaign)
+
+
+def test_planned_position_and_exact_version_are_validated(tmp_path):
+    campaign = make_campaign(tmp_path)
+    path = sorted((campaign / "rounds").glob("*.json"))[0]
+    record = json.loads(path.read_text())
+    record.update(position=99, server_version="15.200 (Debian)")
+    path.write_text(json.dumps(record))
+    _, rows, failures = validate_campaign(campaign)
+    assert len(rows) == 1
+    assert "position differs" in failures[0]["reason"]
+    assert "server version differs" in failures[0]["reason"]
+
+
+def test_missing_both_rounds_appears_in_pairs_and_missing_counts(tmp_path):
+    campaign = make_campaign(tmp_path)
+    for path in (campaign / "rounds").glob("*.json"):
+        path.unlink()
+    report = write_processed_dataset(campaign, tmp_path / "processed")
+    assert report["counts"]["excluded_rounds"] == 2
+    assert report["missing_by_metric"]["query_latency_ms"] == 2
+    assert all(pair["missing_versions"] == ["15.20", "17.12"] for pair in report["incomplete_pairs"])
+    assert len(report["incomplete_pairs"]) == 6
+
+
+def test_missing_metric_counts_excluded_round_as_unavailable(tmp_path):
+    campaign = make_campaign(tmp_path)
+    path = sorted((campaign / "rounds").glob("*.json"))[0]
+    record = json.loads(path.read_text())
+    del record["metrics"]["query_latency_ms"]
+    path.write_text(json.dumps(record))
+    report = write_processed_dataset(campaign, tmp_path / "processed")
+    assert report["missing_by_metric"]["query_latency_ms"] == 1
+    assert report["counts"]["accepted_blocks"] == 0
+
+
+def test_manifest_reconciliation_reports_counts_status_and_extra_files(tmp_path):
+    campaign = make_campaign(tmp_path)
+    path = campaign / "manifest.json"
+    manifest = json.loads(path.read_text())
+    manifest["counts"]["planned"] = 99
+    manifest["attempts"][0]["records"][0]["status"] = "error"
+    path.write_text(json.dumps(manifest))
+    (campaign / "rounds" / "extra.json").write_text("{}")
+    _, rows, failures = validate_campaign(campaign)
+    assert len(rows) == 1
+    problems = [failure["reason"] for failure in failures if failure["classification"] == "manifest"]
+    assert any("counts.planned" in reason for reason in problems)
+    assert any("raw status differs" in reason for reason in problems)
+    assert any("not tracked" in reason for reason in problems)
+
+
+def test_failed_attempt_remains_visible_without_excluding_accepted_slots(tmp_path):
+    campaign = make_campaign(tmp_path)
+    path = campaign / "manifest.json"
+    manifest = json.loads(path.read_text())
+    relative = "rounds/failed.json"
+    (campaign / relative).write_text(json.dumps({"status": "error", "error": "timeout"}))
+    manifest["attempts"].append({
+        "block": 1, "status": "failed", "execution_id": "failed",
+        "records": [{"file": relative, "status": "error"}],
+    })
+    manifest["counts"].update(recorded=3, failed=1)
+    path.write_text(json.dumps(manifest))
+    report = write_processed_dataset(campaign, tmp_path / "processed")
+    assert report["counts"]["excluded_rounds"] == 0
+    assert report["failures"] == [{"source": relative, "classification": "attempt", "reason": "timeout"}]
