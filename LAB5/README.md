@@ -102,3 +102,20 @@ python -m pytest -q LAB5/tests/test_s02_dataset.py LAB5/tests/test_validator.py 
 ```
 
 O comando gera em `LAB5/data/processed/` um CSV versionado por campanha, um relatório JSON e um relatório Markdown com rastreabilidade até os arquivos brutos, ausências por métrica, falhas e exclusões. O contrato atualizado está em `LAB5/docs/data-dictionary-lab05s02.md`; ausência não é preenchida por imputação.
+
+## Análise descritiva da coleta completa (#153)
+
+```powershell
+$env:PYTHONPATH = (Resolve-Path LAB5/src).Path
+python -m lab05_real_software.s02_descriptive --dataset LAB5/data/processed/lab05s02-20261121-01_validated.csv
+python -m pytest -q LAB5/tests/test_s02_descriptive.py
+```
+
+O comando lê o dataset validado, preserva o `block` e o caminho bruto em
+`source`, e gera:
+
+- tabelas em `LAB5/reports/tables/s02_*`;
+- gráficos em `LAB5/reports/figures/s02_*`;
+- critérios de agregação em `LAB5/docs/analise-descritiva-lab05s02.md`.
+
+Ausentes entram em `n_missing` e nunca são imputados como zero.

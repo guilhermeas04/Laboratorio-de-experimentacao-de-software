@@ -1,0 +1,13 @@
+scenario,metric,blocks,complete_pairs,incomplete_pairs
+customer_total,client_latency_ms,24,24,0
+customer_total,cpu_percent,24,24,0
+customer_total,memory_mb,24,24,0
+customer_total,query_latency_ms,24,24,0
+customer_total,resource_window_seconds,24,24,0
+customer_total,throughput_queries_per_second,24,24,0
+range_summary,client_latency_ms,24,24,0
+range_summary,cpu_percent,24,24,0
+range_summary,memory_mb,24,24,0
+range_summary,query_latency_ms,24,24,0
+range_summary,resource_window_seconds,24,24,0
+range_summary,throughput_queries_per_second,24,24,0
