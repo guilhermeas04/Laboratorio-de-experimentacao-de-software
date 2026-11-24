@@ -1,0 +1,64 @@
+{
+  "dataset": "LAB5/data/processed/lab05s02-20261121-01_validated.csv",
+  "config": "/Users/pedroduarte/Documents/LAB EXPERIMENTACAO/Laboratorio-de-experimentacao-de-software/LAB5/config/collection-s02.json",
+  "primary": {
+    "role": "primary",
+    "metric": "query_latency_ms",
+    "n_pairs": 24,
+    "mean_version_a": 0.41,
+    "mean_version_b": 0.3899166666666667,
+    "mean_difference_a_minus_b": 0.02008333333333333,
+    "std_difference": 0.02919636169511337,
+    "alpha": 0.05,
+    "alternative": "two-sided",
+    "test_name": "paired_t",
+    "statistic": 3.3698663905187294,
+    "df": 23,
+    "p_value": 0.0026445806984489693,
+    "ci_low": 0.007754791032821713,
+    "ci_high": 0.03241187563384495,
+    "reject_null": true,
+    "inference_status": "assumption_warning",
+    "assumption_check": {
+      "test": "shapiro_wilk",
+      "n": 24,
+      "statistic": 0.8698874624471679,
+      "p_value": 0.005234033125830101,
+      "normality_sustainable": false,
+      "note": "pressuposto de normalidade questionável; inferência t registrada com ressalva"
+    },
+    "effect_size": {
+      "effect_size_name": "cohens_dz",
+      "cohens_dz": 0.6878710965104499,
+      "n_pairs": 24,
+      "defined": true
+    },
+    "notes": [
+      "pressuposto de normalidade questionável; inferência t registrada com ressalva"
+    ],
+    "exploratory_wilcoxon": {
+      "statistic": 35.0,
+      "p_value": 0.001727555584429986,
+      "note": "teste não paramétrico exploratório; não substitui o contraste primário pré-registrado"
+    },
+    "scenario": "customer_total",
+    "versions": [
+      "15.20",
+      "17.12"
+    ],
+    "practical_relevance": {
+      "minimum_relative_reduction": 0.1,
+      "observed_relative_change": 0.04898373983739837,
+      "observed_relative_change_percent": 4.8983739837398375,
+      "practical_threshold_absolute": 0.041,
+      "mean_difference_a_minus_b": 0.02008333333333333,
+      "direction": "reduction_favoring_version_b",
+      "interpretation": "threshold_not_met",
+      "note": "relevância prática avaliada contra o limiar pré-especificado de 10% da média da versão A"
+    }
+  },
+  "secondary_count": 9,
+  "reproduction": {
+    "command": "PYTHONPATH=LAB5/src python -m lab05_real_software.s02_inference --dataset LAB5/data/processed/lab05s02-20261121-01_validated.csv"
+  }
+}
