@@ -1,6 +1,6 @@
 {
   "dataset": "LAB5/data/processed/lab05s02-20261121-01_validated.csv",
-  "config": "/Users/pedroduarte/Documents/LAB EXPERIMENTACAO/Laboratorio-de-experimentacao-de-software/LAB5/config/collection-s02.json",
+  "config": "LAB5/config/collection-s02.json",
   "primary": {
     "role": "primary",
     "metric": "query_latency_ms",
@@ -14,16 +14,16 @@
     "test_name": "paired_t",
     "statistic": 3.3698663905187294,
     "df": 23,
-    "p_value": 0.0026445806984489693,
+    "p_value": 0.002644580698448968,
     "ci_low": 0.007754791032821713,
     "ci_high": 0.03241187563384495,
-    "reject_null": true,
+    "reject_null": null,
     "inference_status": "assumption_warning",
     "assumption_check": {
       "test": "shapiro_wilk",
       "n": 24,
-      "statistic": 0.8698874624471679,
-      "p_value": 0.005234033125830101,
+      "statistic": 0.8698874624471684,
+      "p_value": 0.00523403312583024,
       "normality_sustainable": false,
       "note": "pressuposto de normalidade questionável; inferência t registrada com ressalva"
     },
@@ -39,7 +39,7 @@
     "exploratory_wilcoxon": {
       "statistic": 35.0,
       "p_value": 0.001727555584429986,
-      "note": "teste não paramétrico exploratório; não substitui o contraste primário pré-registrado"
+      "note": "análise exploratória de postos sinalizados, que pressupõe simetria das diferenças"
     },
     "scenario": "customer_total",
     "versions": [

@@ -11,7 +11,7 @@ import numpy as np
 import pandas as pd
 from scipy import stats
 
-from .s02_descriptive import DEFAULT_DATASET, ROOT, load_validated_dataset
+from .s02_descriptive import DEFAULT_DATASET, ROOT, artifact_label, load_validated_dataset
 from .s02_validity import _paired_rows
 
 DEFAULT_CONFIG = ROOT / "config" / "collection-s02.json"
@@ -77,7 +77,7 @@ def shapiro_assessment(differences: np.ndarray) -> dict[str, Any]:
         "statistic": float(statistic),
         "p_value": float(p_value),
         "normality_sustainable": bool(p_value >= 0.05),
-        "note": "pressuposto de normalidade das diferenças sustentado"
+        "note": "Shapiro–Wilk não detectou desvio de normalidade das diferenças"
         if p_value >= 0.05
         else "pressuposto de normalidade questionável; inferência t registrada com ressalva",
     }
@@ -116,6 +116,8 @@ def paired_t_analysis(
 ) -> dict[str, Any]:
     """Executa o contraste pareado pré-especificado e registra insuficiência."""
 
+    if alternative != "two-sided" or not 0 < alpha < 1:
+        raise PairedInferenceError("o protocolo exige alternativa bilateral e 0 < alfa < 1")
     differences = pairs["difference_a_minus_b"].to_numpy(dtype=float) if not pairs.empty else np.array([])
     n_pairs = int(differences.size)
     mean_a = float(pairs["value_a"].mean()) if n_pairs else None
@@ -146,9 +148,10 @@ def paired_t_analysis(
         "notes": [],
     }
 
-    if n_pairs < 2:
+    if n_pairs < 3:
         result["inference_status"] = "insufficient"
-        result["notes"].append("menos de dois pares completos; inferência não calculada")
+        result["assumption_check"] = shapiro_assessment(differences)
+        result["notes"].append("menos de três pares completos; normalidade não avaliável")
         result["effect_size"] = paired_effect_size(differences)
         return result
 
@@ -178,7 +181,7 @@ def paired_t_analysis(
             "p_value": p_value,
             "ci_low": float(ci_low),
             "ci_high": float(ci_high),
-            "reject_null": bool(p_value < alpha),
+            "reject_null": bool(p_value < alpha) if assumption["normality_sustainable"] else None,
             "effect_size": paired_effect_size(differences),
         }
     )
@@ -188,7 +191,7 @@ def paired_t_analysis(
         result["exploratory_wilcoxon"] = {
             "statistic": float(wilcoxon.statistic),
             "p_value": float(wilcoxon.pvalue),
-            "note": "teste não paramétrico exploratório; não substitui o contraste primário pré-registrado",
+            "note": "análise exploratória de postos sinalizados, que pressupõe simetria das diferenças",
         }
     return result
 
@@ -294,7 +297,7 @@ def analyze_secondary(
     for row, adj in zip(rows, adjusted):
         row["p_value_holm"] = adj
         row["multiple_comparison"] = "holm"
-        if adj is None:
+        if adj is None or row["inference_status"] != "ok":
             row["reject_null_holm"] = None
         else:
             row["reject_null_holm"] = bool(adj < alpha)
@@ -367,8 +370,8 @@ def run_paired_inference(
     secondary_frame.to_csv(secondary_path, index=False)
 
     summary = {
-        "dataset": str(dataset_path),
-        "config": str(config_path),
+        "dataset": artifact_label(dataset_path),
+        "config": artifact_label(config_path),
         "primary": primary_result,
         "secondary_count": len(secondary_results),
         "reproduction": {
@@ -424,11 +427,15 @@ def _render_docs(primary: dict[str, Any], secondary: list[dict[str, Any]], versi
         "",
         "## Leitura",
         "",
-        "A decisão confirmatória usa somente o contraste primário. "
-        "Se a inferência for insuficiente (poucos pares ou variância zero), "
-        "o estudo registra a limitação sem fabricar significância. "
-        "A relevância prática compara a redução relativa observada ao limiar de 10% "
-        "definido antes da coleta.",
+        "O teste t e seu intervalo são apresentados com ressalva quando "
+        "Shapiro–Wilk aponta desvio de normalidade. Nesse caso, a decisão "
+        "confirmatória fica indeterminada e Wilcoxon é apresentado como "
+        "sensibilidade exploratória. A avaliação de normalidade não verifica "
+        "independência entre os blocos.",
+        "",
+        "A relevância prática compara a estimativa pontual ao limiar "
+        "definido antes da coleta. Consulte os [diagnósticos de validade]"
+        "(validade-lab05s02.md) para a estabilidade por ordem e bloco.",
         "",
     ]
     return "\n".join(lines)

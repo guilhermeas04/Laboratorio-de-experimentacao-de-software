@@ -64,6 +64,13 @@ def test_small_sample_effect_size_undefined_below_two_pairs():
     assert effect["cohens_dz"] is None
 
 
+def test_two_pairs_preserve_effect_size_without_t_decision():
+    result = paired_t_analysis(_pairs([1.0, 2.0], [0.5, 1.0]), metric="query_latency_ms")
+    assert result["inference_status"] == "insufficient"
+    assert result["p_value"] is None
+    assert result["effect_size"]["defined"] is True
+
+
 def test_practical_relevance_uses_predefined_threshold():
     relevance = practical_relevance(
         mean_version_a=1.0,
@@ -97,6 +104,9 @@ def test_run_paired_inference_on_real_dataset(tmp_path: Path):
     assert primary["scenario"] == "customer_total"
     assert primary["metric"] == "query_latency_ms"
     assert primary["n_pairs"] == 24
+    assert primary["p_value"] == pytest.approx(0.00264458)
+    assert primary["inference_status"] == "assumption_warning"
+    assert primary["reject_null"] is None
     assert primary["effect_size"]["defined"] is True
     assert "practical_relevance" in primary
     secondary = pd.read_csv(paths["secondary"])
