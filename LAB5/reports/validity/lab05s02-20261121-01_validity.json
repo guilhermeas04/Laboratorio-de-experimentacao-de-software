@@ -1,0 +1,92 @@
+{
+  "issue": 154,
+  "campaign_id": "lab05s02-20261121-01",
+  "dataset": "LAB5/data/processed/lab05s02-20261121-01_validated.csv",
+  "campaign_manifest": "LAB5/data/raw/s02/lab05s02-20261121-01/manifest.json",
+  "quality_report": "LAB5/data/processed/lab05s02-20261121-01_quality.json",
+  "design": {
+    "versions": [
+      "15.20",
+      "17.12"
+    ],
+    "scenarios": [
+      "customer_total",
+      "range_summary"
+    ],
+    "blocks": 24,
+    "primary_scenario": "customer_total",
+    "primary_metric": "query_latency_ms",
+    "minimum_relative_reduction_percent": 10.0
+  },
+  "consistency": {
+    "records_checked": 96,
+    "consistent": true,
+    "issues": [],
+    "campaign_configuration": {
+      "versions": [
+        "15.20",
+        "17.12"
+      ],
+      "seed": 150,
+      "dataset_rows": 100000,
+      "blocks": 24,
+      "cpus": 1,
+      "memory_mb": 512,
+      "shared_buffers_mb": 128,
+      "clients": 4,
+      "jobs": 1,
+      "warmup_seconds": 5,
+      "server_latency_repetitions": 5,
+      "measurement_seconds": 15,
+      "sample_interval_seconds": 1,
+      "primary": {
+        "scenario": "customer_total",
+        "metric": "query_latency_ms",
+        "minimum_relative_reduction": 0.1,
+        "alpha": 0.05,
+        "alternative": "two-sided"
+      },
+      "queries": {
+        "customer_total": "SELECT sum(amount) FROM orders WHERE customer_id = 42;",
+        "range_summary": "SELECT customer_id, count(*), sum(amount) FROM orders WHERE id BETWEEN 10001 AND 20000 GROUP BY customer_id;"
+      }
+    },
+    "image_ids_by_version": {
+      "15.20": "sha256:2663a9f0fde52de94f5dad3603a1942359f49472f1017c1a6d64f66bfedacb40",
+      "17.12": "sha256:0d938e975177bef9f1f61f3f9dbcf2e0aa0a139568f66d3415ed8892eb97f6ac"
+    }
+  },
+  "collection": {
+    "manifest_status": "complete",
+    "planned_rounds": 96,
+    "recorded_rounds": 96,
+    "successful_rounds": 96,
+    "failed_rounds": 0,
+    "accepted_blocks": 24,
+    "manifest_deviations": [],
+    "nonaccepted_attempts": 0,
+    "quality_exclusions": [],
+    "incomplete_pairs": []
+  },
+  "sensitivity": {
+    "mean_vs_median": "The primary mean paired contrast is reported with the median paired contrast; the primary decision remains the preregistered mean.",
+    "order": "Contrasts are stratified by which version ran first.",
+    "block_stability": "Contrasts are compared across the first and second half of ordered block identifiers and by leave-one-block-out range.",
+    "failures_and_exclusions": "Reports observed nonaccepted attempts and quality exclusions; compares the validated estimate with a strict exclusion of any block having a nonaccepted attempt.",
+    "primary_interpretation_changes": false,
+    "primary_full_data_interpretation": "threshold_not_met",
+    "primary_median_sensitivity_interpretation": "threshold_not_met",
+    "primary_alternative_interpretations": [
+      "threshold_not_met"
+    ],
+    "primary_order_block_improvement_range_percent": [
+      2.811163169688317,
+      6.976272561346584
+    ],
+    "note": "These are descriptive sensitivity diagnostics, not additional confirmatory tests or a replacement for the preregistered primary analysis."
+  },
+  "limitations": [
+    "Inference is limited to the two tested PostgreSQL versions, two specified SQL queries, deterministic synthetic dataset, and measured local Docker host/configuration.",
+    "No external production workload, concurrent user population, other hardware, operating systems, PostgreSQL versions, schemas, or query distributions were sampled."
+  ]
+}
