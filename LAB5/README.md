@@ -119,3 +119,13 @@ O comando lê o dataset validado, preserva o `block` e o caminho bruto em
 - critérios de agregação em `LAB5/docs/analise-descritiva-lab05s02.md`.
 
 Ausentes entram em `n_missing` e nunca são imputados como zero.
+
+## Diagnósticos de validade da coleta completa (#154)
+
+```powershell
+$env:PYTHONPATH = (Resolve-Path LAB5/src).Path
+python -m lab05_real_software.s02_validity
+python -m pytest -q LAB5/tests/test_s02_validity.py
+```
+
+A execução verifica configuração e imagens dos registros brutos contra o manifesto e gera diagnósticos de sensibilidade por ordem, estabilidade entre blocos, média/mediana e política de exclusões em `LAB5/reports/validity/`. A avaliação das ameaças, evidências, mitigações e riscos residuais está em `LAB5/docs/validade-lab05s02.md`.
