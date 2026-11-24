@@ -20,6 +20,7 @@ DEFAULT_DATASET = ROOT / "data" / "processed" / "lab05s02-20261121-01_validated.
 DEFAULT_TABLES = ROOT / "reports" / "tables"
 DEFAULT_FIGURES = ROOT / "reports" / "figures"
 DEFAULT_DOCS = ROOT / "docs"
+ROUND_KEY = ["block", "scenario", "software_version"]
 
 IDENTITY_COLUMNS = (
     "campaign_id",
@@ -120,9 +121,21 @@ def load_validated_dataset(path: str | Path) -> pd.DataFrame:
     for column in list(CORE_METRICS) + list(AUX_METRICS):
         if column in frame.columns:
             frame[column] = pd.to_numeric(frame[column], errors="coerce")
-    frame["block"] = pd.to_numeric(frame["block"], errors="coerce").astype("Int64")
+    blocks = pd.to_numeric(frame["block"], errors="coerce")
+    if blocks.isna().any() or not ((blocks > 0) & (blocks % 1 == 0)).all():
+        raise CompleteAnalysisError("block deve conter inteiros positivos")
+    frame["block"] = blocks.astype("Int64")
     if "position" in frame.columns:
         frame["position"] = pd.to_numeric(frame["position"], errors="coerce").astype("Int64")
+    if frame.empty:
+        raise CompleteAnalysisError("dataset validado sem rodadas")
+    for name in ("campaign_id", "software_version", "scenario", "source"):
+        if frame[name].isna().any() or frame[name].str.strip().eq("").any():
+            raise CompleteAnalysisError(f"{name} ausente no dataset validado")
+    if frame["campaign_id"].nunique() != 1:
+        raise CompleteAnalysisError("o dataset deve conter uma única campanha")
+    if frame.duplicated(ROUND_KEY).any():
+        raise CompleteAnalysisError("rodadas duplicadas por bloco, cenário e versão")
     return frame
 
 
@@ -211,9 +224,14 @@ def complete_pairs_by_block(
 
     present_versions = sorted({str(v) for v in frame["software_version"].dropna().unique()})
     if versions is None:
-        if len(present_versions) < 2:
-            raise CompleteAnalysisError("são necessárias duas versões para calcular pares")
-        left, right = present_versions[0], present_versions[1]
+        if len(present_versions) == 1:
+            config = json.loads((ROOT / "config" / "collection-s02.json").read_text(encoding="utf-8"))
+            versions = tuple(config["versions"])
+        else:
+            versions = tuple(present_versions)
+        if len(versions) != 2 or not set(present_versions).issubset(versions):
+            raise CompleteAnalysisError("versões incompatíveis com a comparação pareada")
+        left, right = versions
     else:
         left, right = versions
 
@@ -256,7 +274,8 @@ def block_trace_table(frame: pd.DataFrame) -> pd.DataFrame:
 
     columns = [column for column in IDENTITY_COLUMNS if column in frame.columns]
     trace = frame.loc[:, columns].copy()
-    trace = trace.sort_values(["block", "scenario", "software_version", "position"], kind="mergesort")
+    sort_columns = [column for column in (*ROUND_KEY, "position") if column in columns]
+    trace = trace.sort_values(sort_columns, kind="mergesort")
     return trace.reset_index(drop=True)
 
 
@@ -293,15 +312,13 @@ def plot_metric_by_scenario(
     versions = sorted({str(v) for v in frame["software_version"].dropna().unique()})
     catalog = METRIC_CATALOG.get(metric, {"unit": metric})
 
-    fig, axes = plt.subplots(1, max(len(scenarios), 1), figsize=(5.2 * max(len(scenarios), 1), 4.8), sharey=True)
-    if not isinstance(axes, np.ndarray):
-        axes = np.array([axes])
+    fig, axes = plt.subplots(1, len(scenarios), figsize=(5.2 * len(scenarios), 4.8), squeeze=False)
 
     colors = ["#4c78a8", "#f58518", "#54a24b", "#e45756"]
-    for axis, scenario in zip(axes, scenarios):
+    for axis, scenario in zip(axes[0], scenarios):
         data = []
         labels = []
-        for index, version in enumerate(versions):
+        for version in versions:
             values = _observed(
                 frame.loc[
                     (frame["scenario"].astype("string") == scenario)
@@ -311,15 +328,16 @@ def plot_metric_by_scenario(
             )
             data.append(values if values.size else np.array([np.nan]))
             labels.append(version)
-        boxes = axis.boxplot(data, tick_labels=labels, patch_artist=True, widths=0.55)
+        boxes = axis.boxplot(data, patch_artist=True, widths=0.55)
+        axis.set_xticks(range(1, len(labels) + 1), labels)
         for patch, color in zip(boxes["boxes"], colors):
             patch.set_facecolor(color)
             patch.set_alpha(0.55)
         axis.set_title(scenario)
         axis.set_xlabel("Versão do PostgreSQL")
+        axis.set_ylabel(f"{metric} ({catalog.get('unit', '')})")
         axis.grid(axis="y", alpha=0.3)
 
-    axes[0].set_ylabel(f"{metric} ({catalog.get('unit', '')})".strip())
     fig.suptitle(f"Distribuição de {metric} por cenário — coleta completa")
     fig.text(
         0.01,
@@ -334,18 +352,27 @@ def plot_metric_by_scenario(
     return output_path
 
 
+def artifact_label(path: Path) -> str:
+    resolved = path.resolve()
+    repo = ROOT.parent
+    return resolved.relative_to(repo).as_posix() if resolved.is_relative_to(repo) else resolved.name
+
+
 def write_metric_docs(path: Path, metrics: Iterable[str], dataset_path: Path) -> Path:
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     lines = [
         "# Critérios de agregação — análise descritiva LAB05S02",
         "",
-        f"Dataset validado: `{dataset_path.as_posix()}`",
+        f"Dataset validado: `{artifact_label(dataset_path)}`",
         "",
         "A análise usa apenas rodadas presentes no CSV validado. Valores ausentes",
         "permanecem NaN, entram em `n_missing` e nunca são imputados como zero.",
         "O identificador `block` é preservado nas tabelas de pares e de rastreabilidade,",
         "com o caminho bruto em `source`.",
+        "As contagens descrevem as rodadas presentes no CSV. Rodadas excluídas",
+        "e pares totalmente ausentes constam do relatório de qualidade da coleta.",
+        "Cada painel de distribuição usa escala vertical própria.",
         "",
         "| Métrica | Unidade | Escala | Critério de agregação |",
         "|---|---|---|---|",
@@ -408,23 +435,16 @@ def run_complete_descriptive(
     catalog.to_csv(catalog_path, index=False)
     write_metric_docs(docs_path, metrics, Path(dataset_path))
 
-    figure_paths = {
-        "latency_figure": plot_metric_by_scenario(
-            frame,
-            "query_latency_ms",
-            figures_dir / "s02_latency_by_scenario.png",
-            dataset_label=str(dataset_path),
-        ),
-        "throughput_figure": plot_metric_by_scenario(
-            frame,
-            "throughput_queries_per_second",
-            figures_dir / "s02_throughput_by_scenario.png",
-            dataset_label=str(dataset_path),
-        ),
-    }
+    figure_paths = {}
+    for name, metric in (("latency", "query_latency_ms"), ("throughput", "throughput_queries_per_second")):
+        if metric in metrics:
+            figure_paths[f"{name}_figure"] = plot_metric_by_scenario(
+                frame, metric, figures_dir / f"s02_{name}_by_scenario.png",
+                dataset_label=artifact_label(dataset_path),
+            )
 
     summary = {
-        "dataset": str(dataset_path),
+        "dataset": artifact_label(dataset_path),
         "campaign_id": str(frame["campaign_id"].iloc[0]),
         "n_rows": int(len(frame)),
         "n_blocks": int(frame["block"].nunique()),
@@ -433,14 +453,14 @@ def run_complete_descriptive(
         "metrics": metrics,
         "missing_policy": "ausentes permanecem NaN e entram em n_missing; nunca viram zero",
         "tables": {
-            "descriptive": str(descriptive_path),
-            "complete_pairs": str(pairs_path),
-            "complete_pairs_summary": str(pairs_summary_path),
-            "traceability": str(trace_path),
-            "metric_catalog": str(catalog_path),
+            "descriptive": artifact_label(descriptive_path),
+            "complete_pairs": artifact_label(pairs_path),
+            "complete_pairs_summary": artifact_label(pairs_summary_path),
+            "traceability": artifact_label(trace_path),
+            "metric_catalog": artifact_label(catalog_path),
         },
-        "figures": {name: str(path) for name, path in figure_paths.items()},
-        "docs": str(docs_path),
+        "figures": {name: artifact_label(path) for name, path in figure_paths.items()},
+        "docs": artifact_label(docs_path),
     }
     summary_path.write_text(json.dumps(summary, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 

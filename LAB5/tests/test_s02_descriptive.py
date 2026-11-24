@@ -111,7 +111,29 @@ def test_run_complete_descriptive_writes_artifacts(tmp_path: Path):
     assert "block" in pairs.columns
     assert summary["n_rows"] == 96
     assert summary["n_blocks"] == 24
+    assert summary["dataset"] == "LAB5/data/processed/lab05s02-20261121-01_validated.csv"
     assert (pairs["pair_complete"] == True).all()  # noqa: E712
+
+
+def test_single_version_and_metric_generate_incomplete_pairs(tmp_path):
+    dataset = tmp_path / "small.csv"
+    frame = _tiny_frame().iloc[[0]].drop(columns=["position", "throughput_queries_per_second"])
+    frame.to_csv(dataset, index=False)
+    paths = run_complete_descriptive(
+        dataset_path=dataset, tables_dir=tmp_path / "tables",
+        figures_dir=tmp_path / "figures", docs_dir=tmp_path / "docs",
+    )
+    pairs = pd.read_csv(paths["complete_pairs"])
+    assert not pairs["pair_complete"].any()
+    assert (pairs["n_version_b"] == 0).all()
+    assert "throughput_figure" not in paths
+
+
+def test_duplicate_rounds_are_rejected(tmp_path):
+    dataset = tmp_path / "duplicate.csv"
+    pd.concat([_tiny_frame(), _tiny_frame().iloc[:1]]).to_csv(dataset, index=False)
+    with pytest.raises(CompleteAnalysisError, match="duplicadas"):
+        load_validated_dataset(dataset)
 
 
 def test_missing_dataset_raises():

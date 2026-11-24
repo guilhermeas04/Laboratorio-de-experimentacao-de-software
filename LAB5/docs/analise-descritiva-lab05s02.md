@@ -1,11 +1,14 @@
 # Critérios de agregação — análise descritiva LAB05S02
 
-Dataset validado: `/Users/pedroduarte/Documents/LAB EXPERIMENTACAO/Laboratorio-de-experimentacao-de-software/LAB5/data/processed/lab05s02-20261121-01_validated.csv`
+Dataset validado: `LAB5/data/processed/lab05s02-20261121-01_validated.csv`
 
 A análise usa apenas rodadas presentes no CSV validado. Valores ausentes
 permanecem NaN, entram em `n_missing` e nunca são imputados como zero.
 O identificador `block` é preservado nas tabelas de pares e de rastreabilidade,
 com o caminho bruto em `source`.
+As contagens descrevem as rodadas presentes no CSV. Rodadas excluídas
+e pares totalmente ausentes constam do relatório de qualidade da coleta.
+Cada painel de distribuição usa escala vertical própria.
 
 | Métrica | Unidade | Escala | Critério de agregação |
 |---|---|---|---|
