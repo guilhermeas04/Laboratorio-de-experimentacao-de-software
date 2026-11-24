@@ -1,0 +1,35 @@
+{
+  "dataset": "LAB5/data/processed/lab05s02-20261121-01_validated.csv",
+  "campaign_id": "lab05s02-20261121-01",
+  "n_rows": 96,
+  "n_blocks": 24,
+  "versions": [
+    "15.20",
+    "17.12"
+  ],
+  "scenarios": [
+    "customer_total",
+    "range_summary"
+  ],
+  "metrics": [
+    "query_latency_ms",
+    "throughput_queries_per_second",
+    "cpu_percent",
+    "memory_mb",
+    "client_latency_ms",
+    "resource_window_seconds"
+  ],
+  "missing_policy": "ausentes permanecem NaN e entram em n_missing; nunca viram zero",
+  "tables": {
+    "descriptive": "LAB5/reports/tables/s02_descriptive_by_version_scenario.csv",
+    "complete_pairs": "LAB5/reports/tables/s02_complete_pairs.csv",
+    "complete_pairs_summary": "LAB5/reports/tables/s02_complete_pairs_summary.csv",
+    "traceability": "LAB5/reports/tables/s02_block_traceability.csv",
+    "metric_catalog": "LAB5/reports/tables/s02_metric_catalog.csv"
+  },
+  "figures": {
+    "latency_figure": "LAB5/reports/figures/s02_latency_by_scenario.png",
+    "throughput_figure": "LAB5/reports/figures/s02_throughput_by_scenario.png"
+  },
+  "docs": "LAB5/docs/analise-descritiva-lab05s02.md"
+}
