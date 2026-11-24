@@ -11,7 +11,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-from .s02_descriptive import DEFAULT_DATASET, ROOT, load_validated_dataset
+from .s02_descriptive import DEFAULT_DATASET, ROOT, artifact_label, load_validated_dataset
 
 
 DEFAULT_CAMPAIGN = ROOT / "data" / "raw" / "s02" / "lab05s02-20261121-01"
@@ -41,12 +41,6 @@ def _read_json(path: Path) -> dict:
     return value
 
 
-def _artifact_label(path: Path) -> str:
-    resolved = path.resolve()
-    repository = ROOT.parent
-    return resolved.relative_to(repository).as_posix() if resolved.is_relative_to(repository) else str(path)
-
-
 def _paired_rows(frame: pd.DataFrame, scenario: str, metric: str, versions: list[str]) -> pd.DataFrame:
     selected = frame.loc[frame["scenario"].astype(str) == scenario]
     left = selected.loc[selected["software_version"].astype(str) == versions[0], ["block", "position", metric]]
@@ -54,7 +48,7 @@ def _paired_rows(frame: pd.DataFrame, scenario: str, metric: str, versions: list
     left = left.rename(columns={"position": "position_a", metric: "value_a"})
     right = right.rename(columns={"position": "position_b", metric: "value_b"})
     paired = left.merge(right, on="block", how="inner", validate="one_to_one")
-    paired = paired.dropna(subset=["value_a", "value_b"]).copy()
+    paired = paired.loc[np.isfinite(paired["value_a"]) & np.isfinite(paired["value_b"])].copy()
     paired["difference_a_minus_b"] = paired["value_a"] - paired["value_b"]
     paired["order"] = np.where(
         paired["position_a"] < paired["position_b"],
@@ -69,6 +63,12 @@ def _improvement_percent(value_a: float, value_b: float, metric: str) -> float |
         return None
     numerator = value_a - value_b if metric in LOWER_IS_BETTER else value_b - value_a
     return 100 * numerator / value_a
+
+
+def _threshold_label(value: float | None, threshold: float) -> str:
+    if value is None:
+        return "indeterminate"
+    return "threshold_met" if value >= threshold else "threshold_not_met"
 
 
 def _summary(pairs: pd.DataFrame, metric: str) -> dict[str, Any]:
@@ -106,6 +106,10 @@ def _check_raw_consistency(campaign_dir: Path, manifest: dict) -> dict:
     checked = 0
     issues: list[dict[str, str]] = []
     common_environment: dict | None = None
+    planned_positions = {
+        (item["block"], item["scenario"], item["software_version"]): item["position"]
+        for item in manifest["planned_rounds"]
+    }
     for attempt in manifest.get("attempts", []):
         for entry in attempt.get("records", []):
             relative = entry.get("file", "")
@@ -120,6 +124,9 @@ def _check_raw_consistency(campaign_dir: Path, manifest: dict) -> dict:
             version = str(record.get("software_version", ""))
             if record.get("image_id") != expected_images.get(version):
                 issues.append({"source": relative, "issue": "image_id differs from version in campaign manifest"})
+            key = (record.get("block"), record.get("scenario"), version)
+            if key not in planned_positions or record.get("position") != planned_positions[key]:
+                issues.append({"source": relative, "issue": "raw round position or identity differs from plan"})
             environment = record.get("environment", {})
             if common_environment is None:
                 common_environment = environment
@@ -158,12 +165,25 @@ def diagnose_validity(
         quality_path = dataset_path.parent / f"{manifest['campaign_id']}_quality.json"
     quality_path = Path(quality_path)
     quality = _read_json(quality_path) if quality_path.is_file() else {}
+    if quality and quality.get("campaign_id") != manifest["campaign_id"]:
+        raise ValidityDiagnosticError("quality report belongs to another campaign")
 
     consistency = _check_raw_consistency(campaign_dir, manifest)
     primary = configuration.get("primary", {})
     primary_scenario = primary.get("scenario", "customer_total")
     primary_metric = primary.get("metric", "query_latency_ms")
     practical_threshold = float(primary.get("minimum_relative_reduction", 0.1)) * 100
+    if "position" not in frame or frame["position"].isna().any():
+        raise ValidityDiagnosticError("dataset must provide a position for every round")
+    if primary_metric not in frame:
+        raise ValidityDiagnosticError("dataset does not contain the primary metric")
+    planned_positions = {
+        (item["block"], item["scenario"], item["software_version"]): item["position"]
+        for item in manifest["planned_rounds"]
+    }
+    for row in frame.itertuples(index=False):
+        if planned_positions.get((row.block, row.scenario, row.software_version)) != row.position:
+            raise ValidityDiagnosticError(f"dataset round order differs from plan: {row.source}")
 
     rows: list[dict[str, Any]] = []
     sensitivity: list[dict[str, Any]] = []
@@ -174,10 +194,7 @@ def diagnose_validity(
             pairs = _paired_rows(frame, scenario, metric, versions)
             full = _summary(pairs, metric)
             is_primary = scenario == primary_scenario and metric == primary_metric
-            practical_label = (
-                "threshold_met" if full["mean_improvement_percent"] is not None
-                and full["mean_improvement_percent"] >= practical_threshold else "threshold_not_met"
-            ) if is_primary else None
+            practical_label = _threshold_label(full["mean_improvement_percent"], practical_threshold) if is_primary else None
             rows.append({
                 "scenario": scenario,
                 "metric": metric,
@@ -200,16 +217,15 @@ def diagnose_validity(
                     **result,
                     "practical_threshold_percent": practical_threshold if is_primary else None,
                     "practical_interpretation": (
-                        "threshold_met" if is_primary and result["mean_improvement_percent"] is not None
-                        and result["mean_improvement_percent"] >= practical_threshold
-                        else "threshold_not_met" if is_primary else None
+                        _threshold_label(result["mean_improvement_percent"], practical_threshold) if is_primary else None
                     ),
                 })
 
             blocks = sorted(int(block) for block in pairs["block"].unique())
-            midpoint = len(blocks) // 2
-            for label, chosen in (("first_half_blocks", set(blocks[:midpoint])),
-                                  ("second_half_blocks", set(blocks[midpoint:]))):
+            planned_blocks = sorted({key[0] for key in planned_positions if key[1] == scenario})
+            midpoint = len(planned_blocks) // 2
+            for label, chosen in (("first_half_blocks", planned_blocks[:midpoint]),
+                                  ("second_half_blocks", planned_blocks[midpoint:])):
                 result = _summary(pairs.loc[pairs["block"].astype(int).isin(chosen)], metric)
                 sensitivity.append({
                     "scenario": scenario,
@@ -219,9 +235,7 @@ def diagnose_validity(
                     **result,
                     "practical_threshold_percent": practical_threshold if is_primary else None,
                     "practical_interpretation": (
-                        "threshold_met" if is_primary and result["mean_improvement_percent"] is not None
-                        and result["mean_improvement_percent"] >= practical_threshold
-                        else "threshold_not_met" if is_primary else None
+                        _threshold_label(result["mean_improvement_percent"], practical_threshold) if is_primary else None
                     ),
                 })
 
@@ -241,7 +255,10 @@ def diagnose_validity(
                     "min_improvement_percent": float(min(values)) if values else None,
                     "max_improvement_percent": float(max(values)) if values else None,
                     "practical_threshold_percent": practical_threshold if is_primary else None,
-                    "practical_interpretation": "min/max improvement across omitted blocks" if is_primary else None,
+                    "practical_interpretation": (
+                        "threshold_crossed" if values and min(values) < practical_threshold <= max(values)
+                        else _threshold_label(min(values) if values else None, practical_threshold)
+                    ) if is_primary else None,
                 })
 
     attempts = manifest.get("attempts", [])
@@ -261,9 +278,8 @@ def diagnose_validity(
                 **result,
                 "practical_threshold_percent": practical_threshold if scenario == primary_scenario else None,
                 "practical_interpretation": (
-                    "threshold_met" if scenario == primary_scenario and result["mean_improvement_percent"] is not None
-                    and result["mean_improvement_percent"] >= practical_threshold
-                    else "threshold_not_met" if scenario == primary_scenario else None
+                    _threshold_label(result["mean_improvement_percent"], practical_threshold)
+                    if scenario == primary_scenario else None
                 ),
             })
 
@@ -275,25 +291,26 @@ def diagnose_validity(
     ]
     primary_full = next((row for row in rows if row["scenario"] == primary_scenario and row["metric"] == primary_metric), {})
     full_interpretation = primary_full.get("practical_interpretation")
-    median_interpretation = (
-        "threshold_met" if primary_full.get("median_improvement_percent") is not None
-        and primary_full["median_improvement_percent"] >= practical_threshold else "threshold_not_met"
-    )
+    median_interpretation = _threshold_label(primary_full.get("median_improvement_percent"), practical_threshold)
     alternative_interpretations = {
         row.get("practical_interpretation") for row in sensitivity
         if row["scenario"] == primary_scenario and row["metric"] == primary_metric
-        and row["diagnostic"] in {"order_sensitivity", "block_stability", "failure_exclusion_policy"}
+        and row["diagnostic"] in {"order_sensitivity", "block_stability", "failure_exclusion_policy", "leave_one_block_out"}
         and row.get("practical_interpretation")
     }
     alternative_interpretations.add(median_interpretation)
-    interpretation_changes = bool(full_interpretation and any(value != full_interpretation for value in alternative_interpretations))
+    comparable = alternative_interpretations - {"indeterminate"}
+    interpretation_changes = (
+        any(value != full_interpretation for value in comparable)
+        if comparable and full_interpretation in {"threshold_met", "threshold_not_met"} else None
+    )
 
     summary = {
         "issue": 154,
         "campaign_id": manifest["campaign_id"],
-        "dataset": _artifact_label(dataset_path),
-        "campaign_manifest": _artifact_label(campaign_dir / "manifest.json"),
-        "quality_report": _artifact_label(quality_path) if quality_path.is_file() else None,
+        "dataset": artifact_label(dataset_path),
+        "campaign_manifest": artifact_label(campaign_dir / "manifest.json"),
+        "quality_report": artifact_label(quality_path) if quality_path.is_file() else None,
         "design": {
             "versions": versions,
             "scenarios": scenarios,

@@ -29,4 +29,9 @@ A análise primária pré-especificada é a latência de `customer_total`, com r
 
 ## Limite da conclusão
 
+As metades usam os blocos previstos no manifesto. Se faltarem pares
+utilizáveis, o diagnóstico marca a interpretação como indeterminada.
+A leitura conjunta com o teste inferencial e seu intervalo de confiança
+fica pendente da issue #155.
+
 Os resultados descrevem as duas versões e os cenários `customer_total` e `range_summary` sob o dataset sintético e o ambiente documentado. Não sustentam uma recomendação geral de upgrade, uma estimativa de desempenho em produção ou uma afirmação causal além deste protocolo. Os diagnósticos de sensibilidade servem para mostrar robustez e dependência de escolhas analíticas; não substituem o teste inferencial previsto nem corrigem limites de validade externa.
