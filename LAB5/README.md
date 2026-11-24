@@ -129,3 +129,21 @@ python -m pytest -q LAB5/tests/test_s02_validity.py
 ```
 
 A execução verifica configuração e imagens dos registros brutos contra o manifesto e gera diagnósticos de sensibilidade por ordem, estabilidade entre blocos, média/mediana e política de exclusões em `LAB5/reports/validity/`. A avaliação das ameaças, evidências, mitigações e riscos residuais está em `LAB5/docs/validade-lab05s02.md`.
+
+## Testes pareados e tamanho de efeito (#155)
+
+```powershell
+$env:PYTHONPATH = (Resolve-Path LAB5/src).Path
+python -m lab05_real_software.s02_inference --dataset LAB5/data/processed/lab05s02-20261121-01_validated.csv
+python -m pytest -q LAB5/tests/test_s02_inference.py
+```
+
+O comando aplica o contraste pareado pré-especificado (`customer_total` / `query_latency_ms`), verifica pressupostos, estima a diferença com IC 95% e o Cohen `d_z`, interpreta a relevância prática contra o limiar de 10% e trata métricas secundárias com ajuste de Holm. Artefatos versionados:
+
+- `LAB5/reports/tables/s02_paired_primary_differences.csv`
+- `LAB5/reports/tables/s02_paired_primary_inference.json`
+- `LAB5/reports/tables/s02_paired_secondary_inference.csv`
+- `LAB5/reports/tables/s02_paired_inference_summary.json`
+- `LAB5/docs/inferencia-pareada-lab05s02.md`
+
+Pares incompletos, variância zero e amostra pequena (< 2 pares) são registrados como inferência insuficiente.
